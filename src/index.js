@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 
 function App(props) {
   const { name } = props;
@@ -112,10 +112,10 @@ function Img({file, deleteFn}) {
   return (
     <>
       <img src={image} alt="preview image" />
-      <a href='javascript:;' onClick={delFn}>delete</a>
+      <a href='' onClick={delFn}>delete</a>
     </>
   )
 }
 
 const mountNode = document.getElementById("app");
-ReactDOM.render(<App name="Jane" />, mountNode);
+ReactDOM.createRoot(mountNode).render(<App name="Jane" />);
