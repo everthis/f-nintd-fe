@@ -47,15 +47,15 @@ export function ImgFromUrl({ url, opts, tags: defaultTags }) {
     console.log(e.target.value)
     const val = e.target.value
     if (val === '') return
-    const idx = tags.indexOf(val)
+    const idx = tags.map((e) => e.name).indexOf(val)
     addRelation(val)
     if (idx === -1) {
-      tags.push(val)
+      tags.push({ name: val, selected: false })
       setTags(tags.slice(0))
     }
   }
 
-  const tagsSet = new Set(tags)
+  const tagsSet = new Set(tags.map((e) => e.name))
   const arr = options.map((e, i) => {
     if (tagsSet.has(e)) {
       return {
@@ -108,6 +108,7 @@ export function ImgFromUrl({ url, opts, tags: defaultTags }) {
   }
 
   const ph = 'Select tags'
+
   return (
     <PerRemote>
       <div>
@@ -117,8 +118,8 @@ export function ImgFromUrl({ url, opts, tags: defaultTags }) {
         <button onClick={() => delRemote(url)}>delete Remote</button>
         {/* <input value={tags} onChange={onChangeFn} /> */}
         {tags.map((e) => (
-          <Tag name={e} image={url} key={e}>
-            {e}
+          <Tag name={e.name} image={url} key={e.name}>
+            {e.name}
           </Tag>
         ))}
         <select value={''} onChange={onChangeFn} placeholder={ph}>

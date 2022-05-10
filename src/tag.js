@@ -4,9 +4,21 @@ import styled from 'styled-components'
 const TagsWrap = styled.div``
 const TagWrap = styled.span`
   margin-right: 10px;
+  border: 1px solid #333;
+  padding: 0;
+  display: inline-block;
+`
+const TagName = styled.span`
+  cursor: pointer;
+  display: inline-block;
+  padding: 1px 5px;
+  ${({ selected }) => {
+    return `background-color: ${selected ? '#fbf12b' : 'white'};`
+  }}
 `
 const DelTag = styled.span`
   padding: 1px 5px;
+  margin: 0;
   cursor: pointer;
   background-color: #333;
   color: #fff;
@@ -20,16 +32,36 @@ export function Tags({ updateTags }) {
     })
       .then((d) => d.json())
       .then((arr) => {
+        arr = arr.map((e) => ({ name: e, selected: false }))
         setTags(arr)
         updateTags(arr)
       })
   }
 
+  function buildTagItem() {}
+
   useEffect(() => {
     listTags()
   }, [])
 
-  const tagsRes = tags.map((e) => <Tag name={e} key={e} />)
+  function toggleSelect(name) {
+    const t = tags.find((e) => e.name === name)
+    if (t) {
+      const clone = tags.slice(0)
+      t.selected = !t.selected
+      setTags(clone)
+      updateTags(clone)
+    }
+  }
+
+  const tagsRes = tags.map((e) => (
+    <Tag
+      toggleSelect={toggleSelect}
+      name={e.name}
+      key={e.name}
+      selected={e.selected}
+    />
+  ))
 
   function newTagOnChange(e) {
     setNewTag(e.target.value)
@@ -60,7 +92,7 @@ export function Tags({ updateTags }) {
   )
 }
 
-function Tag({ name, selected }) {
+function Tag({ name, selected, toggleSelect }) {
   function delTag() {
     const obj = {
       name,
@@ -77,7 +109,9 @@ function Tag({ name, selected }) {
   }
   return (
     <TagWrap>
-      <span>{name}</span>
+      <TagName selected={selected} onClick={() => toggleSelect(name)}>
+        {name}
+      </TagName>
       <DelTag onClick={delTag}>x</DelTag>
     </TagWrap>
   )
