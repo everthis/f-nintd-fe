@@ -80,6 +80,8 @@ export function Upload({ tags = [], setTags = () => {} }) {
     setSelectedFiles(clone)
   }
 
+  function onChangeFn() {}
+  const ph = ''
   return (
     <UploadWrap>
       <ImageInput>
@@ -93,7 +95,16 @@ export function Upload({ tags = [], setTags = () => {} }) {
         />
       </ImageInput>
       <button onClick={onFileUpload}>Upload!</button>
-
+      <select value={''} onChange={onChangeFn} placeholder={ph}>
+        <option key={''} value={''} disabled>
+          Select tags
+        </option>
+        {tags.map((e) => (
+          <option key={e.name} value={e.name} disabled={e.disabled}>
+            {e.name}
+          </option>
+        ))}
+      </select>
       <Row>
         <UploadQueueSect>
           {selectedFiles.map((e, i) => (

@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-const PerRemote = styled.div``
+const PerRemote = styled.div`
+  position: relative;
+  img {
+    width: 100%;
+  }
+`
+
+const Select = styled.span`
+  position: absolute;
+  top: 0;
+  right: 0;
+`
 
 const StyledImg = styled.image`
   display: inline-block;
@@ -17,7 +28,30 @@ const DelTag = styled.span`
   color: #fff;
 `
 
-export function ImgFromUrl({ url, opts, tags: defaultTags }) {
+const ImgWrap = styled.div`
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: ${({ ratio }) => ratio * 100}%;
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+`
+
+export function ImgFromUrl({
+  url,
+  opts,
+  dimension = '',
+  tags: defaultTags,
+  selectCb = () => {},
+  hideTags = false,
+  hideDel = false,
+}) {
   const [tags, setTags] = useState(defaultTags || [])
   const options = opts
   const [remoteList, setRemoteList] = useState([])
@@ -107,34 +141,60 @@ export function ImgFromUrl({ url, opts, tags: defaultTags }) {
       .then((d) => ListObjects())
   }
 
-  const ph = 'Select tags'
+  function selectChange(ev) {
+    selectCb(url, ev.target.checked)
+  }
 
+  const ph = 'Select tags'
+  const [width, height] = (dimension || '').split(',')
   return (
     <PerRemote>
       <div>
-        <img src={url} alt='preview image' />
+        {height ? (
+          <RatioImg url={url} width={width} height={height} />
+        ) : (
+          <img src={url} alt='preview image' />
+        )}
       </div>
       <div>
-        <button onClick={() => delRemote(url)}>delete Remote</button>
+        {hideDel ? null : (
+          <button onClick={() => delRemote(url)}>delete Remote</button>
+        )}
+
         {/* <input value={tags} onChange={onChangeFn} /> */}
-        {tags.map((e) => (
-          <Tag name={e.name} image={url} key={e.name}>
-            {e.name}
-          </Tag>
-        ))}
-        <select value={''} onChange={onChangeFn} placeholder={ph}>
-          <option key={''} value={''} disabled>
-            Select tags
-          </option>
-          {arr.map((e) => (
-            <option key={e.val} value={e.val} disabled={e.disabled}>
-              {e.label}
-            </option>
-          ))}
-        </select>
+        {hideTags ? null : (
+          <>
+            {tags.map((e) => (
+              <Tag name={e.name} image={url} key={e.name}>
+                {e.name}
+              </Tag>
+            ))}
+            <select value={''} onChange={onChangeFn} placeholder={ph}>
+              <option key={''} value={''} disabled>
+                Select tags
+              </option>
+              {arr.map((e) => (
+                <option key={e.val} value={e.val} disabled={e.disabled}>
+                  {e.label}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
         {/* <button onClick={updateTags}>Update</button> */}
       </div>
+      <Select>
+        <input type='checkbox' onChange={selectChange} />
+      </Select>
     </PerRemote>
+  )
+}
+
+function RatioImg({ width, height, url }) {
+  return (
+    <ImgWrap ratio={height / width} url={url}>
+      <img src={url} />{' '}
+    </ImgWrap>
   )
 }
 

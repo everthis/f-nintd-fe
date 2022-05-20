@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-const TagsWrap = styled.div``
+const TagsWrap = styled.div`
+  user-select: none;
+`
 const TagWrap = styled.span`
   margin-right: 10px;
   border: 1px solid #333;
@@ -23,7 +25,7 @@ const DelTag = styled.span`
   background-color: #333;
   color: #fff;
 `
-export function Tags({ updateTags }) {
+export function Tags({ updateTags = () => {}, showAddTag = true }) {
   const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState('')
   function listTags() {
@@ -86,8 +88,12 @@ export function Tags({ updateTags }) {
     <TagsWrap>
       <b>Tags: </b>
       {tagsRes}
-      <input value={newTag} onChange={newTagOnChange} />
-      <button onClick={addTag}>Add Tag</button>
+      {showAddTag ? (
+        <>
+          <input value={newTag} onChange={newTagOnChange} />
+          <button onClick={addTag}>Add Tag</button>
+        </>
+      ) : null}
     </TagsWrap>
   )
 }

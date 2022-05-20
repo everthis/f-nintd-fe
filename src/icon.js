@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 const Wrap = styled.span`
   display: inline-block;
-  width: 28px;
-  height: 28px;
+  width: ${({ size }) => (size ? size : '28px')};
+  height: ${({ size }) => (size ? size : '28px')};
   cursor: pointer;
   svg {
     width: 100%;
@@ -71,6 +71,16 @@ export function ImgIcon({ checked, onClick }) {
 		c0,0.553,0.447,1,1,1h26c0.553,0,1-0.447,1-1S27.553,48.5,27,48.5z'
           />
         </g>
+      </svg>
+    </Wrap>
+  )
+}
+
+export function CloseIcon({ checked = false, onClick, size }) {
+  return (
+    <Wrap checked={checked} onClick={onClick} size={size}>
+      <svg fill='#000000' viewBox='0 0 50 50'>
+        <path d='M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z' />
       </svg>
     </Wrap>
   )

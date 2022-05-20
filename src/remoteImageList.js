@@ -13,7 +13,7 @@ const RemoteListSect = styled.div`
   }
 `
 
-export function RemoteImageList({ tags, cb }) {
+export function RemoteImageList({ tags, cb, selectCb }) {
   const [remoteList, setRemoteList] = useState([])
 
   function setRemoteListFn(arr) {
@@ -48,7 +48,6 @@ export function RemoteImageList({ tags, cb }) {
   }, [])
 
   useEffect(() => {
-    console.log('cccc')
     cb(remoteList)
   }, [remoteList])
 
@@ -57,7 +56,14 @@ export function RemoteImageList({ tags, cb }) {
   return (
     <RemoteListSect>
       {remoteList.map((e) => (
-        <ImgFromUrl opts={opts} tags={e.tags} url={e.name} key={e.name} />
+        <ImgFromUrl
+          opts={opts}
+          tags={e.tags}
+          url={e.name}
+          key={e.name}
+          dimension={e.dimension}
+          selectCb={selectCb}
+        />
       ))}
     </RemoteListSect>
   )

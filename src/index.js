@@ -9,6 +9,9 @@ import { Upload } from './upload'
 import { RemoteImageList } from './remoteImageList'
 import { Toolbar } from './toolbar'
 import { Pane } from './pane'
+import { Editor } from './editor'
+
+import './index.scss'
 
 const Row = styled.div`
   display: flex;
@@ -49,13 +52,18 @@ const PaneContainer = styled.span`
   top: ${({ top }) => top};
   visibility: ${({ show }) => (show ? 'show' : 'hidden')};
 `
+const EditorContainer = styled.div`
+  display: inline-block;
+  width: 600px;
+`
 
 function App(props) {
   const { name } = props
   const [tags, setTags] = useState([])
   const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
-  const uploadBody = <Upload />
+  const [checkedSet, setCheckedSet] = useState(new Set())
+  const uploadBody = <Upload tags={tags} />
   const remoteChange = (arr) => {
     if (arr.length) {
       setShowRemote(true)
@@ -63,20 +71,33 @@ function App(props) {
       setShowRemote(false)
     }
   }
-  const remoteBody = <RemoteImageList tags={tags} cb={remoteChange} />
+  const selectCb = (url, val) => {
+    const clone = new Set(checkedSet)
+    if (val) {
+      clone.add(url)
+    } else {
+      clone.delete(url)
+    }
+    setCheckedSet(clone)
+  }
+  const remoteBody = (
+    <RemoteImageList tags={tags} cb={remoteChange} selectCb={selectCb} />
+  )
   return (
     <>
       <Tags updateTags={setTags} />
       <HorLine />
-      <div>toolbar: upload, remoteList</div>
       <Toolbar showUpload={showUpload} setShowUpload={setShowUpload} />
-
-      <PaneContainer left='calc(100vw - 700px)' top='55px' show={showRemote}>
+      <HorLine />
+      <EditorContainer>
+        <Editor imgList={checkedSet} />
+      </EditorContainer>
+      <PaneContainer left='calc(100vw - 570px)' top='55px' show={showRemote}>
         <Pane
           show={showRemote}
           bgColor='#fff'
           body={remoteBody}
-          width='670px'
+          width='500px'
         />
       </PaneContainer>
       <PaneContainer left='calc(100vw - 500px)' top='55px' show={showUpload}>
