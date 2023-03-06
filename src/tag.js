@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { API_ORIGIN } from './constant'
 
 const TagsWrap = styled.div`
   user-select: none;
@@ -25,11 +26,15 @@ const DelTag = styled.span`
   background-color: #333;
   color: #fff;
 `
-export function Tags({ updateTags = () => {}, showAddTag = true }) {
+export function Tags({
+  updateTags = () => {},
+  showAddTag = true,
+  disableDel = false,
+}) {
   const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState('')
   function listTags() {
-    fetch('http://192.168.2.114:8087/images/tags', {
+    fetch(`${API_ORIGIN}/images/tags`, {
       method: 'GET',
     })
       .then((d) => d.json())
@@ -61,6 +66,7 @@ export function Tags({ updateTags = () => {}, showAddTag = true }) {
       toggleSelect={toggleSelect}
       name={e.name}
       key={e.name}
+      disableDel={disableDel}
       selected={e.selected}
     />
   ))
@@ -73,7 +79,7 @@ export function Tags({ updateTags = () => {}, showAddTag = true }) {
     const obj = {
       name: newTag,
     }
-    fetch('http://192.168.2.114:8087/tags/new', {
+    fetch(`${API_ORIGIN}/tags/new`, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: {
@@ -98,12 +104,12 @@ export function Tags({ updateTags = () => {}, showAddTag = true }) {
   )
 }
 
-function Tag({ name, selected, toggleSelect }) {
+function Tag({ name, selected, toggleSelect, disableDel = false }) {
   function delTag() {
     const obj = {
       name,
     }
-    fetch('http://192.168.2.114:8087/tags/del', {
+    fetch(`${API_ORIGIN}/tags/del`, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: {
@@ -118,7 +124,7 @@ function Tag({ name, selected, toggleSelect }) {
       <TagName selected={selected} onClick={() => toggleSelect(name)}>
         {name}
       </TagName>
-      <DelTag onClick={delTag}>x</DelTag>
+      {disableDel ? null : <DelTag onClick={delTag}>x</DelTag>}
     </TagWrap>
   )
 }

@@ -48,6 +48,7 @@ export function Pane({
   bgColor = '#fff',
   children,
   onClose = () => {},
+  showClose = true,
 }) {
   const ref = useRef(null)
   const [canMove] = useState(false)
@@ -81,7 +82,7 @@ export function Pane({
     const { scrollX, scrollY } = window
     // setInitPos([left + scrollX, top + scrollY])
     const p = posRef.current
-    initPosRef.current = [left - p[0], top - p[1]]
+    initPosRef.current = [left + scrollX - p[0], top + scrollY - p[1]]
   }
 
   const styles = {
@@ -89,6 +90,8 @@ export function Pane({
   }
   useEffect(() => {
     resize()
+    const { scrollX, scrollY } = window
+    setPos([scrollX, scrollY])
 
     window.addEventListener('mousedown', mouseDown)
     window.addEventListener('mousemove', mouseMove)
@@ -111,7 +114,7 @@ export function Pane({
     <Wrap bgColor={bgColor} style={styles} width={width} height={height}>
       <Head ref={ref}>
         {header}
-        <CloseIcon size='20px' onClick={closePane} />
+        {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
       </Head>
       <Body>{body || children}</Body>
     </Wrap>

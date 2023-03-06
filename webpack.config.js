@@ -7,6 +7,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -46,6 +47,7 @@ const config = {
     static: {
       directory: './dist',
     },
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
