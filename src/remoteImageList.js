@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { ImgFromUrl } from './image'
+import { API_ORIGIN } from './constant'
 
 const RemoteListSect = styled.div`
   user-select: none;
@@ -12,7 +13,6 @@ const RemoteListSect = styled.div`
     width: 100%;
   }
 `
-
 export function RemoteImageList({ tags, cb, selectCb }) {
   const [remoteList, setRemoteList] = useState([])
 
@@ -23,7 +23,7 @@ export function RemoteImageList({ tags, cb, selectCb }) {
     setRemoteList(arr)
   }
   function queryByTags(tagVal) {
-    fetch('http://192.168.2.114:8087/images/byTags?tags=' + tagVal, {
+    fetch(`${API_ORIGIN}/images/byTags?tags=` + tagVal, {
       method: 'GET',
     })
       .then((d) => d.json())

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { API_ORIGIN } from './constant'
 
 const PerRemote = styled.div`
   position: relative;
@@ -64,7 +65,7 @@ export function ImgFromUrl({
   //   const tagsObj = {}
   //   for (const e of tagsArr) tagsObj[e] = 1
   //   const obj = { name, tags: tagsObj }
-  //   fetch('http://192.168.2.114:8087/images/update', {
+  //   fetch(`${API_ORIGIN}/images/update', {
   //     method: 'POST',
   //     body: JSON.stringify(obj),
   //     headers: {
@@ -112,7 +113,7 @@ export function ImgFromUrl({
       tag,
       image: url,
     }
-    fetch('http://192.168.2.114:8087/image_tag_relation/add', {
+    fetch(`${API_ORIGIN}/image_tag_relation/add`, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: {
@@ -121,7 +122,7 @@ export function ImgFromUrl({
     }).then((d) => d.text())
   }
   function ListObjects() {
-    fetch('http://192.168.2.114:8087/images/list', {
+    fetch(`${API_ORIGIN}/images/list`, {
       method: 'GET',
     })
       .then((d) => d.json())
@@ -131,7 +132,7 @@ export function ImgFromUrl({
   }
   function delRemote(url) {
     const obj = { url }
-    fetch('http://192.168.2.114:8087/images/del', {
+    fetch(`${API_ORIGIN}/images/del`, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: {
@@ -154,7 +155,7 @@ export function ImgFromUrl({
         {height ? (
           <RatioImg url={url} width={width} height={height} />
         ) : (
-          <img src={url} alt='preview image' />
+          <img src={url} alt="preview image" />
         )}
       </div>
       <div>
@@ -207,7 +208,7 @@ function Tag({ name, image }) {
       tag: name,
       image,
     }
-    fetch('http://192.168.2.114:8087/image_tag_relation/del', {
+    fetch(`${API_ORIGIN}/image_tag_relation/del`, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: {

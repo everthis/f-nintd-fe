@@ -48,6 +48,7 @@ export function Pane({
   bgColor = '#fff',
   children,
   onClose = () => {},
+  showClose = true,
 }) {
   const ref = useRef(null)
   const [canMove] = useState(false)
@@ -113,7 +114,7 @@ export function Pane({
     <Wrap bgColor={bgColor} style={styles} width={width} height={height}>
       <Head ref={ref}>
         {header}
-        <CloseIcon size='20px' onClick={closePane} />
+        {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
       </Head>
       <Body>{body || children}</Body>
     </Wrap>

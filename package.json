@@ -14,10 +14,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@charlietango/use-native-lazy-loading": "^1.10.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hot-loader": "^4.13.0",
-    "react-visibility-sensor": "^5.1.1",
+    "react-intersection-observer": "^9.4.3",
+    "react-router-dom": "^6.8.1",
     "sass": "^1.51.0",
     "sass-loader": "^12.6.0",
     "styled-components": "^5.3.5"

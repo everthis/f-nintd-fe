@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
+import { API_ORIGIN } from './constant'
+
 const UploadWrap = styled.div`
   user-select: none;
 `
@@ -64,7 +66,7 @@ export function Upload({ tags = [], setTags = () => {} }) {
       formData.append('images', e, fn)
     }
 
-    fetch('http://192.168.2.114:8087/images/new', {
+    fetch(`${API_ORIGIN}/images/new`, {
       method: 'POST',
       body: formData,
     })
@@ -87,8 +89,8 @@ export function Upload({ tags = [], setTags = () => {} }) {
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className='image-input'
-          type='file'
+          className="image-input"
+          type="file"
           multiple
           onChange={onFileChange}
           value={inputVal}
@@ -124,8 +126,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt='preview image' />
-      <a href='' onClick={delFn}>
+      <img src={image} alt="preview image" />
+      <a href="" onClick={delFn}>
         delete
       </a>
     </PerLocal>

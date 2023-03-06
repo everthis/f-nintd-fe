@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Pane } from './pane'
 import { Tags } from './tag'
 import { ImgFromUrl } from './image'
+import { API_ORIGIN } from './constant'
 
 const Wrap = styled.div`
   position: relative;
@@ -150,7 +151,7 @@ export function Editor({ imgList }) {
     setImgs(arr)
   }
   function queryByTags(tagVal) {
-    fetch('http://192.168.2.114:8087/images/byTags?tags=' + tagVal, {
+    fetch(`${API_ORIGIN}/images/byTags?tags=` + tagVal, {
       method: 'GET',
     })
       .then((d) => d.json())
@@ -213,6 +214,10 @@ export function Editor({ imgList }) {
 
   function clearEditor() {
     setItems([])
+  }
+
+  function titleChange(ev) {
+    setTitle(ev.target.value)
   }
 
   return (

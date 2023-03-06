@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { UploadIcon, ImgIcon, ListIcon } from './icon'
+import { API_ORIGIN } from './constant'
 
 export function Toolbar({ showUpload, setShowUpload }) {
   const [uploadChecked, setUploadChecked] = useState(showUpload)
@@ -16,7 +17,7 @@ export function Toolbar({ showUpload, setShowUpload }) {
     setImgChecked(!imgChecked)
   }
   function listImagesWithoutTags() {
-    fetch('http://192.168.2.114:8087/images/withoutTags', {
+    fetch(`${API_ORIGIN}/images/withoutTags`, {
       method: 'GET',
     })
       .then((d) => d.json())
