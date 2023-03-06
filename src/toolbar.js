@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { UploadIcon, ImgIcon } from './icon'
+import { UploadIcon, ImgIcon, ListIcon } from './icon'
 
 export function Toolbar({ showUpload, setShowUpload }) {
   const [uploadChecked, setUploadChecked] = useState(showUpload)
@@ -26,7 +26,7 @@ export function Toolbar({ showUpload, setShowUpload }) {
     <>
       <UploadIcon checked={uploadChecked} onClick={toggleUpload} />
       <ImgIcon checked={imgChecked} onClick={toggleImg} />
-
+      <ListIcon />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}
     </>
   )

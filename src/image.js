@@ -51,6 +51,7 @@ export function ImgFromUrl({
   selectCb = () => {},
   hideTags = false,
   hideDel = false,
+  hideSelect = true,
 }) {
   const [tags, setTags] = useState(defaultTags || [])
   const options = opts
@@ -183,9 +184,11 @@ export function ImgFromUrl({
         )}
         {/* <button onClick={updateTags}>Update</button> */}
       </div>
-      <Select>
-        <input type='checkbox' onChange={selectChange} />
-      </Select>
+      {hideSelect ? null : (
+        <Select>
+          <input type='checkbox' onChange={selectChange} />
+        </Select>
+      )}
     </PerRemote>
   )
 }

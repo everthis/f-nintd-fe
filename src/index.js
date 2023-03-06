@@ -10,6 +10,7 @@ import { RemoteImageList } from './remoteImageList'
 import { Toolbar } from './toolbar'
 import { Pane } from './pane'
 import { Editor } from './editor'
+import { Article } from './article'
 
 import './index.scss'
 
@@ -103,6 +104,7 @@ function App(props) {
       <PaneContainer left='calc(100vw - 500px)' top='55px' show={showUpload}>
         <Pane show={showUpload} bgColor='#fff' body={uploadBody} />
       </PaneContainer>
+      <Article />
     </>
   )
 }

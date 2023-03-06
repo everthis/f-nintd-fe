@@ -25,7 +25,11 @@ const DelTag = styled.span`
   background-color: #333;
   color: #fff;
 `
-export function Tags({ updateTags = () => {}, showAddTag = true }) {
+export function Tags({
+  updateTags = () => {},
+  showAddTag = true,
+  disableDel = false,
+}) {
   const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState('')
   function listTags() {
@@ -61,6 +65,7 @@ export function Tags({ updateTags = () => {}, showAddTag = true }) {
       toggleSelect={toggleSelect}
       name={e.name}
       key={e.name}
+      disableDel={disableDel}
       selected={e.selected}
     />
   ))
@@ -98,7 +103,7 @@ export function Tags({ updateTags = () => {}, showAddTag = true }) {
   )
 }
 
-function Tag({ name, selected, toggleSelect }) {
+function Tag({ name, selected, toggleSelect, disableDel = false }) {
   function delTag() {
     const obj = {
       name,
@@ -118,7 +123,7 @@ function Tag({ name, selected, toggleSelect }) {
       <TagName selected={selected} onClick={() => toggleSelect(name)}>
         {name}
       </TagName>
-      <DelTag onClick={delTag}>x</DelTag>
+      {disableDel ? null : <DelTag onClick={delTag}>x</DelTag>}
     </TagWrap>
   )
 }
