@@ -21,12 +21,13 @@ function App() {
       element: <Create />,
     },
   ])
-  return (
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
-  )
+
+  return <RouterProvider router={router} />
 }
 
 const mountNode = document.getElementById('app')
-ReactDOM.createRoot(mountNode).render(<App />)
+ReactDOM.createRoot(mountNode).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)

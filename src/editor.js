@@ -123,9 +123,8 @@ export function Editor({ imgList }) {
         val: e.val,
       })
     }
-    console.log(res)
 
-    fetch('http://192.168.2.114:8087/articles/new', {
+    fetch(`${API_ORIGIN}/articles/new`, {
       method: 'POST',
       body: JSON.stringify(res),
       headers: {
@@ -252,7 +251,7 @@ export function Editor({ imgList }) {
       </Op>
       {showPane ? (
         <PaneWrap>
-          <Pane width='100%' height='100%' onClose={closePane}>
+          <Pane width="100%" height="100%" onClose={closePane}>
             <Tags
               showAddTag={false}
               updateTags={updateTags}
@@ -277,7 +276,7 @@ export function Editor({ imgList }) {
                   </ImgInnerContainer>
                   <Select>
                     <input
-                      type='checkbox'
+                      type="checkbox"
                       checked={e.selected}
                       onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
                     />

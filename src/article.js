@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import Image from './articleImg'
+import { API_ORIGIN } from './constant'
 
 const Margin = styled.div`
   margin: 6em 0;
@@ -17,7 +18,7 @@ export function Article(props) {
   const [list, setList] = useState([])
   const [content, setContent] = useState({})
   useEffect(() => {
-    fetch('http://192.168.2.114:8087/articles/list', {})
+    fetch(`${API_ORIGIN}/articles/list`, {})
       .then((d) => d.json())
       .then((d) => {
         setList(d)

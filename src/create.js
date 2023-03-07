@@ -10,6 +10,7 @@ import { Pane } from './pane'
 import { Editor } from './editor'
 import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
+import { Nav } from './nav'
 
 import './index.scss'
 
@@ -83,8 +84,10 @@ export function Create(props) {
   const remoteBody = React.useMemo(() => {
     return <RemoteImageList tags={tags} cb={remoteChange} selectCb={selectCb} />
   }, [tags])
+
   return (
     <>
+      <Nav />
       <Tags updateTags={setTags} />
       <HorLine />
       <Toolbar showUpload={showUpload} setShowUpload={setShowUpload} />
@@ -92,16 +95,16 @@ export function Create(props) {
       <EditorContainer>
         <Editor imgList={checkedSet} />
       </EditorContainer>
-      <PaneContainer left='calc(100vw - 570px)' top='55px' show={showRemote}>
+      <PaneContainer left="calc(100vw - 570px)" top="55px" show={showRemote}>
         <Pane
           show={showRemote}
-          bgColor='#fff'
+          bgColor="#fff"
           body={remoteBody}
-          width='500px'
+          width="500px"
         />
       </PaneContainer>
-      <PaneContainer left='calc(100vw - 500px)' top='55px' show={showUpload}>
-        <Pane show={showUpload} bgColor='#fff' body={uploadBody} />
+      <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
+        <Pane show={showUpload} bgColor="#fff" body={uploadBody} />
       </PaneContainer>
       <Article />
     </>
