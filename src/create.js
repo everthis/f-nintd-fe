@@ -14,32 +14,8 @@ import { Nav } from './nav'
 
 import './index.scss'
 
-const Row = styled.div`
-  display: flex;
-`
-const UploadQueueSect = styled.div`
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 900px;
-  max-width: 1000px;
-`
-
-const RemoteListSect = styled.div`
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 900px;
-`
-const PerLocal = styled.div`
-  img {
-    display: inline-block;
-    max-width: 100%;
-  }
-`
-const PerRemote = styled.div``
-
-const StyledImg = styled.image`
-  display: inline-block;
-  max-width: 100%;
+const VertGap = styled.div`
+  ${({ height }) => (height ? `height: ${height};` : '')}
 `
 const HorLine = styled.hr`
   margin: 1em 0;
@@ -85,10 +61,17 @@ export function Create(props) {
     return <RemoteImageList tags={tags} cb={remoteChange} selectCb={selectCb} />
   }, [tags])
 
+  const remoteOnClose = () => {
+    const clone = tags.slice()
+    clone.forEach((e) => (e.selected = false))
+    setTags(clone)
+  }
+
   return (
     <>
       <Nav />
-      <Tags updateTags={setTags} />
+      <VertGap height="1em" />
+      <Tags tags={tags} updateTags={setTags} />
       <HorLine />
       <Toolbar showUpload={showUpload} setShowUpload={setShowUpload} />
       <HorLine />
@@ -101,6 +84,8 @@ export function Create(props) {
           bgColor="#fff"
           body={remoteBody}
           width="500px"
+          showClose
+          onClose={remoteOnClose}
         />
       </PaneContainer>
       <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>

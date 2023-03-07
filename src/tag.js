@@ -27,11 +27,12 @@ const DelTag = styled.span`
   color: #fff;
 `
 export function Tags({
+  tags = [],
   updateTags = () => {},
   showAddTag = true,
   disableDel = false,
 }) {
-  const [tags, setTags] = useState([])
+  // const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState('')
   function listTags() {
     fetch(`${API_ORIGIN}/images/tags`, {
@@ -40,7 +41,7 @@ export function Tags({
       .then((d) => d.json())
       .then((arr) => {
         arr = arr.map((e) => ({ name: e, selected: false }))
-        setTags(arr)
+        // setTags(arr)
         updateTags(arr)
       })
   }
@@ -56,7 +57,7 @@ export function Tags({
     if (t) {
       const clone = tags.slice(0)
       t.selected = !t.selected
-      setTags(clone)
+      // setTags(clone)
       updateTags(clone)
     }
   }
@@ -87,7 +88,10 @@ export function Tags({
       },
     })
       .then((d) => d.text())
-      .then((d) => listTags())
+      .then((d) => {
+        listTags()
+        setNewTag('')
+      })
   }
 
   return (

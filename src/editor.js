@@ -107,6 +107,7 @@ export function Editor({ imgList }) {
   const [showPane, setShowPane] = useState(false)
   const [imgs, setImgs] = useState([])
   const [items, setItems] = useState([])
+  const [tags, setTags] = useState([])
 
   const preview = () => {}
   const save = () => {
@@ -121,6 +122,7 @@ export function Editor({ imgList }) {
       res.body.push({
         type: e.type,
         val: e.val,
+        dimension: e.dimension,
       })
     }
 
@@ -139,6 +141,9 @@ export function Editor({ imgList }) {
   }
 
   const closePane = () => {
+    setTags([])
+    setImgs([])
+
     setShowPane(false)
   }
 
@@ -159,6 +164,7 @@ export function Editor({ imgList }) {
       })
   }
   function updateTags(v) {
+    setTags(v)
     const arr = v.filter((e) => e.selected).map((e) => e.name)
     if (arr.length) {
       queryByTags(arr.join(','))
@@ -180,9 +186,11 @@ export function Editor({ imgList }) {
 
   function applySelected() {
     const imgsArr = imgs.filter((e) => e.selected)
+    console.log(imgsArr)
     const res = imgsArr.map((e) => {
       e.type = 'img'
       e.val = e.name
+      e.dimension = e.dimension
       return e
     })
     setItems(res)
@@ -253,6 +261,7 @@ export function Editor({ imgList }) {
         <PaneWrap>
           <Pane width="100%" height="100%" onClose={closePane}>
             <Tags
+              tags={tags}
               showAddTag={false}
               updateTags={updateTags}
               disableDel={true}

@@ -87,6 +87,7 @@ export function Pane({
 
   const styles = {
     transform: `translate3d(${pos[0]}px, ${pos[1]}px, 0)`,
+    willChange: 'transform',
   }
   useEffect(() => {
     resize()

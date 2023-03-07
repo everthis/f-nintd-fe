@@ -43,7 +43,7 @@ const LazyImage = ({ width, height, src, ...rest }) => {
           src={src}
           width={width}
           height={height}
-          loading='lazy'
+          loading="lazy"
           style={{ position: 'absolute', width: '100%', height: '100%' }}
         />
       ) : null}
@@ -66,6 +66,8 @@ export default function Image(props) {
       <section>
         {images.map((img) => {
           const src = `${staticPrefix}${img.val}`
+          const { dimension } = img
+          const [width, height] = dimension.split(',').map((e) => +e)
           return (
             // <VisibilitySensor
             //   partialVisibility={true}
@@ -79,7 +81,7 @@ export default function Image(props) {
             //     </ImgWrap>
             //   )}
             // </VisibilitySensor>
-            <LazyImage key={src} src={src} width={400} height={300} />
+            <LazyImage key={src} src={src} width={width} height={height} />
           )
         })}
       </section>

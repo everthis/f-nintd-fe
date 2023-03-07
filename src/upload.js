@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { API_ORIGIN } from './constant'
@@ -46,6 +46,8 @@ const PerLocal = styled.div`
 export function Upload({ tags = [], setTags = () => {} }) {
   const [selectedFiles, setSelectedFiles] = useState([])
   const [inputVal, setInputVal] = useState('')
+  const [tagOpts, setTagOpts] = useState([])
+  const tagOptsRef = useRef(tagOpts)
 
   // On file select (from the pop up)
   function onFileChange(event) {
@@ -82,7 +84,41 @@ export function Upload({ tags = [], setTags = () => {} }) {
     setSelectedFiles(clone)
   }
 
-  function onChangeFn() {}
+  function onChangeFn(ev) {
+    const { value } = ev.target
+    console.log(value)
+  }
+
+  useEffect(() => {
+    const opts = []
+    const addSet = new Set()
+    const delSet = new Set()
+
+    const curSet = new Set(tagOptsRef.current)
+    const curNameSet = new Set(tagOptsRef.current.map((e) => e.name))
+
+    const newNameSet = new Set(tags.map((e) => e.name))
+
+    for (const e of tags) {
+      const { name } = e
+      if (!curNameSet.has(name)) addSet.add(name)
+    }
+    for (const e of newNameSet) {
+      if (!curNameSet.has(e)) delSet.add(e)
+    }
+
+    for (const e of curSet) {
+      if (!delSet.has(e.name)) opts.push(e)
+    }
+
+    for (const e of addSet) {
+      opts.push({ name: e, disabled: false })
+    }
+
+    tagOptsRef.current = opts
+    setTagOpts(opts)
+  }, [tags])
+
   const ph = ''
   return (
     <UploadWrap>
@@ -101,7 +137,7 @@ export function Upload({ tags = [], setTags = () => {} }) {
         <option key={''} value={''} disabled>
           Select tags
         </option>
-        {tags.map((e) => (
+        {tagOpts.map((e) => (
           <option key={e.name} value={e.name} disabled={e.disabled}>
             {e.name}
           </option>
