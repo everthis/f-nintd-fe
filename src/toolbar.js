@@ -5,13 +5,10 @@ import { UploadIcon, ImgIcon, ListIcon } from './icon'
 import { API_ORIGIN } from './constant'
 
 export function Toolbar({ showUpload, setShowUpload }) {
-  const [uploadChecked, setUploadChecked] = useState(showUpload)
   const [imgChecked, setImgChecked] = useState(false)
 
   function toggleUpload() {
-    const nextVal = !uploadChecked
-    setShowUpload(nextVal)
-    setUploadChecked(!uploadChecked)
+    setShowUpload(!showUpload)
   }
   function toggleImg() {
     setImgChecked(!imgChecked)
@@ -25,7 +22,7 @@ export function Toolbar({ showUpload, setShowUpload }) {
   }
   return (
     <>
-      <UploadIcon checked={uploadChecked} onClick={toggleUpload} />
+      <UploadIcon checked={showUpload} onClick={toggleUpload} />
       <ImgIcon checked={imgChecked} onClick={toggleImg} />
       <ListIcon />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}

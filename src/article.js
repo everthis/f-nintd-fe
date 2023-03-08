@@ -19,7 +19,7 @@ const DeleteIcon = styled.span`
   padding: 0 0.5em;
   margin: 0;
 `
-function ListItem({ payload, onClick }) {
+function ListItem({ payload, onClick, onDelete }) {
   const { title, id } = payload
   const deleteItem = () => {
     const obj = {
@@ -31,7 +31,9 @@ function ListItem({ payload, onClick }) {
       headers: {
         'Content-Type': 'application/json',
       },
-    }).then((d) => d.text())
+    })
+      .then((d) => d.text())
+      .then((d) => onDelete())
   }
   return (
     <ArticleItem>
@@ -43,19 +45,33 @@ function ListItem({ payload, onClick }) {
 export function Article(props) {
   const [list, setList] = useState([])
   const [content, setContent] = useState({})
-  useEffect(() => {
+
+  const getArticleList = () => {
     fetch(`${API_ORIGIN}/articles/list`, {})
       .then((d) => d.json())
       .then((d) => {
         setList(d)
       })
+  }
+
+  const itemDelCb = () => {
+    getArticleList()
+    setContent({})
+  }
+  useEffect(() => {
+    getArticleList()
   }, [])
 
   return (
     <Margin>
       <div>
         {list.map((e) => (
-          <ListItem key={e.path} payload={e} onClick={() => setContent(e)} />
+          <ListItem
+            key={e.path}
+            payload={e}
+            onDelete={itemDelCb}
+            onClick={() => setContent(e)}
+          />
         ))}
       </div>
       <Image title={content.title ?? ''} images={content.content || []} />

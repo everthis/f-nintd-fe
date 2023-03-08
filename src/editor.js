@@ -186,7 +186,6 @@ export function Editor({ imgList }) {
 
   function applySelected() {
     const imgsArr = imgs.filter((e) => e.selected)
-    console.log(imgsArr)
     const res = imgsArr.map((e) => {
       e.type = 'img'
       e.val = e.name
@@ -232,7 +231,7 @@ export function Editor({ imgList }) {
       <TitleRow>
         <label>
           Title:
-          <input value={title} onChange={(ev) => setTitle(ev.target.value)} />
+          <input value={title} onChange={titleChange} />
         </label>
       </TitleRow>
       <EditorWrap>

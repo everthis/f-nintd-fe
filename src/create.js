@@ -67,6 +67,10 @@ export function Create(props) {
     setTags(clone)
   }
 
+  const closeUploadPane = () => {
+    setShowUpload(false)
+  }
+
   return (
     <>
       <Nav />
@@ -89,7 +93,12 @@ export function Create(props) {
         />
       </PaneContainer>
       <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
-        <Pane show={showUpload} bgColor="#fff" body={uploadBody} />
+        <Pane
+          show={showUpload}
+          bgColor="#fff"
+          body={uploadBody}
+          onClose={closeUploadPane}
+        />
       </PaneContainer>
       <Article />
     </>
