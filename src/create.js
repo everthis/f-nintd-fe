@@ -45,7 +45,7 @@ export function Create(props) {
   const [checkedSet, setCheckedSet] = useState(new Set())
   const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
   const uploadAudioBody = useMemo(
-    () => <Upload tags={tags} type="audio" />,
+    () => <Upload tags={tags} type="audio" useOriginalName />,
     [tags]
   )
   const articleListBody = useMemo(

@@ -54,7 +54,12 @@ const typeHash = {
   },
 }
 
-export function Upload({ tags = [], setTags = () => {}, type = 'image' }) {
+export function Upload({
+  tags = [],
+  setTags = () => {},
+  type = 'image',
+  useOriginalName = false,
+}) {
   const [selectedFiles, setSelectedFiles] = useState([])
   const [inputVal, setInputVal] = useState('')
   const [tagOpts, setTagOpts] = useState([])
@@ -75,7 +80,9 @@ export function Upload({ tags = [], setTags = () => {}, type = 'image' }) {
     for (const e of selectedFiles) {
       const nArr = e.name.split('.')
       const tArr = e.type.split('/')
-      const fn = `${nArr[0]}_${e.lastModified}.${nArr[1] || tArr[1]}`
+      const fn = useOriginalName
+        ? e.name
+        : `${nArr[0]}_${e.lastModified}.${nArr[1] || tArr[1]}`
       formData.append(typeHash[type].payloadKey, e, fn)
     }
 

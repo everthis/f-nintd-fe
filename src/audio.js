@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import Hls from 'hls.js'
 import { Nav } from './nav'
+import { API_ORIGIN } from './constant'
 
 export function Audio() {
   const ref = useRef()
@@ -26,11 +27,21 @@ export function Audio() {
     const video = ref.current
     video.play()
   }
+
+  function getList() {
+    fetch(`${API_ORIGIN}/audio/list`, {})
+      .then((d) => d.json())
+      .then((d) => {
+        console.log(d)
+      })
+  }
+
   return (
     <>
       <p>Ready: {isReadyToPlay ? 'Yes' : 'No'}</p>
       <audio controls ref={ref}></audio>
       <button onClick={play}>play</button>
+      <button onClick={getList}>get list</button>
     </>
   )
 }
