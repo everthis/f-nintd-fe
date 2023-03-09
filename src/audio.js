@@ -15,7 +15,8 @@ export function Audio() {
         setIsReadyToPlay(true)
       })
       hls.loadSource(
-        'https://assets.everthis.com/uploads/audio/segments/segments.m3u8'
+        // 'https://assets.everthis.com/uploads/audio/segments/segments.m3u8'
+        'https://assets.everthis.com/uploads/audio/upload_44838e0b686faa2652b1e0aa5cf3bfb4_dir/upload_44838e0b686faa2652b1e0aa5cf3bfb4.m3u8'
       )
       hls.attachMedia(video)
     }
