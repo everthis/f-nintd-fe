@@ -34,7 +34,7 @@ const LazyImage = ({ width, height, src, ...rest }) => {
       style={{
         position: 'relative',
         paddingBottom: `${(height / width) * 100}%`,
-        background: '#2a4b7a',
+        background: '#F5F5F5',
       }}
     >
       {inView || supportsLazyLoading ? (
@@ -43,8 +43,13 @@ const LazyImage = ({ width, height, src, ...rest }) => {
           src={src}
           width={width}
           height={height}
-          loading='lazy'
-          style={{ position: 'absolute', width: '100%', height: '100%' }}
+          loading="lazy"
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            left: 0,
+          }}
         />
       ) : null}
     </div>

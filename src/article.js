@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { Link, redirect, useNavigate } from 'react-router-dom'
 
 import Image from './articleImg'
 import { API_ORIGIN } from './constant'
@@ -9,17 +10,34 @@ const Margin = styled.div`
 `
 const ArticleItem = styled.div`
   cursor: pointer;
+  position: relative;
+  & + & {
+    margin-top: 0.6em;
+  }
 `
-const ArticleItemContent = styled.span`
+const ArticleItemContent = styled.div`
   border: 1px solid #333;
+  padding: 0 0.5em;
 `
 const DeleteIcon = styled.span`
-  color: #fff;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #beb1b1;
   background-color: #000;
   padding: 0 0.5em;
   margin: 0;
+  border: 1px solid #000;
+  &:hover {
+    color: #fff;
+  }
 `
-function ListItem({ payload, onClick, onDelete }) {
+function ListItem({
+  payload,
+  onClick,
+  onDelete,
+  styles = { maxWidth: '400px' },
+}) {
   const { title, id } = payload
   const deleteItem = () => {
     const obj = {
@@ -36,7 +54,7 @@ function ListItem({ payload, onClick, onDelete }) {
       .then((d) => onDelete())
   }
   return (
-    <ArticleItem>
+    <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>{title}</ArticleItemContent>
       <DeleteIcon onClick={deleteItem}>X</DeleteIcon>
     </ArticleItem>
@@ -45,6 +63,7 @@ function ListItem({ payload, onClick, onDelete }) {
 export function Article(props) {
   const [list, setList] = useState([])
   const [content, setContent] = useState({})
+  const navigate = useNavigate()
 
   const getArticleList = () => {
     fetch(`${API_ORIGIN}/articles/list`, {})
@@ -58,6 +77,9 @@ export function Article(props) {
     getArticleList()
     setContent({})
   }
+  const articleClickCb = (e) => {
+    navigate(`/article/${e.id}`)
+  }
   useEffect(() => {
     getArticleList()
   }, [])
@@ -70,7 +92,7 @@ export function Article(props) {
             key={e.path}
             payload={e}
             onDelete={itemDelCb}
-            onClick={() => setContent(e)}
+            onClick={() => articleClickCb(e)}
           />
         ))}
       </div>

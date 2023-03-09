@@ -37,6 +37,7 @@ const EditorContainer = styled.div`
 export function Create(props) {
   const { name } = props
   const [tags, setTags] = useState([])
+  const [showArticleList, setShowArticleList] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
@@ -77,7 +78,12 @@ export function Create(props) {
       <VertGap height="1em" />
       <Tags tags={tags} updateTags={setTags} />
       <HorLine />
-      <Toolbar showUpload={showUpload} setShowUpload={setShowUpload} />
+      <Toolbar
+        showUpload={showUpload}
+        setShowUpload={setShowUpload}
+        showArticleList={showArticleList}
+        setShowArticleList={setShowArticleList}
+      />
       <HorLine />
       <EditorContainer>
         <Editor imgList={checkedSet} />

@@ -104,6 +104,7 @@ export function Pane({
       window.removeEventListener('mousemove', mouseMove)
       window.removeEventListener('mouseup', mouseUp)
       window.removeEventListener('resize', resize)
+      setPos([0, 0])
     }
   }, [])
 
