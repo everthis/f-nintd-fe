@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import styled from 'styled-components'
 
@@ -38,10 +38,15 @@ export function Create(props) {
   const { name } = props
   const [tags, setTags] = useState([])
   const [showArticleList, setShowArticleList] = useState(false)
+  const [showAudio, setShowAudio] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
-  const uploadBody = <Upload tags={tags} />
+  const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
+  const articleListBody = useMemo(
+    () => (showArticleList ? <Article /> : null),
+    [showArticleList]
+  )
   const remoteChange = (arr) => {
     if (arr.length) {
       setShowRemote(true)
@@ -71,6 +76,9 @@ export function Create(props) {
   const closeUploadPane = () => {
     setShowUpload(false)
   }
+  const closeArticleListPane = () => {
+    setShowArticleList(false)
+  }
 
   return (
     <>
@@ -83,6 +91,8 @@ export function Create(props) {
         setShowUpload={setShowUpload}
         showArticleList={showArticleList}
         setShowArticleList={setShowArticleList}
+        showAudio={showAudio}
+        setShowAudio={setShowAudio}
       />
       <HorLine />
       <EditorContainer>
@@ -106,7 +116,19 @@ export function Create(props) {
           onClose={closeUploadPane}
         />
       </PaneContainer>
-      <Article />
+
+      <PaneContainer
+        left="calc(100vw - 500px)"
+        top="55px"
+        show={showArticleList}
+      >
+        <Pane
+          show={showArticleList}
+          bgColor="#fff"
+          body={articleListBody}
+          onClose={closeArticleListPane}
+        />
+      </PaneContainer>
     </>
   )
 }

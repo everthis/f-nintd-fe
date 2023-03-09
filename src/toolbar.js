@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { UploadIcon, ImgIcon, ListIcon } from './icon'
+import { UploadIcon, ImgIcon, ListIcon, AudioIcon } from './icon'
 import { API_ORIGIN } from './constant'
 
-export function Toolbar({ showUpload, setShowUpload }) {
+export function Toolbar({
+  showUpload,
+  setShowUpload,
+  showArticleList,
+  setShowArticleList,
+  showAudio,
+  setShowAudio,
+}) {
   const [imgChecked, setImgChecked] = useState(false)
 
   function toggleUpload() {
@@ -12,6 +19,13 @@ export function Toolbar({ showUpload, setShowUpload }) {
   }
   function toggleImg() {
     setImgChecked(!imgChecked)
+  }
+  function toggleList() {
+    setShowArticleList(!showArticleList)
+  }
+
+  function toggleAudio() {
+    setShowAudio(!showAudio)
   }
   function listImagesWithoutTags() {
     fetch(`${API_ORIGIN}/images/withoutTags`, {
@@ -24,7 +38,8 @@ export function Toolbar({ showUpload, setShowUpload }) {
     <>
       <UploadIcon checked={showUpload} onClick={toggleUpload} />
       <ImgIcon checked={imgChecked} onClick={toggleImg} />
-      <ListIcon />
+      <ListIcon checked={showArticleList} onClick={toggleList} />
+      <AudioIcon checked={showAudio} onClick={toggleAudio} />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}
     </>
   )

@@ -6,10 +6,9 @@ import Image from './articleImg'
 import { API_ORIGIN } from './constant'
 
 const Margin = styled.div`
-  margin: 6em 0;
+  margin: 1em 0;
 `
 const ArticleItem = styled.div`
-  cursor: pointer;
   position: relative;
   & + & {
     margin-top: 0.6em;
@@ -21,6 +20,7 @@ const ArticleItemContent = styled.div`
 `
 const DeleteIcon = styled.span`
   position: absolute;
+  cursor: pointer;
   top: 0;
   right: 0;
   color: #beb1b1;
@@ -55,7 +55,11 @@ function ListItem({
   }
   return (
     <ArticleItem style={styles}>
-      <ArticleItemContent onClick={onClick}>{title}</ArticleItemContent>
+      <ArticleItemContent onClick={onClick}>
+        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
+          {title}
+        </Link>
+      </ArticleItemContent>
       <DeleteIcon onClick={deleteItem}>X</DeleteIcon>
     </ArticleItem>
   )
@@ -78,7 +82,7 @@ export function Article(props) {
     setContent({})
   }
   const articleClickCb = (e) => {
-    navigate(`/article/${e.id}`)
+    // navigate(`/article/${e.id}`)
   }
   useEffect(() => {
     getArticleList()
