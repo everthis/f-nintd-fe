@@ -43,7 +43,18 @@ const PerLocal = styled.div`
   }
 `
 
-export function Upload({ tags = [], setTags = () => {} }) {
+const typeHash = {
+  image: {
+    subPath: '/images/new',
+    payloadKey: 'images',
+  },
+  audio: {
+    subPath: '/audio/segements',
+    payloadKey: 'audioFiles',
+  },
+}
+
+export function Upload({ tags = [], setTags = () => {}, type = 'image' }) {
   const [selectedFiles, setSelectedFiles] = useState([])
   const [inputVal, setInputVal] = useState('')
   const [tagOpts, setTagOpts] = useState([])
@@ -65,10 +76,10 @@ export function Upload({ tags = [], setTags = () => {} }) {
       const nArr = e.name.split('.')
       const tArr = e.type.split('/')
       const fn = `${nArr[0]}_${e.lastModified}.${nArr[1] || tArr[1]}`
-      formData.append('images', e, fn)
+      formData.append(typeHash[type].payloadKey, e, fn)
     }
 
-    fetch(`${API_ORIGIN}/images/new`, {
+    fetch(`${API_ORIGIN}${typeHash[type].subPath}`, {
       method: 'POST',
       body: formData,
     })
@@ -120,6 +131,7 @@ export function Upload({ tags = [], setTags = () => {} }) {
   }, [tags])
 
   const ph = ''
+
   return (
     <UploadWrap>
       <ImageInput>
@@ -145,9 +157,13 @@ export function Upload({ tags = [], setTags = () => {} }) {
       </select>
       <Row>
         <UploadQueueSect>
-          {selectedFiles.map((e, i) => (
-            <Img key={i} file={e} deleteFn={() => deleteFn(i)} />
-          ))}
+          {selectedFiles.map((e, i) => {
+            return type === 'image' ? (
+              <Img key={i} file={e} deleteFn={() => deleteFn(i)} />
+            ) : (
+              <p key={i}>{e.name}</p>
+            )
+          })}
         </UploadQueueSect>
       </Row>
     </UploadWrap>

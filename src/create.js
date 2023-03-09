@@ -38,11 +38,16 @@ export function Create(props) {
   const { name } = props
   const [tags, setTags] = useState([])
   const [showArticleList, setShowArticleList] = useState(false)
+  const [showAudioUpload, setShowAudioUpload] = useState(false)
   const [showAudio, setShowAudio] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
   const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
+  const uploadAudioBody = useMemo(
+    () => <Upload tags={tags} type="audio" />,
+    [tags]
+  )
   const articleListBody = useMemo(
     () => (showArticleList ? <Article /> : null),
     [showArticleList]
@@ -79,6 +84,9 @@ export function Create(props) {
   const closeArticleListPane = () => {
     setShowArticleList(false)
   }
+  const closeAudioUpload = () => {
+    setShowAudioUpload(false)
+  }
 
   return (
     <>
@@ -91,8 +99,8 @@ export function Create(props) {
         setShowUpload={setShowUpload}
         showArticleList={showArticleList}
         setShowArticleList={setShowArticleList}
-        showAudio={showAudio}
-        setShowAudio={setShowAudio}
+        showAudio={showAudioUpload}
+        setShowAudio={setShowAudioUpload}
       />
       <HorLine />
       <EditorContainer>
@@ -127,6 +135,19 @@ export function Create(props) {
           bgColor="#fff"
           body={articleListBody}
           onClose={closeArticleListPane}
+        />
+      </PaneContainer>
+
+      <PaneContainer
+        left="calc(100vw - 500px)"
+        top="55px"
+        show={showAudioUpload}
+      >
+        <Pane
+          show={showAudioUpload}
+          bgColor="#fff"
+          body={uploadAudioBody}
+          onClose={closeAudioUpload}
         />
       </PaneContainer>
     </>
