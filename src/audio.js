@@ -17,7 +17,7 @@ export function Audio() {
       })
       hls.loadSource(
         // 'https://assets.everthis.com/uploads/audio/segments/segments.m3u8'
-        'https://assets.everthis.com/uploads/audio/upload_44838e0b686faa2652b1e0aa5cf3bfb4_dir/upload_44838e0b686faa2652b1e0aa5cf3bfb4.m3u8'
+        'https://assets.everthis.com/uploads/audio/upload_546de32a6c14b6bdbeb046fa6d6e38cf_dir/upload_546de32a6c14b6bdbeb046fa6d6e38cf.m3u8'
       )
       hls.attachMedia(video)
     }
