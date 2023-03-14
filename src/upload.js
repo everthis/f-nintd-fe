@@ -52,6 +52,7 @@ const typeHash = {
     subPath: '/audio/segements',
     payloadKey: 'audioFiles',
   },
+  video: {},
 }
 
 export function Upload({
@@ -144,8 +145,8 @@ export function Upload({
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className="image-input"
-          type="file"
+          className='image-input'
+          type='file'
           multiple
           onChange={onFileChange}
           value={inputVal}
@@ -185,8 +186,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt="preview image" />
-      <a href="" onClick={delFn}>
+      <img src={image} alt='preview image' />
+      <a href='' onClick={delFn}>
         delete
       </a>
     </PerLocal>

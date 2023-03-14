@@ -38,8 +38,8 @@ export function Toolbar({
     <>
       <UploadIcon checked={showUpload} onClick={toggleUpload} />
       <ImgIcon checked={imgChecked} onClick={toggleImg} />
-      <ListIcon checked={showArticleList} onClick={toggleList} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
+      <ListIcon checked={showArticleList} onClick={toggleList} />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}
     </>
   )
