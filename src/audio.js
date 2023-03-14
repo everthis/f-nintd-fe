@@ -4,44 +4,119 @@ import Hls from 'hls.js'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 
-export function Audio() {
+function AudioPlayer({ source }) {
   const ref = useRef()
+  const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
+  const [val, setVal] = useState(0)
 
   useEffect(() => {
-    const video = ref.current
+    const audio = ref.current
+
+    function timeupdate() {
+      const percentage = (audio.currentTime / audio.duration) * 100
+      if (!isNaN(percentage)) setVal(percentage)
+    }
+    function seeked(ev) {
+      audio.play()
+    }
     if (Hls.isSupported()) {
       const hls = new Hls()
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         setIsReadyToPlay(true)
       })
-      hls.loadSource(
-        // 'https://assets.everthis.com/uploads/audio/segments/segments.m3u8'
-        'https://assets.everthis.com/uploads/audio/upload_546de32a6c14b6bdbeb046fa6d6e38cf_dir/upload_546de32a6c14b6bdbeb046fa6d6e38cf.m3u8'
-      )
-      hls.attachMedia(video)
+      hls.loadSource(source)
+      hls.attachMedia(audio)
+      audio.addEventListener('timeupdate', timeupdate)
+      audio.addEventListener('seeked', seeked)
+    }
+
+    return () => {
+      if (Hls.isSupported()) {
+        audio.removeEventListener('timeupdate', timeupdate)
+        audio.removeEventListener('seeked', seeked)
+      }
     }
   }, [])
 
-  function play() {
-    const video = ref.current
-    video.play()
+  function togglePlay() {
+    const audio = ref.current
+    if (audio.paused) {
+      audio.play()
+    } else {
+      audio.pause()
+    }
   }
+
+  function rangeChange(ev) {
+    const audio = ref.current
+    const v = (Number(ev.target.value) / 100) * audio.duration
+    if (!isNaN(v)) {
+      audio.currentTime = v
+    }
+    setVal(Number(ev.target.value))
+  }
+
+  const btnTxt =
+    ref.current == null ? 'Play' : ref.current.paused ? 'Play' : 'Pause'
+
+  return (
+    <div>
+      <audio ref={ref} />
+      {/* important, use transparent range input */}
+      {/* important, range input above progress */}
+      <progress />
+      <input
+        type="range"
+        onChange={rangeChange}
+        ref={progressRef}
+        value={val}
+        max={100}
+      />
+      <button disabled={!isReadyToPlay} onClick={togglePlay}>
+        {btnTxt}
+      </button>
+    </div>
+  )
+}
+
+function AudioItem({ data }) {
+  const { name, m3u8_name, folder, url } = data
+  return (
+    <div>
+      <span>{name}</span>
+      <AudioPlayer source={url} />
+    </div>
+  )
+}
+
+function AudioList({ list }) {
+  return (
+    <>
+      {list.map((e) => (
+        <AudioItem key={e.folder} data={e} />
+      ))}
+    </>
+  )
+}
+
+export function Audio() {
+  const [audioList, setAudioList] = useState([])
 
   function getList() {
     fetch(`${API_ORIGIN}/audio/list`, {})
       .then((d) => d.json())
       .then((d) => {
-        console.log(d)
+        setAudioList(d)
       })
   }
 
   return (
     <>
-      <p>Ready: {isReadyToPlay ? 'Yes' : 'No'}</p>
-      <audio controls ref={ref}></audio>
-      <button onClick={play}>play</button>
       <button onClick={getList}>get list</button>
+      <div>
+        <AudioList list={audioList} />
+      </div>
     </>
   )
 }
