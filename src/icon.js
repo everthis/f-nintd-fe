@@ -141,3 +141,29 @@ export function AudioIcon({ checked, onClick }) {
     </Wrap>
   )
 }
+
+export function PlayIcon({ checked, onClick }) {
+  return (
+    <Wrap checked={checked} onClick={onClick}>
+      <svg viewBox="0 0 64 64" strokeWidth="3" stroke="#000000" fill="none">
+        <path d="M24.35,42.59V21.41A.49.49,0,0,1,25.1,21L41.77,31.59a.49.49,0,0,1,0,.82L25.1,43A.49.49,0,0,1,24.35,42.59Z" />
+        <circle cx="32" cy="32" r="25.48" />
+      </svg>
+    </Wrap>
+  )
+}
+
+export function PauseIcon({ checked, onClick }) {
+  return (
+    <Wrap checked={checked} onClick={onClick}>
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          clipRule="evenodd"
+          d="m3.75 12c0-4.55635 3.69365-8.25 8.25-8.25 4.5563 0 8.25 3.69365 8.25 8.25 0 4.5563-3.6937 8.25-8.25 8.25-4.55635 0-8.25-3.6937-8.25-8.25zm8.25-9.75c-5.38478 0-9.75 4.36522-9.75 9.75 0 5.3848 4.36522 9.75 9.75 9.75 5.3848 0 9.75-4.3652 9.75-9.75 0-5.38478-4.3652-9.75-9.75-9.75zm-2 6c.4142 0 .75.33579.75.75v6c0 .4142-.3358.75-.75.75-.41421 0-.75-.3358-.75-.75v-6c0-.41421.33579-.75.75-.75zm4 0c.4142 0 .75.33579.75.75v6c0 .4142-.3358.75-.75.75s-.75-.3358-.75-.75v-6c0-.41421.3358-.75.75-.75z"
+          fill="#000000"
+          fillRule="evenodd"
+        />
+      </svg>
+    </Wrap>
+  )
+}

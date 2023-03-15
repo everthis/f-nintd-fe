@@ -11,6 +11,7 @@ import { Editor } from './editor'
 import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
 import { Nav } from './nav'
+import { Audio } from './audio'
 
 import './index.scss'
 
@@ -27,7 +28,7 @@ const PaneContainer = styled.span`
   z-index: ${({ show }) => (show ? 1 : -1)};
   left: ${({ left }) => left};
   top: ${({ top }) => top};
-  visibility: ${({ show }) => (show ? 'show' : 'hidden')};
+  visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
 `
 const EditorContainer = styled.div`
   display: inline-block;
@@ -38,16 +39,18 @@ export function Create(props) {
   const { name } = props
   const [tags, setTags] = useState([])
   const [showArticleList, setShowArticleList] = useState(false)
-  const [showAudioUpload, setShowAudioUpload] = useState(false)
   const [showAudio, setShowAudio] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
+  const [showImg, setShowImg] = useState(false)
+
   const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
-  const uploadAudioBody = useMemo(
+  const uploadAudio = useMemo(
     () => <Upload tags={tags} type="audio" useOriginalName />,
     [tags]
   )
+  const audioBody = useMemo(() => (showAudio ? <Audio /> : null), [showAudio])
   const articleListBody = useMemo(
     () => (showArticleList ? <Article /> : null),
     [showArticleList]
@@ -84,8 +87,8 @@ export function Create(props) {
   const closeArticleListPane = () => {
     setShowArticleList(false)
   }
-  const closeAudioUpload = () => {
-    setShowAudioUpload(false)
+  const closeAudio = () => {
+    setShowAudio(false)
   }
 
   return (
@@ -99,8 +102,10 @@ export function Create(props) {
         setShowUpload={setShowUpload}
         showArticleList={showArticleList}
         setShowArticleList={setShowArticleList}
-        showAudio={showAudioUpload}
-        setShowAudio={setShowAudioUpload}
+        showAudio={showAudio}
+        setShowAudio={setShowAudio}
+        showImg={showImg}
+        setShowImg={setShowImg}
       />
       <HorLine />
       <EditorContainer>
@@ -138,16 +143,12 @@ export function Create(props) {
         />
       </PaneContainer>
 
-      <PaneContainer
-        left="calc(100vw - 500px)"
-        top="55px"
-        show={showAudioUpload}
-      >
+      <PaneContainer left="calc(100vw - 500px)" top="55px" show={showAudio}>
         <Pane
-          show={showAudioUpload}
+          show={showAudio}
           bgColor="#fff"
-          body={uploadAudioBody}
-          onClose={closeAudioUpload}
+          body={audioBody}
+          onClose={closeAudio}
         />
       </PaneContainer>
     </>

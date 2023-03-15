@@ -4,6 +4,7 @@ import Hls from 'hls.js'
 import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
+import { PlayIcon, PauseIcon } from './icon'
 
 const HiddenInput = styled.input`
   opacity: 0;
@@ -34,11 +35,42 @@ const ProgressWrap = styled.div`
   }
 `
 
-function AudioPlayer({ source }) {
+const Actions = styled.span``
+
+const FixedRightWidthRow = styled.div`
+  position: relative;
+  padding-right: 2.5em;
+  display: flex;
+  height: 2em;
+
+  ${Actions} {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  ${ProgressWrap} {
+    width: 100%;
+  }
+`
+
+function secondsToHms(d) {
+  d = Number(d)
+  const h = Math.floor(d / 3600)
+  const m = Math.floor((d % 3600) / 60)
+  const s = Math.floor((d % 3600) % 60)
+
+  const hDisplay = h > 0 ? h + ':' : ''
+  const mDisplay = m > 0 ? m.toString().padStart(2, '0') + ':' : '00:'
+  const sDisplay = s > 0 ? s.toString().padStart(2, '0') : '00'
+  return hDisplay + mDisplay + sDisplay
+}
+
+function AudioPlayer({ source, name }) {
   const ref = useRef()
   const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
   const [val, setVal] = useState(0)
+  const [duration, setDuration] = useState(0)
 
   useEffect(() => {
     const audio = ref.current
@@ -56,6 +88,9 @@ function AudioPlayer({ source }) {
       })
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         setIsReadyToPlay(true)
+      })
+      hls.on(Hls.Events.LEVEL_LOADED, function () {
+        setDuration(audio.duration)
       })
       hls.loadSource(source)
       hls.attachMedia(audio)
@@ -89,27 +124,42 @@ function AudioPlayer({ source }) {
     setVal(Number(ev.target.value))
   }
 
-  const btnTxt =
-    ref.current == null ? 'Play' : ref.current.paused ? 'Play' : 'Pause'
+  const btnContent =
+    ref.current == null ? (
+      <PlayIcon />
+    ) : ref.current.paused ? (
+      <PlayIcon />
+    ) : (
+      <PauseIcon />
+    )
 
   return (
     <div>
       <audio ref={ref} />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
-      <ProgressWrap>
-        <progress value={val} max={100} />
-        <HiddenInput
-          type="range"
-          onChange={rangeChange}
-          ref={progressRef}
-          value={val}
-          max={100}
-        />
-      </ProgressWrap>
-      <button disabled={!isReadyToPlay} onClick={togglePlay}>
-        {btnTxt}
-      </button>
+      <div>{name}</div>
+      <FixedRightWidthRow>
+        <ProgressWrap>
+          <progress value={val} max={100} />
+          <HiddenInput
+            type="range"
+            onChange={rangeChange}
+            ref={progressRef}
+            value={val}
+            max={100}
+          />
+          <div>
+            {secondsToHms(duration)}/
+            {secondsToHms(ref.current?.currentTime || 0)}
+          </div>
+        </ProgressWrap>
+        <Actions>
+          <span disabled={!isReadyToPlay} onClick={togglePlay}>
+            {btnContent}
+          </span>
+        </Actions>
+      </FixedRightWidthRow>
     </div>
   )
 }
@@ -117,9 +167,14 @@ function AudioPlayer({ source }) {
 function AudioItem({ data }) {
   const { name, m3u8_name, folder, url } = data
   return (
-    <div>
-      <span>{name}</span>
-      <AudioPlayer source={url} />
+    <div
+      style={{
+        marginBottom: '0.5em',
+        borderBottom: '1px solid #ddd',
+        paddingBottom: '0.5em',
+      }}
+    >
+      <AudioPlayer source={url} name={name} />
     </div>
   )
 }
@@ -145,12 +200,16 @@ export function Audio() {
       })
   }
 
+  useEffect(() => {
+    getList()
+    return () => {
+      setAudioList([])
+    }
+  }, [])
+
   return (
-    <>
-      <button onClick={getList}>get list</button>
-      <div>
-        <AudioList list={audioList} />
-      </div>
-    </>
+    <div>
+      <AudioList list={audioList} />
+    </div>
   )
 }

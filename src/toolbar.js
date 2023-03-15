@@ -11,14 +11,14 @@ export function Toolbar({
   setShowArticleList,
   showAudio,
   setShowAudio,
+  showImg,
+  setShowImg,
 }) {
-  const [imgChecked, setImgChecked] = useState(false)
-
   function toggleUpload() {
     setShowUpload(!showUpload)
   }
   function toggleImg() {
-    setImgChecked(!imgChecked)
+    setShowImg(!showImg)
   }
   function toggleList() {
     setShowArticleList(!showArticleList)
@@ -37,7 +37,7 @@ export function Toolbar({
   return (
     <>
       <UploadIcon checked={showUpload} onClick={toggleUpload} />
-      <ImgIcon checked={imgChecked} onClick={toggleImg} />
+      <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}

@@ -56,6 +56,7 @@ const config = {
         htmlWebpackPlugin.options.title +
         '</title></head><body><div id="app"></div></body></html>',
       filename: 'index.html',
+      favicon: './favicon.ico',
     }),
   ],
   optimization: {
