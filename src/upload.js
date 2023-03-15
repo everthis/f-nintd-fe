@@ -59,6 +59,18 @@ const typeHash = {
   },
 }
 
+const imgTypeSet = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/apng',
+  'image/avif',
+  'image/gif',
+  'image/svg+xml',
+  'image/bmp',
+  'image/tiff',
+])
+
 export function Upload({
   tags = [],
   setTags = () => {},
@@ -68,6 +80,7 @@ export function Upload({
   const [selectedFiles, setSelectedFiles] = useState([])
   const [inputVal, setInputVal] = useState('')
   const [tagOpts, setTagOpts] = useState([])
+  const [selectedTag, setSelectedTag] = useState('')
   const tagOptsRef = useRef(tagOpts)
 
   // On file select (from the pop up)
@@ -91,6 +104,8 @@ export function Upload({
       formData.append(typeHash.common.payloadKey, e, fn)
     }
 
+    formData.append('tags', selectedTag)
+
     fetch(`${API_ORIGIN}${typeHash.common.subPath}`, {
       method: 'POST',
       body: formData,
@@ -109,7 +124,7 @@ export function Upload({
 
   function onChangeFn(ev) {
     const { value } = ev.target
-    console.log(value)
+    setSelectedTag(value)
   }
 
   useEffect(() => {
@@ -149,15 +164,15 @@ export function Upload({
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className="image-input"
-          type="file"
+          className='image-input'
+          type='file'
           multiple
           onChange={onFileChange}
           value={inputVal}
         />
       </ImageInput>
       <button onClick={onFileUpload}>Upload!</button>
-      <select value={''} onChange={onChangeFn} placeholder={ph}>
+      <select value={selectedTag} onChange={onChangeFn} placeholder={ph}>
         <option key={''} value={''} disabled>
           Select tags
         </option>
@@ -170,10 +185,13 @@ export function Upload({
       <Row>
         <UploadQueueSect>
           {selectedFiles.map((e, i) => {
-            return type === 'image' ? (
+            console.log(e.type)
+            return imgTypeSet.has(e.type) ? (
               <Img key={i} file={e} deleteFn={() => deleteFn(i)} />
             ) : (
-              <p key={i}>{e.name}</p>
+              <p key={i}>
+                {e.name} <button onClick={() => deleteFn(i)}>delete</button>
+              </p>
             )
           })}
         </UploadQueueSect>
@@ -190,8 +208,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt="preview image" />
-      <a href="" onClick={delFn}>
+      <img src={image} alt='preview image' />
+      <a href='' onClick={delFn}>
         delete
       </a>
     </PerLocal>
