@@ -53,6 +53,10 @@ const typeHash = {
     payloadKey: 'audioFiles',
   },
   video: {},
+  common: {
+    subPath: '/assets/new',
+    payloadKey: 'assets',
+  },
 }
 
 export function Upload({
@@ -84,10 +88,10 @@ export function Upload({
       const fn = useOriginalName
         ? e.name
         : `${nArr[0]}_${e.lastModified}.${nArr[1] || tArr[1]}`
-      formData.append(typeHash[type].payloadKey, e, fn)
+      formData.append(typeHash.common.payloadKey, e, fn)
     }
 
-    fetch(`${API_ORIGIN}${typeHash[type].subPath}`, {
+    fetch(`${API_ORIGIN}${typeHash.common.subPath}`, {
       method: 'POST',
       body: formData,
     })
@@ -145,8 +149,8 @@ export function Upload({
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className='image-input'
-          type='file'
+          className="image-input"
+          type="file"
           multiple
           onChange={onFileChange}
           value={inputVal}
@@ -186,8 +190,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt='preview image' />
-      <a href='' onClick={delFn}>
+      <img src={image} alt="preview image" />
+      <a href="" onClick={delFn}>
         delete
       </a>
     </PerLocal>

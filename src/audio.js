@@ -1,8 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import Hls from 'hls.js'
+import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
+
+const HiddenInput = styled.input`
+  opacity: 0;
+`
+const ProgressWrap = styled.div`
+  position: relative;
+  progress {
+    display: block;
+    width: 100%;
+    border-radius: 0;
+    height: 10px;
+  }
+  progress::-webkit-progress-bar {
+    background-color: #fff;
+    border: 1px solid #c4b2b2;
+    border-radius: 0;
+  }
+  progress::-webkit-progress-value {
+    background-color: red;
+  }
+  ${HiddenInput} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    cursor: pointer;
+  }
+`
 
 function AudioPlayer({ source }) {
   const ref = useRef()
@@ -21,7 +51,9 @@ function AudioPlayer({ source }) {
       audio.play()
     }
     if (Hls.isSupported()) {
-      const hls = new Hls()
+      const hls = new Hls({
+        maxBufferLength: 6,
+      })
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         setIsReadyToPlay(true)
       })
@@ -65,14 +97,16 @@ function AudioPlayer({ source }) {
       <audio ref={ref} />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
-      <progress />
-      <input
-        type="range"
-        onChange={rangeChange}
-        ref={progressRef}
-        value={val}
-        max={100}
-      />
+      <ProgressWrap>
+        <progress value={val} max={100} />
+        <HiddenInput
+          type="range"
+          onChange={rangeChange}
+          ref={progressRef}
+          value={val}
+          max={100}
+        />
+      </ProgressWrap>
       <button disabled={!isReadyToPlay} onClick={togglePlay}>
         {btnTxt}
       </button>
