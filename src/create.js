@@ -12,6 +12,7 @@ import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
 import { Nav } from './nav'
 import { Audio } from './audio'
+import { ImageGridPane } from './imageGridPane'
 
 import './index.scss'
 
@@ -75,6 +76,18 @@ export function Create(props) {
     return <RemoteImageList tags={tags} cb={remoteChange} selectCb={selectCb} />
   }, [tags])
 
+  const imageGridBody = React.useMemo(
+    () => (
+      <ImageGridPane
+        showActions={false}
+        showPane={showImg}
+        setShowPane={setShowImg}
+        onConfirm={() => {}}
+      />
+    ),
+    [showImg]
+  )
+
   const remoteOnClose = () => {
     const clone = tags.slice()
     clone.forEach((e) => (e.selected = false))
@@ -89,6 +102,9 @@ export function Create(props) {
   }
   const closeAudio = () => {
     setShowAudio(false)
+  }
+  const closeImgGridPane = () => {
+    setShowImg(false)
   }
 
   return (
@@ -111,16 +127,18 @@ export function Create(props) {
       <EditorContainer>
         <Editor imgList={checkedSet} />
       </EditorContainer>
+      {/* images pane when tags selected */}
       <PaneContainer left="calc(100vw - 570px)" top="55px" show={showRemote}>
         <Pane
           show={showRemote}
           bgColor="#fff"
           body={remoteBody}
-          width="500px"
+          width="600px"
           showClose
           onClose={remoteOnClose}
         />
       </PaneContainer>
+      {/* upload pane */}
       <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
         <Pane
           show={showUpload}
@@ -129,7 +147,7 @@ export function Create(props) {
           onClose={closeUploadPane}
         />
       </PaneContainer>
-
+      {/* article pane */}
       <PaneContainer
         left="calc(100vw - 500px)"
         top="55px"
@@ -142,13 +160,24 @@ export function Create(props) {
           onClose={closeArticleListPane}
         />
       </PaneContainer>
-
+      {/* audio pane */}
       <PaneContainer left="calc(100vw - 500px)" top="55px" show={showAudio}>
         <Pane
           show={showAudio}
           bgColor="#fff"
           body={audioBody}
           onClose={closeAudio}
+        />
+      </PaneContainer>
+      {/* images pane */}
+      <PaneContainer left="200px" top="55px" show={showImg}>
+        <Pane
+          show={showImg}
+          bgColor="#fff"
+          width="80vw"
+          height="80vh"
+          body={imageGridBody}
+          onClose={closeImgGridPane}
         />
       </PaneContainer>
     </>

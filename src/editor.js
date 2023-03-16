@@ -100,9 +100,7 @@ const Op = styled.div`
   }
 `
 
-export function Editor({ imgList }) {
-  const ref = useRef(null)
-  const arr = Array.from(imgList)
+export function Editor() {
   const [title, setTitle] = useState('')
   const [showPane, setShowPane] = useState(false)
   const [imgs, setImgs] = useState([])
