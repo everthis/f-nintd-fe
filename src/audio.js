@@ -23,7 +23,7 @@ const ProgressWrap = styled.div`
     border-radius: 0;
   }
   progress::-webkit-progress-value {
-    background-color: red;
+    background-color: purple;
   }
   ${HiddenInput} {
     position: absolute;
@@ -143,7 +143,7 @@ function AudioPlayer({ source, name }) {
         <ProgressWrap>
           <progress value={val} max={100} />
           <HiddenInput
-            type="range"
+            type='range'
             onChange={rangeChange}
             ref={progressRef}
             value={val}
