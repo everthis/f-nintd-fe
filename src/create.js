@@ -15,12 +15,14 @@ import { Audio } from './audio'
 import { ImageGridPane } from './imageGridPane'
 
 import './index.scss'
+import * as Faye from 'faye'
+import { API_ORIGIN } from './constant'
 
 const VertGap = styled.div`
   ${({ height }) => (height ? `height: ${height};` : '')}
 `
 const HorLine = styled.hr`
-  margin: 1em 0;
+  margin: 0.4em 0;
   border-top: none;
   border-color: #333;
 `
@@ -45,6 +47,7 @@ export function Create(props) {
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
   const [showImg, setShowImg] = useState(false)
+  const [fayeIns, setFayeIns] = useState(null)
 
   const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
   const uploadAudio = useMemo(
@@ -106,6 +109,24 @@ export function Create(props) {
   const closeImgGridPane = () => {
     setShowImg(false)
   }
+  useEffect(() => {
+    const client = new Faye.Client(`${API_ORIGIN}/faye`)
+    console.log(Faye, client)
+    setFayeIns(client)
+    return () => {
+      client.disconnect()
+    }
+  }, [])
+  const genRand = (len) => {
+    return Math.random()
+      .toString(36)
+      .substring(2, len + 2)
+  }
+  function publish() {
+    if (fayeIns) {
+      fayeIns.publish('/foo', genRand(12))
+    }
+  }
 
   return (
     <>
@@ -124,6 +145,9 @@ export function Create(props) {
         setShowImg={setShowImg}
       />
       <HorLine />
+      <p>
+        <button onClick={publish}>publish</button>
+      </p>
       <EditorContainer>
         <Editor imgList={checkedSet} />
       </EditorContainer>

@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { API_ORIGIN } from './constant'
+import { DeleteIcon } from './icon'
 
 const TagsWrap = styled.div`
   user-select: none;
+  display: flex;
+  margin: 0.5em 0 0 0;
 `
 const TagWrap = styled.span`
   margin-right: 10px;
   border: 1px solid #333;
   padding: 0;
-  display: inline-block;
+  display: inline-flex;
+  margin: 0 0.5em 0.5em 0;
+  height: 24px;
 `
 const TagName = styled.span`
   cursor: pointer;
@@ -23,7 +28,7 @@ const DelTag = styled.span`
   padding: 1px 5px;
   margin: 0;
   cursor: pointer;
-  background-color: #333;
+  vertical-align: middle;
   color: #fff;
 `
 export function Tags({
@@ -96,14 +101,18 @@ export function Tags({
 
   return (
     <TagsWrap>
-      <b>Tags: </b>
-      {tagsRes}
-      {showAddTag ? (
-        <>
-          <input value={newTag} onChange={newTagOnChange} />
-          <button onClick={addTag}>Add Tag</button>
-        </>
-      ) : null}
+      <span>
+        <b>Tags: </b>
+      </span>
+      <div>
+        {tagsRes}
+        {showAddTag ? (
+          <>
+            <input value={newTag} onChange={newTagOnChange} />
+            <button onClick={addTag}>Add Tag</button>
+          </>
+        ) : null}
+      </div>
     </TagsWrap>
   )
 }
@@ -128,7 +137,11 @@ function Tag({ name, selected, toggleSelect, disableDel = false }) {
       <TagName selected={selected} onClick={() => toggleSelect(name)}>
         {name}
       </TagName>
-      {disableDel ? null : <DelTag onClick={delTag}>x</DelTag>}
+      {disableDel ? null : (
+        <DelTag onClick={delTag}>
+          <DeleteIcon size={'20px'} />
+        </DelTag>
+      )}
     </TagWrap>
   )
 }

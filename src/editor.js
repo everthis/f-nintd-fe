@@ -5,6 +5,7 @@ import { Pane } from './pane'
 import { Tags } from './tag'
 import { ImgFromUrl } from './image'
 import { API_ORIGIN } from './constant'
+import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, InsertIcon } from './icon'
 
 const Wrap = styled.div`
   position: relative;
@@ -12,13 +13,14 @@ const Wrap = styled.div`
 const EditorWrap = styled.div`
   position: relative;
   display: inline-block;
-  min-width: 500px;
+  min-width: 530px;
   min-height: 400px;
+  max-height: 70vh;
   border: 1px solid #333;
   resize: both;
   overflow-y: scroll;
   overflow-x: hidden;
-  padding: 5px 45px 5px 5px;
+  padding: 5px 45px 5px 45px;
   img {
     width: 100%;
   }
@@ -93,11 +95,20 @@ const ImgInner = styled.div`
 `
 
 const Op = styled.div`
-  position: absolute;
-  top: 100%;
-  button:first-child {
-    margin-right: 3em;
+  margin-top: 1em;
+  button + button {
+    margin-left: 3em;
   }
+`
+
+const PreOp = styled.div`
+  position: absolute;
+  right: 100%;
+  top: 50%;
+`
+
+const VertGap = styled.div`
+  ${({ height }) => (height ? `height: ${height};` : '')}
 `
 
 export function Editor() {
@@ -134,7 +145,7 @@ export function Editor() {
       .then((d) => d.text())
       .then((d) => alert('ok'))
   }
-  const addImageToTheEnd = () => {
+  const addAssetsToTheEnd = () => {
     setShowPane(true)
   }
 
@@ -224,6 +235,12 @@ export function Editor() {
     setTitle(ev.target.value)
   }
 
+  function deleteItem(idx) {
+    const clone = [...items]
+    clone.splice(idx, 1)
+    setItems(clone)
+  }
+
   return (
     <Wrap>
       <TitleRow>
@@ -233,27 +250,38 @@ export function Editor() {
         </label>
       </TitleRow>
       <EditorWrap>
-        {items.map((e) => (
+        {items.map((e, idx) => (
           <Section key={e.val}>
+            <PreOp>
+              <OpBtn onClick={() => deleteItem(idx)}>
+                <DeleteIcon />
+              </OpBtn>
+            </PreOp>
             <SectionContent>
               {e.type === 'img' ? <img src={e.val} /> : null}
               {e.type === 'text' ? <p>{e.val}</p> : null}
             </SectionContent>
             <SectionOp>
-              <OpBtn onClick={() => moveUp(e)}>up</OpBtn>
-              <OpBtn onClick={() => moveDown(e)}>down</OpBtn>
+              <OpBtn onClick={() => moveUp(e)}>
+                <ArrowUpIcon />
+              </OpBtn>
+              <OpBtn onClick={() => moveUp(e)}>
+                <InsertIcon />
+              </OpBtn>
+              <OpBtn onClick={() => moveDown(e)}>
+                <ArrowDownIcon />
+              </OpBtn>
             </SectionOp>
           </Section>
         ))}
-        <p>
-          <button onClick={addImageToTheEnd}>Add Image</button>
-        </p>
       </EditorWrap>
       <Op>
         <button onClick={clearEditor}>Clear editor</button>
+        <button onClick={addAssetsToTheEnd}>Add Assets</button>
         <button onClick={preview}>Preview</button>
         <button onClick={save}>Save</button>
       </Op>
+      <VertGap height="50px" />
       {showPane ? (
         <PaneWrap>
           <Pane width="100%" height="100%" onClose={closePane}>
