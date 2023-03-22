@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { UploadIcon, ImgIcon, ListIcon, AudioIcon } from './icon'
+import { UploadIcon, ImgIcon, ListIcon, AudioIcon, AddTagIcon } from './icon'
 import { API_ORIGIN } from './constant'
 
 export function Toolbar({
@@ -13,6 +13,8 @@ export function Toolbar({
   setShowAudio,
   showImg,
   setShowImg,
+  showAddTag,
+  setShowAddTag,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -27,6 +29,10 @@ export function Toolbar({
   function toggleAudio() {
     setShowAudio(!showAudio)
   }
+
+  function toggleAddTag() {
+    setShowAddTag(!showAddTag)
+  }
   function listImagesWithoutTags() {
     fetch(`${API_ORIGIN}/images/withoutTags`, {
       method: 'GET',
@@ -40,6 +46,7 @@ export function Toolbar({
       <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
+      <AddTagIcon checked={showAddTag} onClick={toggleAddTag} />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}
     </>
   )

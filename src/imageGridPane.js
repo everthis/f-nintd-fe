@@ -57,6 +57,7 @@ export function ImageGridPane({
   setShowPane,
   onConfirm,
   showActions = true,
+  singleSelect = false,
 }) {
   const [imgs, setImgs] = useState([])
   const [tags, setTags] = useState([])
@@ -94,8 +95,17 @@ export function ImageGridPane({
     }
   }
 
-  function selectCbFn(url, bool) {
+  function selectCbFn(url, bool, isSingleSelect) {
     const clone = [...imgs]
+    if (isSingleSelect) {
+      for (const e of clone) {
+        if (e.name === url) {
+          e.selected = bool
+        } else e.selected = false
+      }
+      setImgs(clone)
+      return
+    }
     for (const e of clone) {
       if (e.name === url) {
         e.selected = bool
@@ -150,11 +160,23 @@ export function ImageGridPane({
             </ImgInnerContainer>
             {showActions && (
               <Select>
-                <input
-                  type="checkbox"
-                  checked={e.selected}
-                  onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
-                />
+                {singleSelect ? (
+                  <input
+                    type="radio"
+                    value={e.name}
+                    name="radio"
+                    checked={e.selected}
+                    onChange={(ev) =>
+                      selectCbFn(e.name, ev.target.checked, true)
+                    }
+                  />
+                ) : (
+                  <input
+                    type="checkbox"
+                    checked={e.selected}
+                    onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
+                  />
+                )}
               </Select>
             )}
           </ImgWrap>
@@ -162,7 +184,9 @@ export function ImageGridPane({
       </ImgSection>
       {showActions && (
         <OpSection>
-          <button onClick={toggleSelectAll}>Select All</button>
+          {singleSelect ? null : (
+            <button onClick={toggleSelectAll}>Select All</button>
+          )}
           <button onClick={applySelected}>Apply</button>
         </OpSection>
       )}

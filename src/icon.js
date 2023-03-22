@@ -222,3 +222,38 @@ export function InsertIcon({ size, checked, onClick }) {
     </Wrap>
   )
 }
+
+export function AddTagIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={checked ? '#fff' : '#000'}
+        strokeWidth="1"
+        strokeLinecap="round"
+        strokeLinejoin="miter"
+      >
+        <polygon points="20 22 12 16 4 22 4 2 20 2 20 22"></polygon>
+        <line x1="12" y1="6" x2="12" y2="12"></line>
+        <line x1="15" y1="9" x2="9" y2="9"></line>
+      </svg>
+    </Wrap>
+  )
+}
+
+export function PlayVideoIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M16.2111 11.1056L9.73666 7.86833C8.93878 7.46939 8 8.04958 8 8.94164V15.0584C8 15.9504 8.93878 16.5306 9.73666 16.1317L16.2111 12.8944C16.9482 12.5259 16.9482 11.4741 16.2111 11.1056Z"
+          stroke="#222222"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="12" r="9" stroke="#222222" />
+      </svg>
+    </Wrap>
+  )
+}

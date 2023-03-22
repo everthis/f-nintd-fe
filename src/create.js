@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import styled from 'styled-components'
 
-import { Tags } from './tag'
+import { Tags, AddTag, listTags } from './tag'
 import { Upload } from './upload'
 
 import { Toolbar } from './toolbar'
@@ -26,8 +26,8 @@ const HorLine = styled.hr`
   border-top: none;
   border-color: #333;
 `
-const PaneContainer = styled.span`
-  position: absolute;
+export const PaneContainer = styled.span`
+  position: fixed;
   z-index: ${({ show }) => (show ? 1 : -1)};
   left: ${({ left }) => left};
   top: ${({ top }) => top};
@@ -47,6 +47,7 @@ export function Create(props) {
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
   const [showImg, setShowImg] = useState(false)
+  const [showAddTag, setShowAddTag] = useState(false)
   const [fayeIns, setFayeIns] = useState(null)
 
   const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
@@ -91,6 +92,11 @@ export function Create(props) {
     [showImg]
   )
 
+  const addTagBody = React.useMemo(
+    () => <AddTag addCallback={() => listTags().then((arr) => setTags(arr))} />,
+    [showAddTag]
+  )
+
   const remoteOnClose = () => {
     const clone = tags.slice()
     clone.forEach((e) => (e.selected = false))
@@ -132,7 +138,7 @@ export function Create(props) {
     <>
       <Nav />
       <VertGap height="1em" />
-      <Tags tags={tags} updateTags={setTags} />
+      <Tags tags={tags} updateTags={setTags} showAddTag={false} />
       <HorLine />
       <Toolbar
         showUpload={showUpload}
@@ -143,6 +149,8 @@ export function Create(props) {
         setShowAudio={setShowAudio}
         showImg={showImg}
         setShowImg={setShowImg}
+        showAddTag={showAddTag}
+        setShowAddTag={setShowAddTag}
       />
       <HorLine />
       <p>
@@ -202,6 +210,18 @@ export function Create(props) {
           height="80vh"
           body={imageGridBody}
           onClose={closeImgGridPane}
+        />
+      </PaneContainer>
+
+      {/* add new tag pane */}
+      <PaneContainer left="200px" top="55px" show={showAddTag}>
+        <Pane
+          show={showAddTag}
+          bgColor="#fff"
+          width="300px"
+          height="100px"
+          body={addTagBody}
+          onClose={() => setShowAddTag(false)}
         />
       </PaneContainer>
     </>

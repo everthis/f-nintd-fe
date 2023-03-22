@@ -31,6 +31,50 @@ const DelTag = styled.span`
   vertical-align: middle;
   color: #fff;
 `
+
+export function AddTag({ addCallback }) {
+  const [newTag, setNewTag] = useState('')
+  function newTagOnChange(e) {
+    setNewTag(e.target.value)
+  }
+
+  function addTag(newTag) {
+    const obj = {
+      name: newTag,
+    }
+    return fetch(`${API_ORIGIN}/tags/new`, {
+      method: 'POST',
+      body: JSON.stringify(obj),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((d) => d.text())
+      .then((d) => {
+        if (addCallback) addCallback()
+        setNewTag('')
+      })
+  }
+
+  return (
+    <>
+      <input value={newTag} onChange={newTagOnChange} />
+      <button onClick={() => addTag(newTag)}>Add Tag</button>
+    </>
+  )
+}
+
+export function listTags() {
+  return fetch(`${API_ORIGIN}/images/tags`, {
+    method: 'GET',
+  })
+    .then((d) => d.json())
+    .then((arr) => {
+      arr = arr.map((e) => ({ name: e, selected: false }))
+      return arr
+    })
+}
+
 export function Tags({
   tags = [],
   updateTags = () => {},
@@ -39,22 +83,13 @@ export function Tags({
 }) {
   // const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState('')
-  function listTags() {
-    fetch(`${API_ORIGIN}/images/tags`, {
-      method: 'GET',
-    })
-      .then((d) => d.json())
-      .then((arr) => {
-        arr = arr.map((e) => ({ name: e, selected: false }))
-        // setTags(arr)
-        updateTags(arr)
-      })
-  }
 
   function buildTagItem() {}
 
+  const fetchAndShowTags = () => listTags().then((arr) => updateTags(arr))
+
   useEffect(() => {
-    listTags()
+    fetchAndShowTags()
   }, [])
 
   function toggleSelect(name) {
@@ -74,29 +109,12 @@ export function Tags({
       key={e.name}
       disableDel={disableDel}
       selected={e.selected}
+      listTags={fetchAndShowTags}
     />
   ))
 
   function newTagOnChange(e) {
     setNewTag(e.target.value)
-  }
-
-  function addTag() {
-    const obj = {
-      name: newTag,
-    }
-    fetch(`${API_ORIGIN}/tags/new`, {
-      method: 'POST',
-      body: JSON.stringify(obj),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((d) => d.text())
-      .then((d) => {
-        listTags()
-        setNewTag('')
-      })
   }
 
   return (
@@ -106,18 +124,13 @@ export function Tags({
       </span>
       <div>
         {tagsRes}
-        {showAddTag ? (
-          <>
-            <input value={newTag} onChange={newTagOnChange} />
-            <button onClick={addTag}>Add Tag</button>
-          </>
-        ) : null}
+        {showAddTag ? <AddTag addCallback={fetchAndShowTags} /> : null}
       </div>
     </TagsWrap>
   )
 }
 
-function Tag({ name, selected, toggleSelect, disableDel = false }) {
+function Tag({ name, selected, toggleSelect, disableDel = false, listTags }) {
   function delTag() {
     const obj = {
       name,

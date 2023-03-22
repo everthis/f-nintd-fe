@@ -6,6 +6,8 @@ import { Tags } from './tag'
 import { ImgFromUrl } from './image'
 import { API_ORIGIN } from './constant'
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, InsertIcon } from './icon'
+import { PaneContainer } from './create'
+import { ImageGridPane } from './imageGridPane'
 
 const Wrap = styled.div`
   position: relative;
@@ -111,12 +113,21 @@ const VertGap = styled.div`
   ${({ height }) => (height ? `height: ${height};` : '')}
 `
 
+const CoverWrap = styled.div`
+  max-width: 300px;
+  img {
+    width: 100%;
+  }
+`
+
 export function Editor() {
   const [title, setTitle] = useState('')
   const [showPane, setShowPane] = useState(false)
+  const [showCoverPane, setShowCoverPane] = useState(false)
   const [imgs, setImgs] = useState([])
   const [items, setItems] = useState([])
   const [tags, setTags] = useState([])
+  const [coverImg, setCoverImg] = useState(null)
 
   const preview = () => {}
   const save = () => {
@@ -124,6 +135,7 @@ export function Editor() {
       body: [],
       title: '',
       path: '',
+      cover: '',
     }
     res.title = title
     res.path = title.toLowerCase().split(' ').join('_')
@@ -133,6 +145,9 @@ export function Editor() {
         val: e.val,
         dimension: e.dimension,
       })
+    }
+    if (coverImg?.name) {
+      res.cover = coverImg.name
     }
 
     fetch(`${API_ORIGIN}/articles/new`, {
@@ -172,6 +187,32 @@ export function Editor() {
         setRemoteListFn(d)
       })
   }
+
+  const coverSelectionBody = React.useMemo(
+    () => (
+      <ImageGridPane
+        showActions
+        singleSelect
+        showPane={showCoverPane}
+        setShowPane={setShowCoverPane}
+        onConfirm={(res) => setCoverImg(res[0])}
+      />
+    ),
+    [showCoverPane]
+  )
+
+  const imageGridBody = React.useMemo(
+    () => (
+      <ImageGridPane
+        showActions
+        showPane={showPane}
+        setShowPane={setShowPane}
+        onConfirm={(res) => setItems(res)}
+      />
+    ),
+    [showPane]
+  )
+
   function updateTags(v) {
     setTags(v)
     const arr = v.filter((e) => e.selected).map((e) => e.name)
@@ -241,6 +282,9 @@ export function Editor() {
     setItems(clone)
   }
 
+  function addCover(ev) {
+    setShowCoverPane(true)
+  }
   return (
     <Wrap>
       <TitleRow>
@@ -249,6 +293,9 @@ export function Editor() {
           <input value={title} onChange={titleChange} />
         </label>
       </TitleRow>
+      <CoverWrap>
+        {coverImg?.name ? <img src={coverImg.name} /> : null}
+      </CoverWrap>
       <EditorWrap>
         {items.map((e, idx) => (
           <Section key={e.val}>
@@ -277,54 +324,32 @@ export function Editor() {
       </EditorWrap>
       <Op>
         <button onClick={clearEditor}>Clear editor</button>
+        <button onClick={addCover}>add cover</button>
         <button onClick={addAssetsToTheEnd}>Add Assets</button>
         <button onClick={preview}>Preview</button>
         <button onClick={save}>Save</button>
       </Op>
       <VertGap height="50px" />
-      {showPane ? (
-        <PaneWrap>
-          <Pane width="100%" height="100%" onClose={closePane}>
-            <Tags
-              tags={tags}
-              showAddTag={false}
-              updateTags={updateTags}
-              disableDel={true}
-            />
-            <ImgSection>
-              {imgs.map((e) => (
-                <ImgWrap key={e.name}>
-                  <ImgInnerContainer checked={e.selected}>
-                    <ImgInner checked={e.selected}>
-                      <ImgFromUrl
-                        opts={[]}
-                        tags={e.tags}
-                        url={e.name}
-                        dimension={e.dimension}
-                        hideTags={true}
-                        hideDel={true}
-                        selectCb={selectCbFn}
-                        hideSelect={true}
-                      />
-                    </ImgInner>
-                  </ImgInnerContainer>
-                  <Select>
-                    <input
-                      type="checkbox"
-                      checked={e.selected}
-                      onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
-                    />
-                  </Select>
-                </ImgWrap>
-              ))}
-            </ImgSection>
-            <OpSection>
-              <button onClick={toggleSelectAll}>Select All</button>
-              <button onClick={applySelected}>Apply</button>
-            </OpSection>
-          </Pane>
-        </PaneWrap>
-      ) : null}
+      <PaneContainer left="200px" top="50px" show={showCoverPane}>
+        <Pane
+          show={showCoverPane}
+          bgColor="#fff"
+          body={coverSelectionBody}
+          width="80vw"
+          height="80vh"
+          onClose={() => setShowCoverPane(false)}
+        />
+      </PaneContainer>
+      <PaneContainer left="200px" top="50px" show={showPane}>
+        <Pane
+          show={showPane}
+          bgColor="#fff"
+          body={imageGridBody}
+          width="80vw"
+          height="80vh"
+          onClose={() => setShowPane(false)}
+        />
+      </PaneContainer>
     </Wrap>
   )
 }
