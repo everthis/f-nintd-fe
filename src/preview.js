@@ -41,7 +41,7 @@ export function Preview({}) {
       <Nav />
       <ArticleTitle>{title}</ArticleTitle>
       <ArticleContent>
-        <Image images={content?.body || []} />
+        <Image images={content || []} />
       </ArticleContent>
     </Center>
   )

@@ -15,7 +15,7 @@ const Wrap = styled.div`
 const EditorWrap = styled.div`
   position: relative;
   display: inline-block;
-  min-width: 530px;
+  min-width: 600px;
   min-height: 400px;
   max-height: 70vh;
   border: 1px solid #333;
