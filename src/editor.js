@@ -268,6 +268,8 @@ export function Editor() {
     setItems(items.slice())
   }
 
+  function insertHere(e) {}
+
   function clearEditor() {
     setItems([])
   }
@@ -312,7 +314,7 @@ export function Editor() {
               <OpBtn onClick={() => moveUp(e)}>
                 <ArrowUpIcon />
               </OpBtn>
-              <OpBtn onClick={() => moveUp(e)}>
+              <OpBtn onClick={() => insertHere(e)}>
                 <InsertIcon />
               </OpBtn>
               <OpBtn onClick={() => moveDown(e)}>
@@ -329,24 +331,24 @@ export function Editor() {
         <button onClick={preview}>Preview</button>
         <button onClick={save}>Save</button>
       </Op>
-      <VertGap height="50px" />
-      <PaneContainer left="200px" top="50px" show={showCoverPane}>
+      <VertGap height='50px' />
+      <PaneContainer left='200px' top='50px' show={showCoverPane}>
         <Pane
           show={showCoverPane}
-          bgColor="#fff"
+          bgColor='var(--bg-color)'
           body={coverSelectionBody}
-          width="80vw"
-          height="80vh"
+          width='80vw'
+          height='80vh'
           onClose={() => setShowCoverPane(false)}
         />
       </PaneContainer>
-      <PaneContainer left="200px" top="50px" show={showPane}>
+      <PaneContainer left='200px' top='50px' show={showPane}>
         <Pane
           show={showPane}
-          bgColor="#fff"
+          bgColor='var(--bg-color)'
           body={imageGridBody}
-          width="80vw"
-          height="80vh"
+          width='80vw'
+          height='80vh'
           onClose={() => setShowPane(false)}
         />
       </PaneContainer>

@@ -21,7 +21,11 @@ const TagName = styled.span`
   display: inline-block;
   padding: 1px 5px;
   ${({ selected }) => {
-    return `background-color: ${selected ? '#fbf12b' : 'white'};`
+    return `background-color: ${
+      selected ? 'var(--bg-active)' : 'var(--bg-color)'
+    };
+    color: ${selected ? 'var(--active-color)' : 'var(--color)'};
+    `
   }}
 `
 const DelTag = styled.span`

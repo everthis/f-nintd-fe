@@ -18,7 +18,7 @@ const ProgressWrap = styled.div`
     height: 10px;
   }
   progress::-webkit-progress-bar {
-    background-color: #fff;
+    background-color: var(--bg-color);
     border: 1px solid #c4b2b2;
     border-radius: 0;
   }

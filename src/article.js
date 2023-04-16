@@ -24,7 +24,7 @@ const DeleteIcon = styled.span`
   top: 0;
   right: 0;
   color: #beb1b1;
-  background-color: #000;
+  background-color: var(--bg-color);
   padding: 0 0.5em;
   margin: 0;
   border: 1px solid #000;
@@ -56,7 +56,7 @@ function ListItem({
   return (
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
-        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
+        <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
           {title}
         </Link>
       </ArticleItemContent>

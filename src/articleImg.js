@@ -8,7 +8,7 @@ const ImgWrap = styled.div`
   width: 100%;
   height: 0;
   padding-bottom: ${({ ratio }) => (ratio ? ratio : '75%')};
-  background-color: #ddd;
+  background-color: var(--bg-color);
 `
 
 const Img = styled.img`
@@ -43,7 +43,7 @@ const LazyImage = ({ width, height, src, ...rest }) => {
           src={src}
           width={width}
           height={height}
-          loading="lazy"
+          loading='lazy'
           style={{
             position: 'absolute',
             width: '100%',

@@ -32,7 +32,7 @@ function App() {
 
 const mountNode = document.getElementById('app')
 ReactDOM.createRoot(mountNode).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <App />
+  // </React.StrictMode>
 )

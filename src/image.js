@@ -25,7 +25,7 @@ const TagWrap = styled.span`
 const DelTag = styled.span`
   padding: 1px 5px;
   cursor: pointer;
-  background-color: #333;
+  background-color: var(--bg-color);
   color: #fff;
 `
 
@@ -155,7 +155,7 @@ export function ImgFromUrl({
         {height ? (
           <RatioImg url={url} width={width} height={height} />
         ) : (
-          <img src={url} alt="preview image" />
+          <img src={url} alt='preview image' />
         )}
       </div>
       <div>

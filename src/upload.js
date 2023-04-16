@@ -104,7 +104,7 @@ export function Upload({
       formData.append(typeHash.common.payloadKey, e, fn)
     }
 
-    formData.append('tags', JSON.stringify([selectedTag]))
+    formData.append('tags', JSON.stringify(selectedTag ? [selectedTag] : []))
 
     fetch(`${API_ORIGIN}${typeHash.common.subPath}`, {
       method: 'POST',

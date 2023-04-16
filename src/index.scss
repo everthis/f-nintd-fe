@@ -18,6 +18,8 @@
 
 body {
   overflow-x: hidden;
+  background-color: var(--bg-color);
+  color: var(--font-color);
 }
 
 /* Hide handler for WebKit browsers */
