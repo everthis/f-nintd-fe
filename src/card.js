@@ -77,6 +77,22 @@ const fh5c =
   'https://www.motortrend.com/uploads/sites/25/2021/06/001-forza-horizon5-lead.jpg'
 const fh5t = 'Forza Horizon 5'
 
+const botwc =
+  'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000000025/7137262b5a64d921e193653f8aa0b722925abc5680380ca0e18a5cfd91697f58'
+const botwt = 'The Legend of Zelda™: Breath of the Wild'
+
+const totkc =
+  'https://www.dexerto.com/cdn-cgi/image/width=3840,quality=75,format=auto/https://editors.dexerto.com/wp-content/uploads/2023/08/03/Zelda-TearsAnotherCover.jpg'
+const totkt = 'The Legend of Zelda™: Tears of the Kingdom'
+
+const acc =
+  'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000027619/9989957eae3a6b545194c42fec2071675c34aadacd65e6b33fdfe7b3b6a86c3a'
+const act = 'Animal Crossing™: New Horizons'
+
+const gta5c =
+  'https://assets.xboxservices.com/assets/0b/17/0b179504-412d-4af7-9e00-3e3d92633577.jpg?n=GTA-V_GLP-Page-Hero-1084_1920x1080.jpg'
+const gta5t = 'Grand Theft Auto V'
+
 export function Card({ cover = '', title = '' }) {
   return (
     <Wrap>
@@ -100,6 +116,10 @@ const defaultCards = [
   { cover: ds3c, title: ds3t },
   { cover: sdtc, title: sdtt },
   { cover: fh5c, title: fh5t },
+  { cover: botwc, title: botwt },
+  { cover: totkc, title: totkt },
+  { cover: acc, title: act },
+  { cover: gta5c, title: gta5t },
 ]
 
 export function Cards({ data = defaultCards }) {
