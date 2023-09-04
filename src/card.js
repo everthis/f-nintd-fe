@@ -73,6 +73,10 @@ const sdtc =
   'https://whatifgaming.com/wp-content/uploads/2021/03/Sekiro-Shadows-Die-Twice.jpg'
 const sdtt = 'Sekiro Shadows Die Twice'
 
+const fh5c =
+  'https://www.motortrend.com/uploads/sites/25/2021/06/001-forza-horizon5-lead.jpg'
+const fh5t = 'Forza Horizon 5'
+
 export function Card({ cover = '', title = '' }) {
   return (
     <Wrap>
@@ -95,6 +99,7 @@ const defaultCards = [
   { cover: erc, title: ert },
   { cover: ds3c, title: ds3t },
   { cover: sdtc, title: sdtt },
+  { cover: fh5c, title: fh5t },
 ]
 
 export function Cards({ data = defaultCards }) {
