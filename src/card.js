@@ -5,12 +5,9 @@ import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 import { Theme } from './theme'
 
-const maxWidth = '650px'
+const maxWidth = '720px'
 const minWidth = '300px'
 const Wrap = styled.div`
-  display: inline-block;
-  max-width: ${maxWidth};
-  min-width: ${minWidth};
   border: 1px solid #ddd;
   cursor: pointer;
   &:hover {
@@ -30,7 +27,10 @@ const CardTitle = styled.h3`
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
+  max-width: ${maxWidth};
+  min-width: ${minWidth};
   gap: 15px;
+  margin: 0 auto;
 `
 
 const ac6c =
@@ -59,6 +59,20 @@ const cp2077c =
   'https://cdna.artstation.com/p/assets/images/images/033/037/886/large/artur-tarnowski-malemain.jpg?1608208334'
 const cp2077t = 'Cyberpunk 2077'
 
+const dspc =
+  'https://news.xbox.com/en-us/wp-content/uploads/sites/2/2022/10/Key-Art-1920x1080_en-dd3eccb23c290f6bb38d.jpg'
+const dspt = 'Dyson Sphere Program'
+
+const erc = 'https://www.videogameschronicle.com/files/2022/02/sds5.jpg'
+const ert = 'Elden Ring'
+
+const ds3c = 'https://wallpaperset.com/w/full/0/9/1/209465.jpg'
+const ds3t = 'Dark Souls 3'
+
+const sdtc =
+  'https://whatifgaming.com/wp-content/uploads/2021/03/Sekiro-Shadows-Die-Twice.jpg'
+const sdtt = 'Sekiro Shadows Die Twice'
+
 export function Card({ cover = '', title = '' }) {
   return (
     <Wrap>
@@ -77,6 +91,10 @@ const defaultCards = [
   { cover: ac6c, title: ac6t },
   { cover: bbc, title: bbt },
   { cover: cp2077c, title: cp2077t },
+  { cover: dspc, title: dspt },
+  { cover: erc, title: ert },
+  { cover: ds3c, title: ds3t },
+  { cover: sdtc, title: sdtt },
 ]
 
 export function Cards({ data = defaultCards }) {
