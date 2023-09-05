@@ -11,7 +11,7 @@ const Wrap = styled.div`
   border: 1px solid #ddd;
   cursor: pointer;
   &:hover {
-    box-shadow: 0 0 20px purple;
+    box-shadow: 2px 2px 8px purple;
   }
 `
 const ImgWrap = styled.div`
@@ -105,6 +105,14 @@ const d3c =
   'https://ams3.digitaloceanspaces.com/web01.ho-sting/videogamesartwork_com/public/concept-art/1590652404/diablo3-cover-03-logo.jpg'
 const d3t = 'Diablo 3'
 
+const re4rc =
+  'https://blog.playstation.com/tachyon/2022/06/157120f7a4344d5f81aa9ad097c16a31cd177904.jpg'
+const re4rt = 'Resident Evil 4 Remake'
+
+const re2rc =
+  'https://cdn2.tfx.company/images/clickwallpapers-residentevil2remake-jogos-4k-img1.jpg'
+const re2rt = 'Resident Evil 2 Remake'
+
 export function Card({ cover = '', title = '' }) {
   return (
     <Wrap>
@@ -135,6 +143,8 @@ const defaultCards = [
   { cover: gta5c, title: gta5t },
   { cover: sc2c, title: sc2t },
   { cover: d3c, title: d3t },
+  { cover: re4rc, title: re4rt },
+  { cover: re2rc, title: re2rt },
 ]
 
 export function Cards({ data = defaultCards }) {
