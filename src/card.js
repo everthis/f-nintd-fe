@@ -93,6 +93,18 @@ const gta5c =
   'https://assets.xboxservices.com/assets/0b/17/0b179504-412d-4af7-9e00-3e3d92633577.jpg?n=GTA-V_GLP-Page-Hero-1084_1920x1080.jpg'
 const gta5t = 'Grand Theft Auto V'
 
+const smoc =
+  'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000001130/c42553b4fd0312c31e70ec7468c6c9bccd739f340152925b9600631f2d29f8b5'
+const smot = 'Super Mario Odyssey™'
+
+const sc2c =
+  'https://techraptor.net/sites/default/files/styles/image_header/public/2020-07/starcraft%202%20wings%20of%20liberty.jpg?itok=WzTeN0S_'
+const sc2t = 'StarCraft 2'
+
+const d3c =
+  'https://ams3.digitaloceanspaces.com/web01.ho-sting/videogamesartwork_com/public/concept-art/1590652404/diablo3-cover-03-logo.jpg'
+const d3t = 'Diablo 3'
+
 export function Card({ cover = '', title = '' }) {
   return (
     <Wrap>
@@ -118,8 +130,11 @@ const defaultCards = [
   { cover: fh5c, title: fh5t },
   { cover: botwc, title: botwt },
   { cover: totkc, title: totkt },
+  { cover: smoc, title: smot },
   { cover: acc, title: act },
   { cover: gta5c, title: gta5t },
+  { cover: sc2c, title: sc2t },
+  { cover: d3c, title: d3t },
 ]
 
 export function Cards({ data = defaultCards }) {
