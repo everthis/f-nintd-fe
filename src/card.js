@@ -97,6 +97,10 @@ const smoc =
   'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000001130/c42553b4fd0312c31e70ec7468c6c9bccd739f340152925b9600631f2d29f8b5'
 const smot = 'Super Mario Odyssey™'
 
+const sc1c =
+  'https://www.allkeyshop.com/blog/wp-content/uploads/Starcraft-Remastered_BANNER.jpg'
+const sc1t = 'StarCraft'
+
 const sc2c =
   'https://techraptor.net/sites/default/files/styles/image_header/public/2020-07/starcraft%202%20wings%20of%20liberty.jpg?itok=WzTeN0S_'
 const sc2t = 'StarCraft 2'
@@ -112,6 +116,17 @@ const re4rt = 'Resident Evil 4 Remake'
 const re2rc =
   'https://cdn2.tfx.company/images/clickwallpapers-residentevil2remake-jogos-4k-img1.jpg'
 const re2rt = 'Resident Evil 2 Remake'
+
+const gt7c = 'https://www.gran-turismo.com/images/c/i1W3k7FXLZd7AEE.jpg'
+const gt7t = 'Gran Turismo® 7'
+
+const gowrc =
+  'https://image.api.playstation.com/vulcan/ap/rnd/202207/1117/4uH3OH4dQtHMe2gmdFuth02u.jpg'
+const gowrt = 'God of War Ragnarök'
+
+const bsic =
+  'https://cdn1.epicgames.com/offer/df2da503f2074f078f8090da3c27ec47/EGS_BioShockInfiniteCompleteEdition_MassMediaGames_S1_2560x1440-bf29199cfe7a76f62965f582571024f6'
+const bsit = 'BioShock Infinite'
 
 export function Card({ cover = '', title = '' }) {
   return (
@@ -141,10 +156,14 @@ const defaultCards = [
   { cover: smoc, title: smot },
   { cover: acc, title: act },
   { cover: gta5c, title: gta5t },
+  { cover: sc1c, title: sc1t },
   { cover: sc2c, title: sc2t },
   { cover: d3c, title: d3t },
   { cover: re4rc, title: re4rt },
   { cover: re2rc, title: re2rt },
+  { cover: gt7c, title: gt7t },
+  { cover: gowrc, title: gowrt },
+  { cover: bsic, title: bsit },
 ]
 
 export function Cards({ data = defaultCards }) {
