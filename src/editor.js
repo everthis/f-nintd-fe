@@ -4,7 +4,14 @@ import styled from 'styled-components'
 import { Pane } from './pane'
 import { Tags } from './tag'
 import { API_ORIGIN } from './constant'
-import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, InsertIcon } from './icon'
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  DeleteIcon,
+  InsertIcon,
+  InsertBeforeIcon,
+  InsertAfterIcon,
+} from './icon'
 import { PaneContainer } from './create'
 import { ImageGridPane } from './imageGridPane'
 
@@ -61,6 +68,7 @@ const SectionOp = styled.span`
   position: absolute;
   left: 100%;
   top: 50%;
+  transform: translate3d(0, -50%, 0);
 `
 const ImgSection = styled.section`
   padding: 5px 0;
@@ -314,7 +322,10 @@ export function Editor() {
                 <ArrowUpIcon />
               </OpBtn>
               <OpBtn onClick={() => insertHere(e)}>
-                <InsertIcon />
+                <InsertBeforeIcon />
+              </OpBtn>
+              <OpBtn onClick={() => insertHere(e)}>
+                <InsertAfterIcon />
               </OpBtn>
               <OpBtn onClick={() => moveDown(e)}>
                 <ArrowDownIcon />
