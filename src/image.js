@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { API_ORIGIN } from './constant'
+// import { Select } from './upload'
 
 const PerRemote = styled.div`
   position: relative;
@@ -13,6 +14,7 @@ const Select = styled.span`
   position: absolute;
   top: 0;
   right: 0;
+  background-color: var(--bg-color);
 `
 
 const StyledImg = styled.image`
@@ -53,6 +55,7 @@ export function ImgFromUrl({
   hideTags = false,
   hideDel = false,
   hideSelect = true,
+  delCb = () => {},
 }) {
   const [tags, setTags] = useState(defaultTags || [])
   const options = opts
@@ -140,7 +143,7 @@ export function ImgFromUrl({
       },
     })
       .then((d) => d.text())
-      .then((d) => ListObjects())
+      .then((d) => delCb())
   }
 
   function selectChange(ev) {
@@ -155,7 +158,7 @@ export function ImgFromUrl({
         {height ? (
           <RatioImg url={url} width={width} height={height} />
         ) : (
-          <img src={url} alt='preview image' />
+          <img src={url} alt="preview image" />
         )}
       </div>
       <div>
@@ -187,7 +190,7 @@ export function ImgFromUrl({
       </div>
       {hideSelect ? null : (
         <Select>
-          <input type='checkbox' onChange={selectChange} />
+          <input type="checkbox" onChange={selectChange} />
         </Select>
       )}
     </PerRemote>

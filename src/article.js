@@ -56,7 +56,7 @@ function ListItem({
   return (
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
-        <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
+        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
           {title}
         </Link>
       </ArticleItemContent>
@@ -87,7 +87,6 @@ export function Article(props) {
   useEffect(() => {
     getArticleList()
   }, [])
-
   return (
     <Margin>
       <div>
@@ -100,7 +99,7 @@ export function Article(props) {
           />
         ))}
       </div>
-      <Image title={content.title ?? ''} images={content.content || []} />
+      <Image title={content.title ?? ''} images={content.body || []} />
     </Margin>
   )
 }
