@@ -51,29 +51,36 @@ export function Pane({
   showClose = true,
 }) {
   const ref = useRef(null)
-  const [canMove] = useState(false)
   // const [initPos, setInitPos] = useState([0, 0])
   const [pos, setPos] = useState([0, 0])
-  const [shift, setShift] = useState([0, 0])
-  const canMoveRef = useRef(canMove)
-  const shiftRef = useRef(shift)
+  const leftTopRef = useRef([0, 0])
+  const canMoveRef = useRef(false)
+  const shiftRef = useRef([0, 0])
   const initPosRef = useRef([0, 0])
   const posRef = useRef(pos)
   function mouseDown(ev) {
     if (ev.target !== ref.current) return
-    const { left, top } = ev.target.getBoundingClientRect()
-    shiftRef.current = [ev.clientX - left, ev.clientY - top]
+    // const { left, top } = ev.target.getBoundingClientRect()
+    shiftRef.current = [ev.clientX, ev.clientY]
     canMoveRef.current = true
   }
   function mouseMove(ev) {
     if (!canMoveRef.current) return
     const s = shiftRef.current
     const i = initPosRef.current
-    const newP = [ev.pageX - s[0] - i[0], ev.pageY - s[1] - i[1]]
+    // const newP = [ev.pageX - s[0] - i[0], ev.pageY - s[1] - i[1]]
+    const newP = [ev.clientX - s[0], ev.clientY - s[1]]
     setPos(newP)
     posRef.current = newP
   }
   function mouseUp(ev) {
+    if (ev.target !== ref.current) return
+    const s = shiftRef.current
+    // const newP = [ev.pageX - s[0] - i[0], ev.pageY - s[1] - i[1]]
+    const newP = [ev.clientX - s[0], ev.clientY - s[1]]
+    const [legacyLeft, legacyTop] = leftTopRef.current
+    leftTopRef.current = [legacyLeft + newP[0], legacyTop + newP[1]]
+    setPos([0, 0])
     canMoveRef.current = false
   }
 
@@ -88,6 +95,8 @@ export function Pane({
   const styles = {
     transform: `translate3d(${pos[0]}px, ${pos[1]}px, 0)`,
     willChange: 'transform',
+    left: leftTopRef.current[0],
+    top: leftTopRef.current[1],
   }
   useEffect(() => {
     resize()
@@ -107,6 +116,14 @@ export function Pane({
       setPos([0, 0])
     }
   }, [])
+
+  useEffect(() => {
+    if (!show) {
+      setPos([0, 0])
+      shiftRef.current = [0, 0]
+      initPosRef.current = [0, 0]
+    }
+  }, [show])
 
   const closePane = () => {
     onClose()
