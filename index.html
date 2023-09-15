@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chat</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+      function handleCredentialResponse(response) {
+        console.log('Encoded JWT ID token: ' + response.credential)
+      }
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id:
+            '1020926060277-cokq5e3cdohvgbc5re6p8l5vv9jm2cv8.apps.googleusercontent.com',
+          callback: handleCredentialResponse,
+          ux_mode: 'redirect',
+          login_uri: `http://localhost:8081/homepage`,
+        })
+        google.accounts.id.renderButton(
+          document.getElementById('buttonDiv'),
+          {
+            theme: 'outline',
+            size: 'large',
+          } // customization attributes
+        )
+        // google.accounts.id.prompt() // also display the One Tap dialog
+      }
+    </script>
+    <div id="buttonDiv"></div>
+  </body>
+</html>
