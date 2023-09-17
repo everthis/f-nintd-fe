@@ -31,7 +31,7 @@ export function RemoteImageList({ tags, cb, selectCb }) {
         setRemoteListFn(d)
       })
   }
-  useEffect(() => {
+  function retrieveImgsBySelectedTags() {
     const arr = tags.filter((e) => e.selected)
     if (arr.length) {
       const qs = arr.map((e) => e.name).join(',')
@@ -39,6 +39,9 @@ export function RemoteImageList({ tags, cb, selectCb }) {
     } else {
       setRemoteList([])
     }
+  }
+  useEffect(() => {
+    retrieveImgsBySelectedTags()
   }, [tags])
 
   useEffect(() => {
@@ -50,6 +53,10 @@ export function RemoteImageList({ tags, cb, selectCb }) {
   useEffect(() => {
     cb(remoteList)
   }, [remoteList])
+
+  const delCb = () => {
+    retrieveImgsBySelectedTags()
+  }
 
   const opts = tags.map((e) => e.name)
 
@@ -63,6 +70,7 @@ export function RemoteImageList({ tags, cb, selectCb }) {
           key={e.name}
           dimension={e.dimension}
           selectCb={selectCb}
+          delCb={delCb}
         />
       ))}
     </RemoteListSect>

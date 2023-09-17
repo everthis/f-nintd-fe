@@ -48,13 +48,16 @@ const config = {
       directory: './dist',
     },
     historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
-      templateContent: ({ htmlWebpackPlugin }) =>
-        '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' +
-        htmlWebpackPlugin.options.title +
-        '</title></head><body><div id="app"></div></body></html>',
+      template: './index.html',
       filename: 'index.html',
       favicon: './favicon.ico',
       title: 'Bug Free',

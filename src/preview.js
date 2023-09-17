@@ -38,7 +38,7 @@ export function Preview({}) {
   const { title, content } = article
   return (
     <Center>
-      <Nav />
+      {/* <Nav /> */}
       <ArticleTitle>{title}</ArticleTitle>
       <ArticleContent>
         <Image images={content.body || []} />

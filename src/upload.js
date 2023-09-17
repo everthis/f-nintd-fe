@@ -43,6 +43,10 @@ const PerLocal = styled.div`
   }
 `
 
+export const Select = styled.select`
+  background-color: var(--bg-color);
+`
+
 const typeHash = {
   image: {
     subPath: '/images/new',
@@ -164,15 +168,15 @@ export function Upload({
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className='image-input'
-          type='file'
+          className="image-input"
+          type="file"
           multiple
           onChange={onFileChange}
           value={inputVal}
         />
       </ImageInput>
       <button onClick={onFileUpload}>Upload!</button>
-      <select value={selectedTag} onChange={onChangeFn} placeholder={ph}>
+      <Select value={selectedTag} onChange={onChangeFn} placeholder={ph}>
         <option key={''} value={''} disabled>
           Select tags
         </option>
@@ -181,7 +185,7 @@ export function Upload({
             {e.name}
           </option>
         ))}
-      </select>
+      </Select>
       <Row>
         <UploadQueueSect>
           {selectedFiles.map((e, i) => {
@@ -208,8 +212,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt='preview image' />
-      <a href='' onClick={delFn}>
+      <img src={image} alt="preview image" />
+      <a href="" onClick={delFn}>
         delete
       </a>
     </PerLocal>

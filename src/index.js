@@ -7,11 +7,15 @@ import { Preview } from './preview'
 
 import './index.scss'
 
+function Null() {
+  return 'Null'
+}
+
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <HomePage />,
+      element: <Null />,
     },
     {
       path: '/homepage',

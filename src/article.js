@@ -88,7 +88,6 @@ export function Article(props) {
   useEffect(() => {
     getArticleList()
   }, [])
-
   return (
     <Margin>
       <div>

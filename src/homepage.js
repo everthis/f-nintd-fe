@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 import { Theme } from './theme'
+import { Cards } from './card'
 
 function Test() {
   const [cnt, setCnt] = useState(0)
@@ -47,6 +48,7 @@ function HomePageComp() {
       <Test />
       <Nav />
       <Theme />
+      <Cards />
     </>
   )
 }
