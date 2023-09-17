@@ -38,7 +38,7 @@ function ListItem({
   onDelete,
   styles = { maxWidth: '400px' },
 }) {
-  const { title, id } = payload
+  const { title, id, cover } = payload
   const deleteItem = () => {
     const obj = {
       id,
@@ -56,6 +56,7 @@ function ListItem({
   return (
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
+        <img src={cover} />
         <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
           {title}
         </Link>
@@ -70,7 +71,7 @@ export function Article(props) {
   const navigate = useNavigate()
 
   const getArticleList = () => {
-    fetch(`${API_ORIGIN}/articles/list`, {})
+    fetch(`${API_ORIGIN}/article_list_with_cover`, {})
       .then((d) => d.json())
       .then((d) => {
         setList(d)
@@ -100,7 +101,7 @@ export function Article(props) {
           />
         ))}
       </div>
-      <Image title={content.title ?? ''} images={content.content || []} />
+      <Image title={content.title ?? ''} images={content.body || []} />
     </Margin>
   )
 }

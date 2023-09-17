@@ -15,7 +15,7 @@ const Wrap = styled.span`
   padding-top: 24px;
 `
 const Head = styled.div`
-  background-color: #ddd;
+  background-color: var(--title-bg);
   padding: 3px 50px 2px 5px;
   height: 23px;
   position: absolute;
@@ -24,7 +24,7 @@ const Head = styled.div`
   width: 100%;
   &:active {
     cursor: grabbing;
-    background-color: #777;
+    background-color: var(--title-bg-active);
   }
 `
 const Body = styled.div`
@@ -116,7 +116,7 @@ export function Pane({
     <Wrap bgColor={bgColor} style={styles} width={width} height={height}>
       <Head ref={ref}>
         {header}
-        {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
+        {showClose ? <CloseIcon size='20px' onClick={closePane} /> : null}
       </Head>
       <Body>{body || children}</Body>
     </Wrap>

@@ -21,6 +21,12 @@ function Test() {
   //   listTags()
   // }, [])
   console.log('cnt', cnt)
+
+  useEffect(() => {
+    fetch(`${API_ORIGIN}/article_list_with_cover`)
+    fetch(`${API_ORIGIN}/images`)
+    fetch(`${API_ORIGIN}/articles`)
+  }, [])
   return (
     <p
       onClick={() => {

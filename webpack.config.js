@@ -57,6 +57,7 @@ const config = {
         '</title></head><body><div id="app"></div></body></html>',
       filename: 'index.html',
       favicon: './favicon.ico',
+      title: 'Bug Free',
     }),
   ],
   optimization: {

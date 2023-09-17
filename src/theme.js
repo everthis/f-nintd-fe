@@ -9,12 +9,16 @@ const theme = {
   dark: {
     '--bg-color': '#FFF4BE',
     '--bg-active': '#202020',
+    '--title-bg': '#6c6262',
+    '--title-bg-active': '#403a3a',
     '--color': '#333',
     '--active-color': '#fff',
   },
   light: {
     '--bg-color': '#ffffff',
     '--bg-active': '#818cab',
+    '--title-bg': '#ddd',
+    '--title-bg-active': '#777',
     '--color': '#424242',
     '--active-color': '#333',
   },
