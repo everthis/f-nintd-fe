@@ -13,7 +13,7 @@ const Wrap = styled.div`
   > div {
     flex-grow: 0;
     position: sticky;
-    background-color: white;
+    background-color: var(--bg-color);
     z-index: 1;
     margin-top: 0;
     padding-top: 0.5em;
@@ -196,9 +196,9 @@ export function ImageGridPane({
               <Select>
                 {singleSelect ? (
                   <input
-                    type="radio"
+                    type='radio'
                     value={e.name}
-                    name="radio"
+                    name='radio'
                     checked={e.selected}
                     onChange={(ev) =>
                       selectCbFn(e.name, ev.target.checked, true)
@@ -206,7 +206,7 @@ export function ImageGridPane({
                   />
                 ) : (
                   <input
-                    type="checkbox"
+                    type='checkbox'
                     checked={e.selected}
                     disabled={disabledSet.has(e.name)}
                     onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
