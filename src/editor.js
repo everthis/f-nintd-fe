@@ -130,11 +130,13 @@ const CoverWrap = styled.div`
 export function Editor() {
   const [title, setTitle] = useState('')
   const [showPane, setShowPane] = useState(false)
+  const [showInsertPane, setShowInsertPane] = useState(false)
   const [showCoverPane, setShowCoverPane] = useState(false)
   const [imgs, setImgs] = useState([])
   const [items, setItems] = useState([])
   const [tags, setTags] = useState([])
   const [coverImg, setCoverImg] = useState(null)
+  const activeImgInArticleRef = useRef(null)
 
   const preview = () => {}
   const save = () => {
@@ -168,6 +170,7 @@ export function Editor() {
       .then((d) => alert('ok'))
   }
   const addAssetsToTheEnd = () => {
+    activeImgInArticleRef.current = null
     setShowPane(true)
   }
 
@@ -195,6 +198,18 @@ export function Editor() {
       })
   }
 
+  const insertAssets = (arr) => {
+    if (activeImgInArticleRef.current != null) {
+      const idx = activeImgInArticleRef.current
+      const clone = items.slice()
+      console.log('items', items)
+      clone.splice(idx, 0, ...arr)
+      setItems(clone)
+    } else {
+      setItems(arr)
+    }
+  }
+
   const coverSelectionBody = React.useMemo(
     () => (
       <ImageGridPane
@@ -208,17 +223,31 @@ export function Editor() {
     [showCoverPane]
   )
 
-  const imageGridBody = React.useMemo(
-    () => (
+  const imageGridBody = React.useMemo(() => {
+    const disabledSet = new Set()
+    for (const e of items) {
+      disabledSet.add(e.name)
+    }
+    return (
       <ImageGridPane
         showActions
         showPane={showPane}
         setShowPane={setShowPane}
-        onConfirm={(res) => setItems(res)}
+        onConfirm={(res) => {
+          insertAssets(res)
+          setShowPane(false)
+        }}
+        disabledSet={disabledSet}
       />
-    ),
-    [showPane]
-  )
+    )
+  }, [showPane])
+
+  // const insertImageGridBody = React.memo(() => (<ImageGridPane
+  //   showActions
+  //   showPane={showInsertPane}
+  //   setShowPane={setShowInsertPane}
+  //   onConfirm={(res) => setItems(res)}
+  // />), [showInsertPane])
 
   function updateTags(v) {
     setTags(v)
@@ -276,6 +305,14 @@ export function Editor() {
   }
 
   function insertHere(e) {}
+  function insertBefore(e, idx) {
+    activeImgInArticleRef.current = idx
+    setShowPane(true)
+  }
+  function insertAfter(e, idx) {
+    activeImgInArticleRef.current = idx + 1
+    setShowPane(true)
+  }
 
   function clearEditor() {
     setItems([])
@@ -303,7 +340,7 @@ export function Editor() {
         </label>
       </TitleRow>
       <CoverWrap>
-        {coverImg?.name ? <img src={coverImg.name} /> : null}
+        {coverImg?.name ? <img src={coverImg.name} loading="lazy" /> : null}
       </CoverWrap>
       <EditorWrap>
         {items.map((e, idx) => (
@@ -314,17 +351,17 @@ export function Editor() {
               </OpBtn>
             </PreOp>
             <SectionContent>
-              {e.type === 'img' ? <img src={e.val} /> : null}
+              {e.type === 'img' ? <img src={e.val} loading="lazy" /> : null}
               {e.type === 'text' ? <p>{e.val}</p> : null}
             </SectionContent>
             <SectionOp>
               <OpBtn onClick={() => moveUp(e)}>
                 <ArrowUpIcon />
               </OpBtn>
-              <OpBtn onClick={() => insertHere(e)}>
+              <OpBtn onClick={() => insertBefore(e, idx)}>
                 <InsertBeforeIcon />
               </OpBtn>
-              <OpBtn onClick={() => insertHere(e)}>
+              <OpBtn onClick={() => insertAfter(e, idx)}>
                 <InsertAfterIcon />
               </OpBtn>
               <OpBtn onClick={() => moveDown(e)}>
@@ -362,6 +399,16 @@ export function Editor() {
           onClose={() => setShowPane(false)}
         />
       </PaneContainer>
+      {/* <PaneContainer left="200px" top="50px" show={showInsertPane}>
+        <Pane
+          show={showInsertPane}
+          bgColor="var(--bg-color)"
+          body={insertImageGridBody}
+          width="80vw"
+          height="80vh"
+          onClose={() => setShowInsertPane(false)}
+        />
+      </PaneContainer> */}
     </Wrap>
   )
 }

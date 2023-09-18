@@ -28,7 +28,7 @@ const Head = styled.div`
   }
 `
 const Body = styled.div`
-  padding: 2px 5px;
+  padding: 0 5px;
   height: 100%;
   max-height: calc(100vh - 100px);
   overflow-x: hidden;
@@ -133,7 +133,7 @@ export function Pane({
     <Wrap bgColor={bgColor} style={styles} width={width} height={height}>
       <Head ref={ref}>
         {header}
-        {showClose ? <CloseIcon size='20px' onClick={closePane} /> : null}
+        {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
       </Head>
       <Body>{body || children}</Body>
     </Wrap>

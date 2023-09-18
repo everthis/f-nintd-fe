@@ -56,8 +56,8 @@ function ListItem({
   return (
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
-        <img src={cover} />
-        <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
+        <img src={cover} loading="lazy" />
+        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
           {title}
         </Link>
       </ArticleItemContent>

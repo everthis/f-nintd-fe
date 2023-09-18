@@ -158,7 +158,7 @@ export function ImgFromUrl({
         {height ? (
           <RatioImg url={url} width={width} height={height} />
         ) : (
-          <img src={url} alt="preview image" />
+          <img src={url} alt="preview image" loading="lazy" />
         )}
       </div>
       <div>
@@ -200,7 +200,7 @@ export function ImgFromUrl({
 function RatioImg({ width, height, url }) {
   return (
     <ImgWrap ratio={height / width} url={url}>
-      <img src={url} />{' '}
+      <img src={url} loading="lazy" />
     </ImgWrap>
   )
 }

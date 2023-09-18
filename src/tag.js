@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { API_ORIGIN } from './constant'
 import { DeleteIcon } from './icon'
+import { useQuery } from './hooks'
 
 const TagsWrap = styled.div`
   user-select: none;
@@ -90,10 +91,18 @@ export function Tags({
 
   function buildTagItem() {}
 
-  const fetchAndShowTags = () => listTags().then((arr) => updateTags(arr))
+  const queryFormatter = useCallback((d) => {
+    const arr = d.map((e) => ({ name: e, selected: false }))
+    updateTags(arr)
+  }, [])
+
+  const { loading, queryData } = useQuery({
+    url: `${API_ORIGIN}/images/tags`,
+    formatter: queryFormatter,
+  })
 
   useEffect(() => {
-    fetchAndShowTags()
+    queryData()
   }, [])
 
   function toggleSelect(name) {
@@ -113,7 +122,7 @@ export function Tags({
       key={e.name}
       disableDel={disableDel}
       selected={e.selected}
-      listTags={fetchAndShowTags}
+      listTags={queryData}
     />
   ))
 
@@ -124,11 +133,11 @@ export function Tags({
   return (
     <TagsWrap>
       <span>
-        <b>Tags: </b>
+        <b>Tags: {loading ? 'loading' : ''}</b>
       </span>
       <div>
         {tagsRes}
-        {showAddTag ? <AddTag addCallback={fetchAndShowTags} /> : null}
+        {showAddTag ? <AddTag addCallback={queryData} /> : null}
       </div>
     </TagsWrap>
   )

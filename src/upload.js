@@ -99,6 +99,7 @@ export function Upload({
   // On file upload (click the upload button)
   function onFileUpload() {
     const formData = new FormData()
+    if (selectedFiles.length === 0) return
     for (const e of selectedFiles) {
       const nArr = e.name.split('.')
       const tArr = e.type.split('/')
@@ -212,7 +213,7 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt="preview image" />
+      <img src={image} alt="preview image" loading="lazy" />
       <a href="" onClick={delFn}>
         delete
       </a>

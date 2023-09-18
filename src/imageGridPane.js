@@ -8,6 +8,26 @@ import { API_ORIGIN } from './constant'
 
 const Wrap = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  > div {
+    flex-grow: 0;
+    position: sticky;
+    background-color: white;
+    z-index: 1;
+    margin-top: 0;
+    padding-top: 0.5em;
+  }
+  > div:first-child {
+    top: 0;
+  }
+  > div:last-child {
+    bottom: 0;
+    padding-bottom: 0.5em;
+  }
+  > section {
+    flex: 1;
+  }
 `
 
 const Select = styled.span`
@@ -44,6 +64,9 @@ const ImgWrap = styled.span`
 const ImgInnerContainer = styled.div`
   background-color: ${({ checked }) => (checked ? '#717de9' : '#ddd')};
 `
+const ImgMidContainer = styled.div`
+  background-color: ${({ checked }) => (checked ? '#d6c0c0' : 'transparent')};
+`
 const ImgInner = styled.div`
   transition: transform 0.135s cubic-bezier(0, 0, 0.2, 1);
   transform: ${({ checked }) =>
@@ -58,6 +81,7 @@ export function ImageGridPane({
   onConfirm,
   showActions = true,
   singleSelect = false,
+  disabledSet = new Set(),
 }) {
   const [imgs, setImgs] = useState([])
   const [tags, setTags] = useState([])
@@ -132,6 +156,14 @@ export function ImageGridPane({
     clone.forEach((e) => (e.selected = allChecked ? false : true))
     setImgs(clone)
   }
+  useEffect(() => {
+    if (showPane === false) {
+      setTags([])
+      setImgs([])
+    }
+  }, [showPane])
+
+  console.log('disabledList', disabledSet)
 
   return showPane ? (
     <Wrap>
@@ -145,18 +177,20 @@ export function ImageGridPane({
         {imgs.map((e) => (
           <ImgWrap key={e.name}>
             <ImgInnerContainer checked={e.selected}>
-              <ImgInner checked={e.selected}>
-                <ImgFromUrl
-                  opts={[]}
-                  tags={e.tags}
-                  url={e.name}
-                  dimension={e.dimension}
-                  hideTags={true}
-                  hideDel={true}
-                  selectCb={selectCbFn}
-                  hideSelect={true}
-                />
-              </ImgInner>
+              <ImgMidContainer checked={disabledSet.has(e.name)}>
+                <ImgInner checked={e.selected || disabledSet.has(e.name)}>
+                  <ImgFromUrl
+                    opts={[]}
+                    tags={e.tags}
+                    url={e.name}
+                    dimension={e.dimension}
+                    hideTags={true}
+                    hideDel={true}
+                    selectCb={selectCbFn}
+                    hideSelect={true}
+                  />
+                </ImgInner>
+              </ImgMidContainer>
             </ImgInnerContainer>
             {showActions && (
               <Select>
@@ -174,6 +208,7 @@ export function ImageGridPane({
                   <input
                     type="checkbox"
                     checked={e.selected}
+                    disabled={disabledSet.has(e.name)}
                     onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
                   />
                 )}
