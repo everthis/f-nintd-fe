@@ -11,6 +11,7 @@ import {
   InsertIcon,
   InsertBeforeIcon,
   InsertAfterIcon,
+  RefreshIcon,
 } from './icon'
 import { PaneContainer } from './create'
 import { ImageGridPane } from './imageGridPane'
@@ -126,6 +127,11 @@ const CoverWrap = styled.div`
     width: 100%;
   }
 `
+const RefreshWrap = styled.span`
+  position: absolute;
+  left: 50%;
+  top: -1rem;
+`
 
 export function Editor() {
   const [title, setTitle] = useState('')
@@ -137,6 +143,8 @@ export function Editor() {
   const [tags, setTags] = useState([])
   const [coverImg, setCoverImg] = useState(null)
   const activeImgInArticleRef = useRef(null)
+  const editorRef = useRef()
+  const articleIdRef = useRef()
 
   const preview = () => {}
   const save = () => {
@@ -202,7 +210,6 @@ export function Editor() {
     if (activeImgInArticleRef.current != null) {
       const idx = activeImgInArticleRef.current
       const clone = items.slice()
-      console.log('items', items)
       clone.splice(idx, 0, ...arr)
       setItems(clone)
     } else {
@@ -226,7 +233,7 @@ export function Editor() {
   const imageGridBody = React.useMemo(() => {
     const disabledSet = new Set()
     for (const e of items) {
-      disabledSet.add(e.name)
+      disabledSet.add(e.val)
     }
     return (
       <ImageGridPane
@@ -331,8 +338,38 @@ export function Editor() {
   function addCover(ev) {
     setShowCoverPane(true)
   }
+
+  function fetchArticle(id) {
+    fetch(`${API_ORIGIN}/article/${id}`, {})
+      .then((d) => d.json())
+      .then((d) => {
+        setItems(d.content.body)
+        setTitle(d.title)
+        setCoverImg(d.content.cover)
+      })
+  }
+
+  function resetEditor() {
+    articleIdRef.current.value = ''
+    setTitle('')
+    setItems([])
+    setCoverImg('')
+  }
+
+  useEffect(() => {
+    const cb = (ev) => {
+      const { id } = ev.detail
+      fetchArticle(id)
+      articleIdRef.current.value = id
+    }
+    window.addEventListener('editArticle', cb)
+
+    return () => window.removeEventListener('editArticle', cb)
+  }, [])
+
   return (
-    <Wrap>
+    <Wrap ref={editorRef}>
+      <input ref={articleIdRef} hidden />
       <TitleRow>
         <label>
           Title:
@@ -399,16 +436,9 @@ export function Editor() {
           onClose={() => setShowPane(false)}
         />
       </PaneContainer>
-      {/* <PaneContainer left="200px" top="50px" show={showInsertPane}>
-        <Pane
-          show={showInsertPane}
-          bgColor="var(--bg-color)"
-          body={insertImageGridBody}
-          width="80vw"
-          height="80vh"
-          onClose={() => setShowInsertPane(false)}
-        />
-      </PaneContainer> */}
+      <RefreshWrap onClick={resetEditor}>
+        <RefreshIcon />
+      </RefreshWrap>
     </Wrap>
   )
 }

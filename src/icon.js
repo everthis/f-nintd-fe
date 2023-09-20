@@ -591,3 +591,48 @@ export function InsertAfterIcon({ size, checked, onClick }) {
     </Wrap>
   )
 }
+
+export function EditIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M8.56078 20.2501L20.5608 8.25011L15.7501 3.43945L3.75012 15.4395V20.2501H8.56078ZM15.7501 5.56077L18.4395 8.25011L16.5001 10.1895L13.8108 7.50013L15.7501 5.56077ZM12.7501 8.56079L15.4395 11.2501L7.93946 18.7501H5.25012L5.25012 16.0608L12.7501 8.56079Z"
+          fill="#080341"
+        />
+      </svg>
+    </Wrap>
+  )
+}
+
+export function RefreshIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" fill="white" />
+        <path
+          d="M2.5 12C2.5 12.2761 2.72386 12.5 3 12.5C3.27614 12.5 3.5 12.2761 3.5 12H2.5ZM3.5 12C3.5 7.30558 7.30558 3.5 12 3.5V2.5C6.75329 2.5 2.5 6.75329 2.5 12H3.5ZM12 3.5C15.3367 3.5 18.2252 5.4225 19.6167 8.22252L20.5122 7.77748C18.9583 4.65062 15.7308 2.5 12 2.5V3.5Z"
+          fill="#000000"
+        />
+        <path
+          d="M20.4716 2.42157V8.07843H14.8147"
+          stroke="#000000"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M21.5 12C21.5 11.7239 21.2761 11.5 21 11.5C20.7239 11.5 20.5 11.7239 20.5 12L21.5 12ZM20.5 12C20.5 16.6944 16.6944 20.5 12 20.5L12 21.5C17.2467 21.5 21.5 17.2467 21.5 12L20.5 12ZM12 20.5C8.66333 20.5 5.77477 18.5775 4.38328 15.7775L3.48776 16.2225C5.04168 19.3494 8.26923 21.5 12 21.5L12 20.5Z"
+          fill="#000000"
+        />
+        <path
+          d="M3.52844 21.5784L3.52844 15.9216L9.18529 15.9216"
+          stroke="#000000"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </Wrap>
+  )
+}

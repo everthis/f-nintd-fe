@@ -52,7 +52,7 @@ export function Create(props) {
 
   const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
   const uploadAudio = useMemo(
-    () => <Upload tags={tags} type='audio' useOriginalName />,
+    () => <Upload tags={tags} type="audio" useOriginalName />,
     [tags]
   )
   const audioBody = useMemo(() => (showAudio ? <Audio /> : null), [showAudio])
@@ -142,7 +142,7 @@ export function Create(props) {
   return (
     <>
       <Header />
-      <VertGap height='1em' />
+      <VertGap height="1em" />
 
       <HorLine />
       <Toolbar
@@ -165,66 +165,67 @@ export function Create(props) {
         <Editor imgList={checkedSet} />
       </EditorContainer>
       {/* images pane when tags selected */}
-      <PaneContainer left='calc(100vw - 570px)' top='55px' show={showRemote}>
+      <PaneContainer left="calc(100vw - 570px)" top="55px" show={showRemote}>
         <Pane
           show={showRemote}
-          bgColor='var(--bg-color)'
+          bgColor="var(--bg-color)"
           body={remoteBody}
-          width='600px'
+          width="600px"
           showClose
           onClose={remoteOnClose}
         />
       </PaneContainer>
       {/* upload pane */}
-      <PaneContainer left='calc(100vw - 500px)' top='55px' show={showUpload}>
+      <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
         <Pane
           show={showUpload}
-          bgColor='var(--bg-color)'
+          bgColor="var(--bg-color)"
           body={uploadBody}
           onClose={closeUploadPane}
         />
       </PaneContainer>
       {/* article pane */}
       <PaneContainer
-        left='calc(100vw - 500px)'
-        top='55px'
+        left="calc(100vw - 700px)"
+        top="55px"
         show={showArticleList}
       >
         <Pane
           show={showArticleList}
-          bgColor='var(--bg-color)'
+          bgColor="var(--bg-color)"
           body={articleListBody}
           onClose={closeArticleListPane}
+          width="600px"
         />
       </PaneContainer>
       {/* audio pane */}
-      <PaneContainer left='calc(100vw - 500px)' top='55px' show={showAudio}>
+      <PaneContainer left="calc(100vw - 500px)" top="55px" show={showAudio}>
         <Pane
           show={showAudio}
-          bgColor='var(--bg-color)'
+          bgColor="var(--bg-color)"
           body={audioBody}
           onClose={closeAudio}
         />
       </PaneContainer>
       {/* images pane */}
-      <PaneContainer left='200px' top='55px' show={showImg}>
+      <PaneContainer left="200px" top="55px" show={showImg}>
         <Pane
           show={showImg}
-          bgColor='var(--bg-color)'
-          width='80vw'
-          height='80vh'
+          bgColor="var(--bg-color)"
+          width="80vw"
+          height="80vh"
           body={imageGridBody}
           onClose={closeImgGridPane}
         />
       </PaneContainer>
 
       {/* add new tag pane */}
-      <PaneContainer left='200px' top='55px' show={showAddTag}>
+      <PaneContainer left="200px" top="55px" show={showAddTag}>
         <Pane
           show={showAddTag}
-          bgColor='var(--bg-color)'
-          width='50vw'
-          height='30vh'
+          bgColor="var(--bg-color)"
+          width="50vw"
+          height="30vh"
           body={addTagBody}
           onClose={() => setShowAddTag(false)}
         />

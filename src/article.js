@@ -4,12 +4,15 @@ import { Link, redirect, useNavigate } from 'react-router-dom'
 
 import Image from './articleImg'
 import { API_ORIGIN } from './constant'
+import { EditIcon, DeleteIcon } from './icon'
 
 const Margin = styled.div`
   margin: 1em 0;
 `
 const ArticleItem = styled.div`
   position: relative;
+  display: flex;
+  justify-content: space-between;
   & + & {
     margin-top: 0.6em;
   }
@@ -18,11 +21,15 @@ const ArticleItemContent = styled.div`
   border: 1px solid #333;
   padding: 0 0.5em;
 `
-const DeleteIcon = styled.span`
-  position: absolute;
+const OpWrap = styled.span`
+  flex-grow: 0;
+  > span {
+    margin-left: 0.5rem;
+  }
+`
+const DeleteIconWrap = styled.span`
   cursor: pointer;
-  top: 0;
-  right: 0;
+  display: inline-block;
   color: #beb1b1;
   background-color: var(--bg-color);
   padding: 0 0.5em;
@@ -32,11 +39,16 @@ const DeleteIcon = styled.span`
     color: #fff;
   }
 `
+const EditIconWrap = styled.span`
+  display: inline-block;
+  border: 1px solid #000;
+`
+
 function ListItem({
   payload,
   onClick,
   onDelete,
-  styles = { maxWidth: '400px' },
+  styles = { maxWidth: '800px' },
 }) {
   const { title, id, cover } = payload
   const deleteItem = () => {
@@ -53,6 +65,15 @@ function ListItem({
       .then((d) => d.text())
       .then((d) => onDelete())
   }
+  const editItem = (ev) => {
+    ev.target.dispatchEvent(
+      new CustomEvent('editArticle', {
+        bubbles: true,
+        detail: { id },
+      })
+    )
+  }
+
   return (
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
@@ -61,7 +82,14 @@ function ListItem({
           {title}
         </Link>
       </ArticleItemContent>
-      <DeleteIcon onClick={deleteItem}>X</DeleteIcon>
+      <OpWrap>
+        <EditIconWrap onClick={editItem}>
+          <EditIcon />
+        </EditIconWrap>
+        <DeleteIconWrap onClick={deleteItem}>
+          <DeleteIcon />
+        </DeleteIconWrap>
+      </OpWrap>
     </ArticleItem>
   )
 }

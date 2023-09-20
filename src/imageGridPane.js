@@ -163,8 +163,6 @@ export function ImageGridPane({
     }
   }, [showPane])
 
-  console.log('disabledList', disabledSet)
-
   return showPane ? (
     <Wrap>
       <Tags
@@ -196,9 +194,9 @@ export function ImageGridPane({
               <Select>
                 {singleSelect ? (
                   <input
-                    type='radio'
+                    type="radio"
                     value={e.name}
-                    name='radio'
+                    name="radio"
                     checked={e.selected}
                     onChange={(ev) =>
                       selectCbFn(e.name, ev.target.checked, true)
@@ -206,7 +204,7 @@ export function ImageGridPane({
                   />
                 ) : (
                   <input
-                    type='checkbox'
+                    type="checkbox"
                     checked={e.selected}
                     disabled={disabledSet.has(e.name)}
                     onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
