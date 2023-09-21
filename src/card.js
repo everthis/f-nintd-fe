@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Link,
+  useNavigate,
+} from 'react-router-dom'
 import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 import { Theme } from './theme'
+import { ImgComp } from './image'
 
 const maxWidth = '720px'
 const minWidth = '300px'
@@ -128,11 +134,13 @@ const bsic =
   'https://cdn1.epicgames.com/offer/df2da503f2074f078f8090da3c27ec47/EGS_BioShockInfiniteCompleteEdition_MassMediaGames_S1_2560x1440-bf29199cfe7a76f62965f582571024f6'
 const bsit = 'BioShock Infinite'
 
-export function Card({ cover = '', title = '' }) {
+export function Card({ cover = {}, title = '', id }) {
+  const navigate = useNavigate()
+  const clickCb = () => navigate(`/article/${id}`)
   return (
-    <Wrap>
+    <Wrap onClick={clickCb}>
       <ImgWrap>
-        <img src={cover} loading="lazy" />
+        <ImgComp {...cover} />
       </ImgWrap>
       <CardTitle>{title}</CardTitle>
     </Wrap>

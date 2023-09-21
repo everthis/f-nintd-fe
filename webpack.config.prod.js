@@ -1,13 +1,18 @@
 const webpack = require('webpack')
 const path = require('path')
+const zlib = require('zlib')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CompressionPlugin = require('compression-webpack-plugin')
 
 const config = {
-  entry: ['./src/index.js'],
+  entry: ['./src/prod/index.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
     publicPath: '/',
+    clean: true,
   },
   module: {
     rules: [
@@ -42,19 +47,6 @@ const config = {
       },
     ],
   },
-  devtool: 'source-map',
-  devServer: {
-    static: {
-      directory: './dist',
-    },
-    historyApiFallback: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers':
-        'X-Requested-With, content-type, Authorization',
-    },
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
@@ -62,9 +54,23 @@ const config = {
       favicon: './favicon.ico',
       title: 'Bug Free',
     }),
-    new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(false),
+    new CompressionPlugin({
+      filename: '[path][base].br',
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: {
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+        },
+      },
+      threshold: 10240,
+      minRatio: 0.8,
+      deleteOriginalAssets: false,
     }),
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(true),
+    }),
+    // new BundleAnalyzerPlugin(),
   ],
   optimization: {
     runtimeChunk: 'single',
