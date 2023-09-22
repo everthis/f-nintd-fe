@@ -99,6 +99,10 @@ function ListItem({
         onUpdate(clone)
       })
   }
+  const ARTICLE_STATUS = {
+    WIP: 0,
+    PUBLIC: 1,
+  }
 
   return (
     <ArticleItem style={styles}>
@@ -113,8 +117,8 @@ function ListItem({
           <label>
             <input
               type="radio"
-              name="status"
-              value="0"
+              name={`article_${id}_status`}
+              value={ARTICLE_STATUS.WIP}
               checked={status === 0}
               onChange={handleStatusChange}
             />{' '}
@@ -124,8 +128,8 @@ function ListItem({
           <label>
             <input
               type="radio"
-              name="status"
-              value="1"
+              name={`article_${id}_status`}
+              value={ARTICLE_STATUS.PUBLIC}
               checked={status === 1}
               onChange={handleStatusChange}
             />{' '}

@@ -17,7 +17,10 @@ const Wrap = styled.div`
   border: 1px solid #ddd;
   cursor: pointer;
   &:hover {
-    box-shadow: 2px 2px 8px purple;
+    border: 1px solid #333;
+  }
+  & + & {
+    margin-top: 1rem;
   }
 `
 const ImgWrap = styled.div`
