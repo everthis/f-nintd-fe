@@ -197,7 +197,7 @@ export function ImgFromUrl({
   )
 }
 
-function RatioImg({ width, height, url }) {
+export function RatioImg({ width, height, url }) {
   return (
     <ImgWrap ratio={height / width} url={url}>
       <img src={url} loading="lazy" />
@@ -225,4 +225,15 @@ function Tag({ name, image }) {
       <DelTag onClick={delTag}>x</DelTag>
     </TagWrap>
   )
+}
+
+export function ImgComp({ dimension, val: url }) {
+  let height, width
+  if (dimension) {
+    ;[width, height] = dimension.split(',').map((e) => +e)
+  }
+  if (height) {
+    return <RatioImg url={url} height={height} width={width} />
+  }
+  return <img src={url} loading="lazy" />
 }

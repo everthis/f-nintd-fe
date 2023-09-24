@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-export function useQuery({ url, formatter = (d) => d }) {
+const defaultFormatter = (d) => d
+export function useQuery({ url, formatter = defaultFormatter }) {
   const [err, setErr] = useState(null)
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(undefined)
   const [loading, setLoading] = useState(false)
 
   const queryData = () => {
@@ -15,7 +16,7 @@ export function useQuery({ url, formatter = (d) => d }) {
   }
   useEffect(() => {
     queryData()
-  }, [url, formatter])
+  }, [url])
 
   return { err, data, loading, queryData }
 }

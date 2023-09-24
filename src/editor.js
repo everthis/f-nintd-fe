@@ -15,6 +15,7 @@ import {
 } from './icon'
 import { PaneContainer } from './create'
 import { ImageGridPane } from './imageGridPane'
+import { ImgComp } from './image'
 
 const Wrap = styled.div`
   position: relative;
@@ -122,7 +123,8 @@ const VertGap = styled.div`
 `
 
 const CoverWrap = styled.div`
-  max-width: 300px;
+  max-width: 600px;
+  margin-bottom: 1rem;
   img {
     width: 100%;
   }
@@ -152,7 +154,7 @@ export function Editor() {
       body: [],
       title: '',
       path: '',
-      cover: '',
+      cover: {},
     }
     res.title = title
     res.path = title.toLowerCase().split(' ').join('_')
@@ -163,17 +165,27 @@ export function Editor() {
         dimension: e.dimension,
       })
     }
-    if (coverImg?.name) {
-      res.cover = coverImg.name
+
+    if (coverImg?.val) {
+      const { val, type, dimension } = coverImg
+      res.cover = { val, type, dimension }
     }
 
-    fetch(`${API_ORIGIN}/articles/new`, {
-      method: 'POST',
-      body: JSON.stringify(res),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const articleId = +articleIdRef.current.value
+    const withId = Boolean(articleId)
+    if (withId) {
+      res.id = articleId
+    }
+    fetch(
+      `${API_ORIGIN}${withId ? '/article/' + articleId : '/articles/new'}`,
+      {
+        method: withId ? 'PATCH' : 'POST',
+        body: JSON.stringify(res),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
       .then((d) => d.text())
       .then((d) => alert('ok'))
   }
@@ -353,7 +365,7 @@ export function Editor() {
     articleIdRef.current.value = ''
     setTitle('')
     setItems([])
-    setCoverImg('')
+    setCoverImg({})
   }
 
   useEffect(() => {
@@ -377,7 +389,12 @@ export function Editor() {
         </label>
       </TitleRow>
       <CoverWrap>
-        {coverImg?.name ? <img src={coverImg.name} loading="lazy" /> : null}
+        {coverImg?.val ? (
+          <>
+            <label>Cover:</label>
+            <ImgComp {...coverImg} />
+          </>
+        ) : null}
       </CoverWrap>
       <EditorWrap>
         {items.map((e, idx) => (
@@ -388,7 +405,7 @@ export function Editor() {
               </OpBtn>
             </PreOp>
             <SectionContent>
-              {e.type === 'img' ? <img src={e.val} loading="lazy" /> : null}
+              {e.type === 'img' ? <ImgComp {...e} /> : null}
               {e.type === 'text' ? <p>{e.val}</p> : null}
             </SectionContent>
             <SectionOp>

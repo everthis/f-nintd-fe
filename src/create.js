@@ -43,6 +43,7 @@ export function Create(props) {
   const [tags, setTags] = useState([])
   const [showArticleList, setShowArticleList] = useState(false)
   const [showAudio, setShowAudio] = useState(false)
+  const [showText, setShowText] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
   const [checkedSet, setCheckedSet] = useState(new Set())
@@ -152,6 +153,8 @@ export function Create(props) {
         setShowArticleList={setShowArticleList}
         showAudio={showAudio}
         setShowAudio={setShowAudio}
+        showText={showText}
+        setShowText={setShowText}
         showImg={showImg}
         setShowImg={setShowImg}
         showAddTag={showAddTag}

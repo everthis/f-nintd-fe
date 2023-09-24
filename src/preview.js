@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 import Image from './articleImg'
 
@@ -38,7 +37,6 @@ export function Preview({}) {
   const { title, content } = article
   return (
     <Center>
-      {/* <Nav /> */}
       <ArticleTitle>{title}</ArticleTitle>
       <ArticleContent>
         <Image images={content.body || []} />

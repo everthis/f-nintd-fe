@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { UploadIcon, ImgIcon, ListIcon, AudioIcon, AddTagIcon } from './icon'
+const ToolbarWrap = styled.div`
+  display: flex;
+  gap: 5px;
+`
+
+import {
+  UploadIcon,
+  ImgIcon,
+  ListIcon,
+  AudioIcon,
+  AddTagIcon,
+  TextIcon,
+} from './icon'
 import { API_ORIGIN } from './constant'
 
 export function Toolbar({
@@ -11,6 +23,8 @@ export function Toolbar({
   setShowArticleList,
   showAudio,
   setShowAudio,
+  showText,
+  setShowText,
   showImg,
   setShowImg,
   showAddTag,
@@ -29,6 +43,9 @@ export function Toolbar({
   function toggleAudio() {
     setShowAudio(!showAudio)
   }
+  function toggleText() {
+    setShowText(!showText)
+  }
 
   function toggleAddTag() {
     setShowAddTag(!showAddTag)
@@ -41,13 +58,14 @@ export function Toolbar({
       .then((arr) => {})
   }
   return (
-    <>
+    <ToolbarWrap>
       <UploadIcon checked={showUpload} onClick={toggleUpload} />
       <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
+      <TextIcon checked={showText} onClick={toggleText} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
       <AddTagIcon checked={showAddTag} onClick={toggleAddTag} />
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}
-    </>
+    </ToolbarWrap>
   )
 }
