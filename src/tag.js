@@ -85,6 +85,7 @@ export function Tags({
   updateTags = () => {},
   showAddTag = true,
   disableDel = false,
+  toggleTag = () => {},
 }) {
   // const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState('')
@@ -101,11 +102,8 @@ export function Tags({
     formatter: queryFormatter,
   })
 
-  useEffect(() => {
-    queryData()
-  }, [])
-
-  function toggleSelect(name) {
+  function toggleSelect(name, selected) {
+    toggleTag(name, selected)
     const t = tags.find((e) => e.name === name)
     if (t) {
       const clone = tags.slice(0)
@@ -160,7 +158,10 @@ function Tag({ name, selected, toggleSelect, disableDel = false, listTags }) {
   }
   return (
     <TagWrap>
-      <TagName selected={selected} onClick={() => toggleSelect(name)}>
+      <TagName
+        selected={selected}
+        onClick={() => toggleSelect(name, !selected)}
+      >
         {name}
       </TagName>
       {disableDel ? null : (

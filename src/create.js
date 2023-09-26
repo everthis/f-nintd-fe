@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import ReactDOM from 'react-dom/client'
 import styled from 'styled-components'
 
@@ -17,6 +17,8 @@ import { ImageGridPane } from './imageGridPane'
 import './index.scss'
 import * as Faye from 'faye'
 import { API_ORIGIN } from './constant'
+import { postData } from './utils'
+import { TextPane } from './text'
 
 const VertGap = styled.div`
   ${({ height }) => (height ? `height: ${height};` : '')}
@@ -101,6 +103,11 @@ export function Create(props) {
       </>
     ),
     [showAddTag, tags]
+  )
+
+  const addTextBody = React.useMemo(
+    () => (showText ? <TextPane /> : null),
+    [showText]
   )
 
   const remoteOnClose = () => {
@@ -231,6 +238,17 @@ export function Create(props) {
           height="30vh"
           body={addTagBody}
           onClose={() => setShowAddTag(false)}
+        />
+      </PaneContainer>
+
+      <PaneContainer left="200px" top="55px" show={showText}>
+        <Pane
+          show={showText}
+          bgColor="var(--bg-color)"
+          width="50vw"
+          height="50vh"
+          body={addTextBody}
+          onClose={() => setShowText(false)}
         />
       </PaneContainer>
     </>

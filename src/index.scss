@@ -4,16 +4,20 @@
   &::-webkit-scrollbar-track {
     background-color: var(--bg-color);
   }
-  
+
   &::-webkit-scrollbar {
     width: 4px;
     background-color: var(--bg-color);
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background-color: #000000;
     border: 2px solid #555555;
   }
+}
+
+:root {
+  --border: 1px solid #e2e8f0;
 }
 
 body {
@@ -21,15 +25,14 @@ body {
   background-color: var(--bg-color);
   color: var(--font-color);
 }
-input, button {
+input,
+button {
   background-color: var(--bg-color);
 }
 
-button, input {
+button,
+input {
   border: 1px solid var(--color);
 }
- 
 
 /* Hide handler for WebKit browsers */
-
-
