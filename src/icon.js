@@ -5,6 +5,7 @@ const Wrap = styled.span`
   width: ${({ size }) => (size ? size : '28px')};
   height: ${({ size }) => (size ? size : '28px')};
   cursor: pointer;
+  user-select: none;
   svg {
     width: 100%;
   }

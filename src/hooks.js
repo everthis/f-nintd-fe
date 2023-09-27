@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
 const defaultFormatter = (d) => d
-export function useQuery({ url, formatter = defaultFormatter }) {
+export function useQuery({
+  url,
+  formatter = defaultFormatter,
+  fetchMannually = false,
+}) {
   const [err, setErr] = useState(null)
   const [data, setData] = useState(undefined)
   const [loading, setLoading] = useState(false)
@@ -15,7 +19,7 @@ export function useQuery({ url, formatter = defaultFormatter }) {
       .finally((d) => setLoading(false))
   }
   useEffect(() => {
-    queryData()
+    if (!fetchMannually) queryData()
   }, [url])
 
   return { err, data, loading, queryData }

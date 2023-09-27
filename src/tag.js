@@ -36,6 +36,13 @@ const DelTag = styled.span`
   vertical-align: middle;
   color: #fff;
 `
+const Hint = styled.span`
+  font-size: 12px;
+`
+const Label = styled.div`
+  width: 3.3rem;
+`
+const AddTagPaneWrap = styled.div``
 
 export function AddTag({ addCallback }) {
   const [newTag, setNewTag] = useState('')
@@ -47,7 +54,7 @@ export function AddTag({ addCallback }) {
     const obj = {
       name: newTag,
     }
-    return fetch(`${API_ORIGIN}/tags/new`, {
+    return fetch(`${API_ORIGIN}/tag/new`, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: {
@@ -82,57 +89,31 @@ export function listTags() {
 
 export function Tags({
   tags = [],
-  updateTags = () => {},
   showAddTag = true,
   disableDel = false,
+  loading = false,
   toggleTag = () => {},
 }) {
-  // const [tags, setTags] = useState([])
-  const [newTag, setNewTag] = useState('')
-
-  function buildTagItem() {}
-
-  const queryFormatter = useCallback((d) => {
-    const arr = d.map((e) => ({ name: e, selected: false }))
-    updateTags(arr)
-  }, [])
-
-  const { loading, queryData } = useQuery({
-    url: `${API_ORIGIN}/images/tags`,
-    formatter: queryFormatter,
-  })
-
-  function toggleSelect(name, selected) {
-    toggleTag(name, selected)
-    const t = tags.find((e) => e.name === name)
-    if (t) {
-      const clone = tags.slice(0)
-      t.selected = !t.selected
-      // setTags(clone)
-      updateTags(clone)
-    }
-  }
-
+  const deleteCb = () => {}
   const tagsRes = tags.map((e) => (
     <Tag
-      toggleSelect={toggleSelect}
+      toggleSelect={toggleTag}
       name={e.name}
       key={e.name}
       disableDel={disableDel}
       selected={e.selected}
-      listTags={queryData}
+      deleteCb={deleteCb}
     />
   ))
 
-  function newTagOnChange(e) {
-    setNewTag(e.target.value)
-  }
-
   return (
     <TagsWrap>
-      <span>
-        <b>Tags: {loading ? 'loading' : ''}</b>
-      </span>
+      <Label>
+        <div>
+          <b>Tags:</b>
+        </div>
+        {loading ? <Hint>loading</Hint> : null}
+      </Label>
       <div>
         {tagsRes}
         {showAddTag ? <AddTag addCallback={queryData} /> : null}
@@ -141,7 +122,7 @@ export function Tags({
   )
 }
 
-function Tag({ name, selected, toggleSelect, disableDel = false, listTags }) {
+function Tag({ name, selected, toggleSelect, disableDel = false, deleteCb }) {
   function delTag() {
     const obj = {
       name,
@@ -154,7 +135,7 @@ function Tag({ name, selected, toggleSelect, disableDel = false, listTags }) {
       },
     })
       .then((d) => d.text())
-      .then((d) => listTags())
+      .then((d) => deleteCb())
   }
   return (
     <TagWrap>
@@ -170,5 +151,20 @@ function Tag({ name, selected, toggleSelect, disableDel = false, listTags }) {
         </DelTag>
       )}
     </TagWrap>
+  )
+}
+
+export const formatter = (arr) => arr.map((e) => ({ name: e, selected: false }))
+export function AddTagPane() {
+  const {
+    data: tags,
+    loading,
+    queryData,
+  } = useQuery({ url: `${API_ORIGIN}/tags`, formatter })
+  return (
+    <AddTagPaneWrap>
+      <AddTag addCallback={queryData} />
+      <Tags tags={tags} loading={loading} showAddTag={false} />
+    </AddTagPaneWrap>
   )
 }

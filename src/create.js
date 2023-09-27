@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react'
 import ReactDOM from 'react-dom/client'
 import styled from 'styled-components'
 
-import { Tags, AddTag, listTags } from './tag'
+import { Tags, AddTag, listTags, AddTagPane } from './tag'
 import { Upload } from './upload'
 
 import { Toolbar } from './toolbar'
@@ -84,25 +84,21 @@ export function Create(props) {
   }, [tags])
 
   const imageGridBody = React.useMemo(
-    () => (
-      <ImageGridPane
-        showActions={false}
-        showPane={showImg}
-        setShowPane={setShowImg}
-        onConfirm={() => {}}
-      />
-    ),
+    () =>
+      showImg ? (
+        <ImageGridPane
+          showActions={false}
+          showPane={showImg}
+          setShowPane={setShowImg}
+          onConfirm={() => {}}
+        />
+      ) : null,
     [showImg]
   )
 
   const addTagBody = React.useMemo(
-    () => (
-      <>
-        <AddTag addCallback={() => listTags().then((arr) => setTags(arr))} />
-        <Tags tags={tags} updateTags={setTags} showAddTag={false} />
-      </>
-    ),
-    [showAddTag, tags]
+    () => (showAddTag ? <AddTagPane /> : null),
+    [showAddTag]
   )
 
   const addTextBody = React.useMemo(
@@ -147,6 +143,83 @@ export function Create(props) {
     }
   }
 
+  const hash = {
+    upload: useMemo(
+      () => (
+        <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
+          <Pane
+            show={showUpload}
+            bgColor="var(--bg-color)"
+            body={uploadBody}
+            onClose={closeUploadPane}
+          />
+        </PaneContainer>
+      ),
+      [showUpload]
+    ),
+    image: useMemo(
+      () => (
+        <PaneContainer left="200px" top="55px" show={showImg}>
+          <Pane
+            show={showImg}
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="80vh"
+            body={imageGridBody}
+            onClose={closeImgGridPane}
+          />
+        </PaneContainer>
+      ),
+      [showImg]
+    ),
+    audio: useMemo(
+      () => (
+        <PaneContainer left="calc(100vw - 500px)" top="55px" show={showAudio}>
+          <Pane
+            show={showAudio}
+            bgColor="var(--bg-color)"
+            body={audioBody}
+            onClose={closeAudio}
+          />
+        </PaneContainer>
+      ),
+      [showAudio]
+    ),
+    article: useMemo(
+      () => (
+        <PaneContainer
+          left="calc(100vw - 700px)"
+          top="55px"
+          show={showArticleList}
+        >
+          <Pane
+            show={showArticleList}
+            bgColor="var(--bg-color)"
+            body={articleListBody}
+            onClose={closeArticleListPane}
+            width="600px"
+          />
+        </PaneContainer>
+      ),
+      [showArticleList]
+    ),
+    text: useMemo(
+      () => (
+        <PaneContainer left="200px" top="55px" show={showText}>
+          <Pane
+            show={showText}
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="70vh"
+            body={addTextBody}
+            onClose={() => setShowText(false)}
+          />
+        </PaneContainer>
+      ),
+      [showText]
+    ),
+  }
+
   return (
     <>
       <Header />
@@ -186,49 +259,21 @@ export function Create(props) {
         />
       </PaneContainer>
       {/* upload pane */}
-      <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
+      {hash.upload}
+      {/* <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
         <Pane
           show={showUpload}
           bgColor="var(--bg-color)"
           body={uploadBody}
           onClose={closeUploadPane}
         />
-      </PaneContainer>
+      </PaneContainer> */}
       {/* article pane */}
-      <PaneContainer
-        left="calc(100vw - 700px)"
-        top="55px"
-        show={showArticleList}
-      >
-        <Pane
-          show={showArticleList}
-          bgColor="var(--bg-color)"
-          body={articleListBody}
-          onClose={closeArticleListPane}
-          width="600px"
-        />
-      </PaneContainer>
+      {hash.article}
       {/* audio pane */}
-      <PaneContainer left="calc(100vw - 500px)" top="55px" show={showAudio}>
-        <Pane
-          show={showAudio}
-          bgColor="var(--bg-color)"
-          body={audioBody}
-          onClose={closeAudio}
-        />
-      </PaneContainer>
+      {hash.audio}
       {/* images pane */}
-      <PaneContainer left="200px" top="55px" show={showImg}>
-        <Pane
-          show={showImg}
-          bgColor="var(--bg-color)"
-          width="80vw"
-          height="80vh"
-          body={imageGridBody}
-          onClose={closeImgGridPane}
-        />
-      </PaneContainer>
-
+      {hash.image}
       {/* add new tag pane */}
       <PaneContainer left="200px" top="55px" show={showAddTag}>
         <Pane
@@ -240,17 +285,8 @@ export function Create(props) {
           onClose={() => setShowAddTag(false)}
         />
       </PaneContainer>
-
-      <PaneContainer left="200px" top="55px" show={showText}>
-        <Pane
-          show={showText}
-          bgColor="var(--bg-color)"
-          width="50vw"
-          height="50vh"
-          body={addTextBody}
-          onClose={() => setShowText(false)}
-        />
-      </PaneContainer>
+      {/* text pane */}
+      {hash.text}
     </>
   )
 }
