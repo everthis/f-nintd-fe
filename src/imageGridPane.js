@@ -53,6 +53,7 @@ const ImgSection = styled.section`
   padding: 5px 0;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 `
 const OpSection = styled.div``
 
@@ -74,6 +75,14 @@ const ImgInner = styled.div`
     checked
       ? 'translateZ(0px) scale3d(0.89, 0.91, 1)'
       : 'translateZ(0px) scale3d(1, 1, 1)'};
+`
+const Status = styled.span`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--bg-color);
+  z-index: 1;
 `
 const qsOfTags = (arr = []) =>
   arr
@@ -201,8 +210,13 @@ export function ImageGridPane({
         toggleTag={toggleTag}
         disableDel={true}
       />
-      {fetching ? <b>loading</b> : null}
+
       <ImgSection>
+        {fetching ? (
+          <Status>
+            <b>loading</b>
+          </Status>
+        ) : null}
         {imgs.map((e) => (
           <ImgWrap key={e.name}>
             <ImgInnerContainer checked={e.selected}>

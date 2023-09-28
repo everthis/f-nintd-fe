@@ -134,8 +134,8 @@ export function Pane({
     }
   }, [show])
 
-  const closePane = () => {
-    onClose()
+  const closePane = (ev) => {
+    onClose(ev)
   }
 
   return (

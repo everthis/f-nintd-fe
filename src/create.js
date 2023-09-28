@@ -6,7 +6,7 @@ import { Tags, AddTag, listTags, AddTagPane } from './tag'
 import { Upload } from './upload'
 
 import { Toolbar } from './toolbar'
-import { Pane, PaneContainer } from './pane'
+import { Pane } from './pane'
 import { Editor } from './editor'
 import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
@@ -34,19 +34,30 @@ const EditorContainer = styled.div`
   width: 600px;
 `
 
-export function Create(props) {
-  const { name } = props
+const useCS = (name, initVal, setHook) => {
+  const [state, setState] = useState(initVal)
+  const fn = (val) => {
+    setHook(name, val)
+    setState(val)
+  }
+  return [state, fn]
+}
+export function Create() {
   const [tags, setTags] = useState([])
-  const [showArticleList, setShowArticleList] = useState(false)
-  const [showAudio, setShowAudio] = useState(false)
-  const [showText, setShowText] = useState(false)
-  const [showUpload, setShowUpload] = useState(false)
   const [showRemote, setShowRemote] = useState(false)
-  const [checkedSet, setCheckedSet] = useState(new Set())
-  const [showImg, setShowImg] = useState(false)
-  const [showAddTag, setShowAddTag] = useState(false)
+  const [showArticleList, setShowArticleList] = useCS(
+    'article',
+    false,
+    setStkVal
+  )
+  const [showAudio, setShowAudio] = useCS('audio', false, setStkVal)
+  const [showText, setShowText] = useCS('text', false, setStkVal)
+  const [showUpload, setShowUpload] = useCS('upload', false, setStkVal)
+  const [showImg, setShowImg] = useCS('image', false, setStkVal)
+  const [showAddTag, setShowAddTag] = useCS('tag', false, setStkVal)
   const [fayeIns, setFayeIns] = useState(null)
   const [paneMap, setPaneMap] = useState(new Map())
+  const [checkedSet, setCheckedSet] = useState(new Set())
 
   const uploadBody = useMemo(
     () => (showUpload ? <Upload /> : null),
@@ -84,7 +95,7 @@ export function Create(props) {
         <ImageGridPane
           showActions={false}
           showPane={showImg}
-          setShowPane={setShowImgFn}
+          setShowPane={setShowImg}
           onConfirm={() => {}}
         />
       ) : null,
@@ -125,12 +136,23 @@ export function Create(props) {
       fayeIns.publish('/foo', genRand(12))
     }
   }
+  function isLastInMap(map, key) {
+    const it = map.keys()
+    let last
+    for (const k of it) {
+      last = k
+    }
+    return last === key
+  }
   function setStkVal(name, shouldShow) {
     if (paneMap.has(name)) {
-      paneMap.delete(name)
       if (shouldShow) {
+        if (isLastInMap(paneMap, name)) return
         // exist, active, bring it to front
+        paneMap.delete(name)
         paneMap.set(name, 1)
+      } else {
+        paneMap.delete(name)
       }
     } else {
       if (shouldShow) {
@@ -139,47 +161,26 @@ export function Create(props) {
     }
     setPaneMap(new Map(paneMap))
   }
-  const setShowUploadFn = (val) => {
-    setStkVal('upload', val)
-    setShowUpload(val)
-  }
-  const setShowArticleListFn = (val) => {
-    setStkVal('article', val)
-    setShowArticleList(val)
-  }
-  const setShowAudioFn = (val) => {
-    setStkVal('audio', val)
-    setShowAudio(val)
-  }
-  const setShowTextFn = (val) => {
-    setStkVal('text', val)
-    setShowText(val)
-  }
-  const setShowImgFn = (val) => {
-    setStkVal('image', val)
-    setShowImg(val)
-  }
-  const setShowAddTagFn = (val) => {
-    setStkVal('tag', val)
-    setShowAddTag(val)
-  }
 
   const hash = {
     upload: (
       <Pane
-        onClick={() => setShowUploadFn(true)}
+        onClick={() => setShowUpload(true)}
         key="upload"
         left={300}
         top={55}
         show={showUpload}
         bgColor="var(--bg-color)"
         body={uploadBody}
-        onClose={() => setShowUploadFn(false)}
+        onClose={(ev) => {
+          ev.stopPropagation()
+          setShowUpload(false)
+        }}
       />
     ),
     image: (
       <Pane
-        onClick={() => setShowImgFn(true)}
+        onClick={() => setShowImg(true)}
         key="image"
         left={200}
         top={55}
@@ -188,37 +189,46 @@ export function Create(props) {
         width="80vw"
         height="80vh"
         body={imageGridBody}
-        onClose={() => setShowImgFn(false)}
+        onClose={(ev) => {
+          ev.stopPropagation()
+          setShowImg(false)
+        }}
       />
     ),
     audio: (
       <Pane
-        onClick={() => setShowAudioFn(true)}
+        onClick={() => setShowAudio(true)}
         key="audio"
         left={400}
         top={55}
         show={showAudio}
         bgColor="var(--bg-color)"
         body={audioBody}
-        onClose={() => setShowAudioFn(false)}
+        onClose={(ev) => {
+          ev.stopPropagation()
+          setShowAudio(false)
+        }}
       />
     ),
     article: (
       <Pane
-        onClick={() => setShowArticleListFn(true)}
+        onClick={() => setShowArticleList(true)}
         key="article"
         left={500}
         top={55}
         show={showArticleList}
         bgColor="var(--bg-color)"
         body={articleListBody}
-        onClose={() => setShowArticleListFn(false)}
+        onClose={(ev) => {
+          ev.stopPropagation()
+          setShowArticleList(false)
+        }}
         width="600px"
       />
     ),
     text: (
       <Pane
-        onClick={() => setShowTextFn(true)}
+        onClick={() => setShowText(true)}
         key="text"
         left={200}
         top={55}
@@ -227,12 +237,15 @@ export function Create(props) {
         width="80vw"
         height="70vh"
         body={addTextBody}
-        onClose={() => setShowTextFn(false)}
+        onClose={(ev) => {
+          ev.stopPropagation()
+          setShowText(false)
+        }}
       />
     ),
     tag: (
       <Pane
-        onClick={() => setShowAddTagFn(true)}
+        onClick={() => setShowAddTag(true)}
         key="tag"
         left={200}
         top={55}
@@ -241,7 +254,10 @@ export function Create(props) {
         width="50vw"
         height="30vh"
         body={addTagBody}
-        onClose={() => setShowAddTagFn(false)}
+        onClose={(ev) => {
+          ev.stopPropagation()
+          setShowAddTag(false)
+        }}
       />
     ),
   }
@@ -254,17 +270,17 @@ export function Create(props) {
       <HorLine />
       <Toolbar
         showUpload={showUpload}
-        setShowUpload={setShowUploadFn}
+        setShowUpload={setShowUpload}
         showArticleList={showArticleList}
-        setShowArticleList={setShowArticleListFn}
+        setShowArticleList={setShowArticleList}
         showAudio={showAudio}
-        setShowAudio={setShowAudioFn}
+        setShowAudio={setShowAudio}
         showText={showText}
-        setShowText={setShowTextFn}
+        setShowText={setShowText}
         showImg={showImg}
-        setShowImg={setShowImgFn}
+        setShowImg={setShowImg}
         showAddTag={showAddTag}
-        setShowAddTag={setShowAddTagFn}
+        setShowAddTag={setShowAddTag}
       />
       <HorLine />
       <p>
