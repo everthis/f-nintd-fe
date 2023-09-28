@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 
 import { Pane } from './pane'
@@ -96,18 +96,25 @@ export function ImageGridPane({
   disabledSet = new Set(),
 }) {
   const [tags, setTags] = useState([])
+  const [imgs, setImgs] = useState([])
   const {
     data: tagsData,
     loading: tagsLoading,
     queryData,
   } = useQuery({ url: `${API_ORIGIN}/tags`, formatter: tagsFormatter })
+  const fetchImgParams = useMemo(
+    () => (tags && tags.length ? { tags: qsOfTags(tags) } : undefined),
+    [tags]
+  )
   const {
-    data: imgs = [],
+    data,
     loading: fetching,
     queryData: queryByTags,
   } = useQuery({
-    url: `${API_ORIGIN}/images/byTags?tags=${qsOfTags(tags)}`,
+    url: `${API_ORIGIN}/images/byTags`,
+    params: fetchImgParams,
     formatter,
+    // shouldFetch: (_, params) => params.tags.length > 0,
   })
 
   const closePane = () => {
@@ -181,6 +188,10 @@ export function ImageGridPane({
       setTags(tagsData)
     }
   }, [tagsLoading])
+
+  useEffect(() => {
+    if (data) setImgs(data)
+  }, [data])
 
   return showPane ? (
     <Wrap>

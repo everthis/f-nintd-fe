@@ -6,7 +6,7 @@ import { Tags, AddTag, listTags, AddTagPane } from './tag'
 import { Upload } from './upload'
 
 import { Toolbar } from './toolbar'
-import { Pane } from './pane'
+import { Pane, PaneContainer } from './pane'
 import { Editor } from './editor'
 import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
@@ -28,13 +28,7 @@ const HorLine = styled.hr`
   border-top: none;
   border-color: #333;
 `
-export const PaneContainer = styled.span`
-  position: fixed;
-  z-index: ${({ show }) => (show ? 1 : -1)};
-  left: ${({ left }) => left};
-  top: ${({ top }) => top};
-  visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
-`
+
 const EditorContainer = styled.div`
   display: inline-block;
   width: 600px;
@@ -52,12 +46,13 @@ export function Create(props) {
   const [showImg, setShowImg] = useState(false)
   const [showAddTag, setShowAddTag] = useState(false)
   const [fayeIns, setFayeIns] = useState(null)
+  const [paneMap, setPaneMap] = useState(new Map())
 
-  const uploadBody = useMemo(() => <Upload tags={tags} />, [tags])
-  const uploadAudio = useMemo(
-    () => <Upload tags={tags} type="audio" useOriginalName />,
-    [tags]
+  const uploadBody = useMemo(
+    () => (showUpload ? <Upload /> : null),
+    [showUpload]
   )
+
   const audioBody = useMemo(() => (showAudio ? <Audio /> : null), [showAudio])
   const articleListBody = useMemo(
     () => (showArticleList ? <Article /> : null),
@@ -80,8 +75,8 @@ export function Create(props) {
     setCheckedSet(clone)
   }
   const remoteBody = React.useMemo(() => {
-    return <RemoteImageList tags={tags} cb={remoteChange} selectCb={selectCb} />
-  }, [tags])
+    return <RemoteImageList cb={remoteChange} selectCb={selectCb} />
+  }, [])
 
   const imageGridBody = React.useMemo(
     () =>
@@ -89,7 +84,7 @@ export function Create(props) {
         <ImageGridPane
           showActions={false}
           showPane={showImg}
-          setShowPane={setShowImg}
+          setShowPane={setShowImgFn}
           onConfirm={() => {}}
         />
       ) : null,
@@ -112,18 +107,6 @@ export function Create(props) {
     setTags(clone)
   }
 
-  const closeUploadPane = () => {
-    setShowUpload(false)
-  }
-  const closeArticleListPane = () => {
-    setShowArticleList(false)
-  }
-  const closeAudio = () => {
-    setShowAudio(false)
-  }
-  const closeImgGridPane = () => {
-    setShowImg(false)
-  }
   useEffect(() => {
     const client = new Faye.Client(`${API_ORIGIN}/faye`)
     console.log(Faye, client)
@@ -142,81 +125,124 @@ export function Create(props) {
       fayeIns.publish('/foo', genRand(12))
     }
   }
+  function setStkVal(name, shouldShow) {
+    if (paneMap.has(name)) {
+      paneMap.delete(name)
+      if (shouldShow) {
+        // exist, active, bring it to front
+        paneMap.set(name, 1)
+      }
+    } else {
+      if (shouldShow) {
+        paneMap.set(name, 1)
+      }
+    }
+    setPaneMap(new Map(paneMap))
+  }
+  const setShowUploadFn = (val) => {
+    setStkVal('upload', val)
+    setShowUpload(val)
+  }
+  const setShowArticleListFn = (val) => {
+    setStkVal('article', val)
+    setShowArticleList(val)
+  }
+  const setShowAudioFn = (val) => {
+    setStkVal('audio', val)
+    setShowAudio(val)
+  }
+  const setShowTextFn = (val) => {
+    setStkVal('text', val)
+    setShowText(val)
+  }
+  const setShowImgFn = (val) => {
+    setStkVal('image', val)
+    setShowImg(val)
+  }
+  const setShowAddTagFn = (val) => {
+    setStkVal('tag', val)
+    setShowAddTag(val)
+  }
 
   const hash = {
-    upload: useMemo(
-      () => (
-        <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
-          <Pane
-            show={showUpload}
-            bgColor="var(--bg-color)"
-            body={uploadBody}
-            onClose={closeUploadPane}
-          />
-        </PaneContainer>
-      ),
-      [showUpload]
+    upload: (
+      <Pane
+        onClick={() => setShowUploadFn(true)}
+        key="upload"
+        left={300}
+        top={55}
+        show={showUpload}
+        bgColor="var(--bg-color)"
+        body={uploadBody}
+        onClose={() => setShowUploadFn(false)}
+      />
     ),
-    image: useMemo(
-      () => (
-        <PaneContainer left="200px" top="55px" show={showImg}>
-          <Pane
-            show={showImg}
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="80vh"
-            body={imageGridBody}
-            onClose={closeImgGridPane}
-          />
-        </PaneContainer>
-      ),
-      [showImg]
+    image: (
+      <Pane
+        onClick={() => setShowImgFn(true)}
+        key="image"
+        left={200}
+        top={55}
+        show={showImg}
+        bgColor="var(--bg-color)"
+        width="80vw"
+        height="80vh"
+        body={imageGridBody}
+        onClose={() => setShowImgFn(false)}
+      />
     ),
-    audio: useMemo(
-      () => (
-        <PaneContainer left="calc(100vw - 500px)" top="55px" show={showAudio}>
-          <Pane
-            show={showAudio}
-            bgColor="var(--bg-color)"
-            body={audioBody}
-            onClose={closeAudio}
-          />
-        </PaneContainer>
-      ),
-      [showAudio]
+    audio: (
+      <Pane
+        onClick={() => setShowAudioFn(true)}
+        key="audio"
+        left={400}
+        top={55}
+        show={showAudio}
+        bgColor="var(--bg-color)"
+        body={audioBody}
+        onClose={() => setShowAudioFn(false)}
+      />
     ),
-    article: useMemo(
-      () => (
-        <PaneContainer
-          left="calc(100vw - 700px)"
-          top="55px"
-          show={showArticleList}
-        >
-          <Pane
-            show={showArticleList}
-            bgColor="var(--bg-color)"
-            body={articleListBody}
-            onClose={closeArticleListPane}
-            width="600px"
-          />
-        </PaneContainer>
-      ),
-      [showArticleList]
+    article: (
+      <Pane
+        onClick={() => setShowArticleListFn(true)}
+        key="article"
+        left={500}
+        top={55}
+        show={showArticleList}
+        bgColor="var(--bg-color)"
+        body={articleListBody}
+        onClose={() => setShowArticleListFn(false)}
+        width="600px"
+      />
     ),
-    text: useMemo(
-      () => (
-        <PaneContainer left="200px" top="55px" show={showText}>
-          <Pane
-            show={showText}
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="70vh"
-            body={addTextBody}
-            onClose={() => setShowText(false)}
-          />
-        </PaneContainer>
-      ),
-      [showText]
+    text: (
+      <Pane
+        onClick={() => setShowTextFn(true)}
+        key="text"
+        left={200}
+        top={55}
+        show={showText}
+        bgColor="var(--bg-color)"
+        width="80vw"
+        height="70vh"
+        body={addTextBody}
+        onClose={() => setShowTextFn(false)}
+      />
+    ),
+    tag: (
+      <Pane
+        onClick={() => setShowAddTagFn(true)}
+        key="tag"
+        left={200}
+        top={55}
+        show={showAddTag}
+        bgColor="var(--bg-color)"
+        width="50vw"
+        height="30vh"
+        body={addTagBody}
+        onClose={() => setShowAddTagFn(false)}
+      />
     ),
   }
 
@@ -228,17 +254,17 @@ export function Create(props) {
       <HorLine />
       <Toolbar
         showUpload={showUpload}
-        setShowUpload={setShowUpload}
+        setShowUpload={setShowUploadFn}
         showArticleList={showArticleList}
-        setShowArticleList={setShowArticleList}
+        setShowArticleList={setShowArticleListFn}
         showAudio={showAudio}
-        setShowAudio={setShowAudio}
+        setShowAudio={setShowAudioFn}
         showText={showText}
-        setShowText={setShowText}
+        setShowText={setShowTextFn}
         showImg={showImg}
-        setShowImg={setShowImg}
+        setShowImg={setShowImgFn}
         showAddTag={showAddTag}
-        setShowAddTag={setShowAddTag}
+        setShowAddTag={setShowAddTagFn}
       />
       <HorLine />
       <p>
@@ -248,45 +274,17 @@ export function Create(props) {
         <Editor imgList={checkedSet} />
       </EditorContainer>
       {/* images pane when tags selected */}
-      <PaneContainer left="calc(100vw - 570px)" top="55px" show={showRemote}>
-        <Pane
-          show={showRemote}
-          bgColor="var(--bg-color)"
-          body={remoteBody}
-          width="600px"
-          showClose
-          onClose={remoteOnClose}
-        />
-      </PaneContainer>
-      {/* upload pane */}
-      {hash.upload}
-      {/* <PaneContainer left="calc(100vw - 500px)" top="55px" show={showUpload}>
-        <Pane
-          show={showUpload}
-          bgColor="var(--bg-color)"
-          body={uploadBody}
-          onClose={closeUploadPane}
-        />
-      </PaneContainer> */}
-      {/* article pane */}
-      {hash.article}
-      {/* audio pane */}
-      {hash.audio}
-      {/* images pane */}
-      {hash.image}
-      {/* add new tag pane */}
-      <PaneContainer left="200px" top="55px" show={showAddTag}>
-        <Pane
-          show={showAddTag}
-          bgColor="var(--bg-color)"
-          width="50vw"
-          height="30vh"
-          body={addTagBody}
-          onClose={() => setShowAddTag(false)}
-        />
-      </PaneContainer>
-      {/* text pane */}
-      {hash.text}
+      <Pane
+        left={100}
+        top={55}
+        show={showRemote}
+        bgColor="var(--bg-color)"
+        body={remoteBody}
+        width="600px"
+        showClose
+        onClose={remoteOnClose}
+      />
+      {Array.from(paneMap.keys()).map((k) => hash[k])}
     </>
   )
 }

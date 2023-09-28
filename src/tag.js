@@ -155,7 +155,7 @@ function Tag({ name, selected, toggleSelect, disableDel = false, deleteCb }) {
 }
 
 export const formatter = (arr) => arr.map((e) => ({ name: e, selected: false }))
-export function AddTagPane() {
+export function AddTagPane({}) {
   const {
     data: tags,
     loading,

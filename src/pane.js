@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { CloseIcon } from './icon'
 
+export const PaneContainer = styled.span`
+  position: fixed;
+  z-index: ${({ show }) => (show ? 1 : -1)};
+  left: ${({ left }) => left};
+  top: ${({ top }) => top};
+  visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
+`
 const Wrap = styled.span`
   display: inline-block;
   width: ${({ width }) => width};
@@ -41,7 +48,6 @@ export function Pane({
   height = '',
   x = 0,
   y = 0,
-  top = 0,
   right = 0,
   header = null,
   body = null,
@@ -49,11 +55,14 @@ export function Pane({
   children,
   onClose = () => {},
   showClose = true,
+  onClick = () => {},
+  left = 0,
+  top = 0,
 }) {
   const ref = useRef(null)
   // const [initPos, setInitPos] = useState([0, 0])
   const [pos, setPos] = useState([0, 0])
-  const leftTopRef = useRef([0, 0])
+  const leftTopRef = useRef([left, top])
   const canMoveRef = useRef(false)
   const shiftRef = useRef([0, 0])
   const initPosRef = useRef([0, 0])
@@ -130,12 +139,14 @@ export function Pane({
   }
 
   return (
-    <Wrap bgColor={bgColor} style={styles} width={width} height={height}>
-      <Head ref={ref}>
-        {header}
-        {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
-      </Head>
-      <Body>{body || children}</Body>
-    </Wrap>
+    <PaneContainer style={styles} onClick={onClick} show={show}>
+      <Wrap bgColor={bgColor} width={width} height={height}>
+        <Head ref={ref}>
+          {header}
+          {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
+        </Head>
+        <Body>{body || children}</Body>
+      </Wrap>
+    </PaneContainer>
   )
 }

@@ -13,7 +13,7 @@ import {
   InsertAfterIcon,
   RefreshIcon,
 } from './icon'
-import { PaneContainer } from './create'
+import { PaneContainer } from './pane'
 import { ImageGridPane } from './imageGridPane'
 import { ImgComp } from './image'
 
@@ -230,15 +230,19 @@ export function Editor() {
   }
 
   const coverSelectionBody = React.useMemo(
-    () => (
-      <ImageGridPane
-        showActions
-        singleSelect
-        showPane={showCoverPane}
-        setShowPane={setShowCoverPane}
-        onConfirm={(res) => setCoverImg(res[0])}
-      />
-    ),
+    () =>
+      showCoverPane ? (
+        <ImageGridPane
+          showActions
+          singleSelect
+          showPane={showCoverPane}
+          setShowPane={setShowCoverPane}
+          onConfirm={(res) => {
+            setCoverImg(res[0])
+            setShowCoverPane(false)
+          }}
+        />
+      ) : null,
     [showCoverPane]
   )
 
@@ -247,7 +251,7 @@ export function Editor() {
     for (const e of items) {
       disabledSet.add(e.val)
     }
-    return (
+    return showPane ? (
       <ImageGridPane
         showActions
         showPane={showPane}
@@ -258,7 +262,7 @@ export function Editor() {
         }}
         disabledSet={disabledSet}
       />
-    )
+    ) : null
   }, [showPane])
 
   // const insertImageGridBody = React.memo(() => (<ImageGridPane
