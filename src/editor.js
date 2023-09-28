@@ -437,26 +437,30 @@ export function Editor() {
         <button onClick={save}>Save</button>
       </Op>
       <VertGap height="50px" />
-      <PaneContainer left="200px" top="50px" show={showCoverPane}>
-        <Pane
-          show={showCoverPane}
-          bgColor="var(--bg-color)"
-          body={coverSelectionBody}
-          width="80vw"
-          height="80vh"
-          onClose={() => setShowCoverPane(false)}
-        />
-      </PaneContainer>
-      <PaneContainer left="200px" top="50px" show={showPane}>
-        <Pane
-          show={showPane}
-          bgColor="var(--bg-color)"
-          body={imageGridBody}
-          width="80vw"
-          height="80vh"
-          onClose={() => setShowPane(false)}
-        />
-      </PaneContainer>
+      {showCoverPane ? (
+        <PaneContainer left="200px" top="50px" show={showCoverPane}>
+          <Pane
+            show={showCoverPane}
+            bgColor="var(--bg-color)"
+            body={coverSelectionBody}
+            width="80vw"
+            height="80vh"
+            onClose={() => setShowCoverPane(false)}
+          />
+        </PaneContainer>
+      ) : null}
+      {showPane ? (
+        <PaneContainer left="200px" top="50px" show={showPane}>
+          <Pane
+            show={showPane}
+            bgColor="var(--bg-color)"
+            body={imageGridBody}
+            width="80vw"
+            height="80vh"
+            onClose={() => setShowPane(false)}
+          />
+        </PaneContainer>
+      ) : null}
       <RefreshWrap onClick={resetEditor}>
         <RefreshIcon />
       </RefreshWrap>

@@ -42,8 +42,8 @@ const Body = styled.div`
   overflow-y: scroll;
 `
 
-export function Pane({
-  show = false,
+export const Pane = React.memo(function PaneFn({
+  show = true,
   width = '400px',
   height = '',
   x = 0,
@@ -67,6 +67,12 @@ export function Pane({
   const shiftRef = useRef([0, 0])
   const initPosRef = useRef([0, 0])
   const posRef = useRef(pos)
+
+  function validPos(arr) {
+    if (arr[0] < 0) arr[0] = 0
+    if (arr[1] < 0) arr[1] = 0
+    return arr
+  }
   function mouseDown(ev) {
     if (ev.target !== ref.current) return
     // const { left, top } = ev.target.getBoundingClientRect()
@@ -88,7 +94,7 @@ export function Pane({
     // const newP = [ev.pageX - s[0] - i[0], ev.pageY - s[1] - i[1]]
     const newP = [ev.clientX - s[0], ev.clientY - s[1]]
     const [legacyLeft, legacyTop] = leftTopRef.current
-    leftTopRef.current = [legacyLeft + newP[0], legacyTop + newP[1]]
+    leftTopRef.current = validPos([legacyLeft + newP[0], legacyTop + newP[1]])
     setPos([0, 0])
     canMoveRef.current = false
   }
@@ -139,7 +145,12 @@ export function Pane({
   }
 
   return (
-    <PaneContainer style={styles} onClick={onClick} show={show}>
+    <PaneContainer
+      style={styles}
+      onClick={onClick}
+      show={show}
+      className="pane"
+    >
       <Wrap bgColor={bgColor} width={width} height={height}>
         <Head ref={ref}>
           {header}
@@ -149,4 +160,4 @@ export function Pane({
       </Wrap>
     </PaneContainer>
   )
-}
+})
