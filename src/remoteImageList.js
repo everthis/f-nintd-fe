@@ -13,7 +13,8 @@ const RemoteListSect = styled.div`
     width: 100%;
   }
 `
-export function RemoteImageList({ tags, cb, selectCb }) {
+const defaultTags = []
+export function RemoteImageList({ tags = defaultTags, cb, selectCb }) {
   const [remoteList, setRemoteList] = useState([])
 
   function setRemoteListFn(arr) {
@@ -59,7 +60,7 @@ export function RemoteImageList({ tags, cb, selectCb }) {
   }
 
   const opts = tags.map((e) => e.name)
-
+  // console.log(remoteList)
   return (
     <RemoteListSect>
       {remoteList.map((e) => (

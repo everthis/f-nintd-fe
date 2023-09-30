@@ -1,0 +1,151 @@
+import React, { useRef, useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { postData } from './utils'
+import { API_ORIGIN } from './constant'
+import { useQuery } from './hooks'
+import { VdotsIcon } from './icon'
+import { Tags } from './tag'
+
+const Btn = styled.span`
+  border: 1px solid #333;
+  cursor: pointer;
+`
+
+const Wrap = styled.div`
+  position: relative;
+`
+
+const ListWrap = styled.div`
+  padding-right: 2rem;
+`
+const InputSection = styled.div`
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-color);
+  z-index: 1;
+`
+const Pre = styled.pre`
+  white-space: break-spaces;
+  background-color: #e4e9ec;
+  padding: 0.2rem;
+  font-size: 14px;
+  position: relative;
+`
+
+const Pos = styled.span`
+  position: absolute;
+  left: 100%;
+  top: 0;
+  font-size: 0;
+`
+
+const OptsPaneWrap = styled.div`
+  position: absolute;
+  right: 2rem;
+  width: 30rem;
+  font-size: 14px;
+  background-color: var(--bg-color);
+  border: var(--border);
+`
+
+export function TextPane() {
+  const ref = useRef()
+  const inputSecRef = useRef()
+  const [activeId, setActiveId] = useState(null)
+  const [showOpts, setShowOpts] = useState(false)
+  const [optsCoord, setOptsCoord] = useState([0, 0])
+  const {
+    data = [],
+    loading,
+    queryData,
+  } = useQuery({ url: `${API_ORIGIN}/texts` })
+  const addText = () => {
+    const val = ref.current.value
+    if (val == null || val.trim() === '') return
+    postData(`${API_ORIGIN}/text/new`, { content: val }).then((d) => {
+      ref.current.value = ''
+      queryData()
+    })
+  }
+  const toggleOpts = (id, ev) => {
+    setActiveId(id)
+    const { top } = ev.currentTarget.getBoundingClientRect()
+    const inputSecEl = inputSecRef.current
+    const paneEl = inputSecEl.parentElement.parentElement
+    const obj = inputSecRef.current.getBoundingClientRect()
+    if (id === activeId) {
+      if (!showOpts) {
+        setOptsCoord([null, top - obj.top + paneEl.scrollTop])
+      }
+      setShowOpts(!showOpts)
+    } else {
+      setOptsCoord([null, top - obj.top + paneEl.scrollTop])
+      setShowOpts(true)
+    }
+  }
+
+  return (
+    <Wrap>
+      <InputSection ref={inputSecRef}>
+        <textarea rows="5" cols="50" ref={ref} />
+        <Btn onClick={addText}>Add text</Btn>
+      </InputSection>
+
+      {loading ? (
+        <p>loading</p>
+      ) : (
+        <ListWrap>
+          {data.map((e, i) => (
+            <PerText
+              key={i}
+              data={e}
+              toggleOpts={(ev) => toggleOpts(e.id, ev)}
+            />
+          ))}
+          {showOpts ? <OptsPane textId={activeId} pos={optsCoord} /> : null}
+        </ListWrap>
+      )}
+    </Wrap>
+  )
+}
+
+function PerText({ data, toggleOpts }) {
+  return (
+    <Pre>
+      {data.content}
+      <Pos>
+        <VdotsIcon onClick={toggleOpts} size="20px" />
+      </Pos>
+    </Pre>
+  )
+}
+
+function OptsPane({ textId, pos }) {
+  const {
+    data: tags = [],
+    loading,
+    queryData: querySelectedTags,
+  } = useQuery({
+    url: `${API_ORIGIN}/text_tag_relation/text/${textId}`,
+  })
+
+  const toggleTag = (tag, selected) => {
+    postData(`${API_ORIGIN}/text_tag_relation`, {
+      textId,
+      tag,
+      selected,
+    }).then(() => querySelectedTags())
+  }
+
+  return (
+    <OptsPaneWrap style={{ top: pos[1] + 'px' }}>
+      <Tags
+        loading={loading}
+        tags={tags}
+        toggleTag={toggleTag}
+        showAddTag={false}
+        disableDel
+      />
+    </OptsPaneWrap>
+  )
+}

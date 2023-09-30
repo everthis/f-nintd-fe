@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { CloseIcon } from './icon'
 
+export const PaneContainer = styled.span`
+  position: fixed;
+  z-index: ${({ show }) => (show ? 1 : -1)};
+  left: ${({ left }) => left};
+  top: ${({ top }) => top};
+  visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
+`
 const Wrap = styled.span`
   display: inline-block;
   width: ${({ width }) => width};
@@ -35,13 +42,12 @@ const Body = styled.div`
   overflow-y: scroll;
 `
 
-export function Pane({
-  show = false,
+export const Pane = React.memo(function PaneFn({
+  show = true,
   width = '400px',
   height = '',
   x = 0,
   y = 0,
-  top = 0,
   right = 0,
   header = null,
   body = null,
@@ -49,15 +55,24 @@ export function Pane({
   children,
   onClose = () => {},
   showClose = true,
+  onClick = () => {},
+  left = 0,
+  top = 0,
 }) {
   const ref = useRef(null)
   // const [initPos, setInitPos] = useState([0, 0])
   const [pos, setPos] = useState([0, 0])
-  const leftTopRef = useRef([0, 0])
+  const leftTopRef = useRef([left, top])
   const canMoveRef = useRef(false)
   const shiftRef = useRef([0, 0])
   const initPosRef = useRef([0, 0])
   const posRef = useRef(pos)
+
+  function validPos(arr) {
+    if (arr[0] < 0) arr[0] = 0
+    if (arr[1] < 0) arr[1] = 0
+    return arr
+  }
   function mouseDown(ev) {
     if (ev.target !== ref.current) return
     // const { left, top } = ev.target.getBoundingClientRect()
@@ -79,7 +94,7 @@ export function Pane({
     // const newP = [ev.pageX - s[0] - i[0], ev.pageY - s[1] - i[1]]
     const newP = [ev.clientX - s[0], ev.clientY - s[1]]
     const [legacyLeft, legacyTop] = leftTopRef.current
-    leftTopRef.current = [legacyLeft + newP[0], legacyTop + newP[1]]
+    leftTopRef.current = validPos([legacyLeft + newP[0], legacyTop + newP[1]])
     setPos([0, 0])
     canMoveRef.current = false
   }
@@ -125,17 +140,24 @@ export function Pane({
     }
   }, [show])
 
-  const closePane = () => {
-    onClose()
+  const closePane = (ev) => {
+    onClose(ev)
   }
 
   return (
-    <Wrap bgColor={bgColor} style={styles} width={width} height={height}>
-      <Head ref={ref}>
-        {header}
-        {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
-      </Head>
-      <Body>{body || children}</Body>
-    </Wrap>
+    <PaneContainer
+      style={styles}
+      onClick={onClick}
+      show={show}
+      className="pane"
+    >
+      <Wrap bgColor={bgColor} width={width} height={height}>
+        <Head ref={ref}>
+          {header}
+          {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
+        </Head>
+        <Body>{body || children}</Body>
+      </Wrap>
+    </PaneContainer>
   )
-}
+})

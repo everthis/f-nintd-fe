@@ -4,6 +4,7 @@ import styled from 'styled-components'
 const ToolbarWrap = styled.div`
   display: flex;
   gap: 5px;
+  user-select: none;
 `
 
 import {

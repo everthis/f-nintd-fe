@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 
 import { Pane } from './pane'
-import { Tags } from './tag'
+import { Tags, formatter as tagsFormatter } from './tag'
 import { ImgFromUrl } from './image'
 import { API_ORIGIN } from './constant'
+import { useQuery } from './hooks'
 
 const Wrap = styled.div`
   position: relative;
@@ -52,6 +53,7 @@ const ImgSection = styled.section`
   padding: 5px 0;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 `
 const OpSection = styled.div``
 
@@ -74,7 +76,26 @@ const ImgInner = styled.div`
       ? 'translateZ(0px) scale3d(0.89, 0.91, 1)'
       : 'translateZ(0px) scale3d(1, 1, 1)'};
 `
-
+const Status = styled.span`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--bg-color);
+  z-index: 1;
+`
+const qsOfTags = (arr = []) =>
+  arr
+    .filter((e) => e.selected)
+    .map((e) => e.name)
+    .join(',')
+const formatter = (arr) => {
+  arr.forEach((e) => {
+    e.tags = e.tags.map((e) => ({ name: e, selected: false }))
+    e.selected = false
+  })
+  return arr
+}
 export function ImageGridPane({
   showPane,
   setShowPane,
@@ -83,8 +104,27 @@ export function ImageGridPane({
   singleSelect = false,
   disabledSet = new Set(),
 }) {
-  const [imgs, setImgs] = useState([])
   const [tags, setTags] = useState([])
+  const [imgs, setImgs] = useState([])
+  const {
+    data: tagsData,
+    loading: tagsLoading,
+    queryData,
+  } = useQuery({ url: `${API_ORIGIN}/tags`, formatter: tagsFormatter })
+  const fetchImgParams = useMemo(
+    () => (tags && tags.length ? { tags: qsOfTags(tags) } : undefined),
+    [tags]
+  )
+  const {
+    data,
+    loading: fetching,
+    queryData: queryByTags,
+  } = useQuery({
+    url: `${API_ORIGIN}/images/byTags`,
+    params: fetchImgParams,
+    formatter,
+    // shouldFetch: (_, params) => params.tags.length > 0,
+  })
 
   const closePane = () => {
     setTags([])
@@ -99,24 +139,6 @@ export function ImageGridPane({
       e.selected = false
     })
     setImgs(arr)
-  }
-  function queryByTags(tagVal) {
-    fetch(`${API_ORIGIN}/images/byTags?tags=` + tagVal, {
-      method: 'GET',
-    })
-      .then((d) => d.json())
-      .then((d) => {
-        setRemoteListFn(d)
-      })
-  }
-  function updateTags(v) {
-    setTags(v)
-    const arr = v.filter((e) => e.selected).map((e) => e.name)
-    if (arr.length) {
-      queryByTags(arr.join(','))
-    } else {
-      setImgs([])
-    }
   }
 
   function selectCbFn(url, bool, isSingleSelect) {
@@ -156,22 +178,45 @@ export function ImageGridPane({
     clone.forEach((e) => (e.selected = allChecked ? false : true))
     setImgs(clone)
   }
+
+  function toggleTag(name, selected) {
+    const clone = tags.slice()
+    for (const e of clone) {
+      if (e.name === name) e.selected = selected
+    }
+    setTags(clone)
+  }
+
   useEffect(() => {
     if (showPane === false) {
       setTags([])
-      setImgs([])
     }
   }, [showPane])
+  useEffect(() => {
+    if (!tagsLoading) {
+      setTags(tagsData)
+    }
+  }, [tagsLoading])
+
+  useEffect(() => {
+    if (data) setImgs(data)
+  }, [data])
 
   return showPane ? (
     <Wrap>
       <Tags
         tags={tags}
         showAddTag={false}
-        updateTags={updateTags}
+        toggleTag={toggleTag}
         disableDel={true}
       />
+
       <ImgSection>
+        {fetching ? (
+          <Status>
+            <b>loading</b>
+          </Status>
+        ) : null}
         {imgs.map((e) => (
           <ImgWrap key={e.name}>
             <ImgInnerContainer checked={e.selected}>

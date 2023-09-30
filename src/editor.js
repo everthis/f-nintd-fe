@@ -13,7 +13,7 @@ import {
   InsertAfterIcon,
   RefreshIcon,
 } from './icon'
-import { PaneContainer } from './create'
+import { PaneContainer } from './pane'
 import { ImageGridPane } from './imageGridPane'
 import { ImgComp } from './image'
 
@@ -230,15 +230,19 @@ export function Editor() {
   }
 
   const coverSelectionBody = React.useMemo(
-    () => (
-      <ImageGridPane
-        showActions
-        singleSelect
-        showPane={showCoverPane}
-        setShowPane={setShowCoverPane}
-        onConfirm={(res) => setCoverImg(res[0])}
-      />
-    ),
+    () =>
+      showCoverPane ? (
+        <ImageGridPane
+          showActions
+          singleSelect
+          showPane={showCoverPane}
+          setShowPane={setShowCoverPane}
+          onConfirm={(res) => {
+            setCoverImg(res[0])
+            setShowCoverPane(false)
+          }}
+        />
+      ) : null,
     [showCoverPane]
   )
 
@@ -247,7 +251,7 @@ export function Editor() {
     for (const e of items) {
       disabledSet.add(e.val)
     }
-    return (
+    return showPane ? (
       <ImageGridPane
         showActions
         showPane={showPane}
@@ -258,7 +262,7 @@ export function Editor() {
         }}
         disabledSet={disabledSet}
       />
-    )
+    ) : null
   }, [showPane])
 
   // const insertImageGridBody = React.memo(() => (<ImageGridPane
@@ -433,26 +437,30 @@ export function Editor() {
         <button onClick={save}>Save</button>
       </Op>
       <VertGap height="50px" />
-      <PaneContainer left="200px" top="50px" show={showCoverPane}>
-        <Pane
-          show={showCoverPane}
-          bgColor="var(--bg-color)"
-          body={coverSelectionBody}
-          width="80vw"
-          height="80vh"
-          onClose={() => setShowCoverPane(false)}
-        />
-      </PaneContainer>
-      <PaneContainer left="200px" top="50px" show={showPane}>
-        <Pane
-          show={showPane}
-          bgColor="var(--bg-color)"
-          body={imageGridBody}
-          width="80vw"
-          height="80vh"
-          onClose={() => setShowPane(false)}
-        />
-      </PaneContainer>
+      {showCoverPane ? (
+        <PaneContainer left="200px" top="50px" show={showCoverPane}>
+          <Pane
+            show={showCoverPane}
+            bgColor="var(--bg-color)"
+            body={coverSelectionBody}
+            width="80vw"
+            height="80vh"
+            onClose={() => setShowCoverPane(false)}
+          />
+        </PaneContainer>
+      ) : null}
+      {showPane ? (
+        <PaneContainer left="200px" top="50px" show={showPane}>
+          <Pane
+            show={showPane}
+            bgColor="var(--bg-color)"
+            body={imageGridBody}
+            width="80vw"
+            height="80vh"
+            onClose={() => setShowPane(false)}
+          />
+        </PaneContainer>
+      ) : null}
       <RefreshWrap onClick={resetEditor}>
         <RefreshIcon />
       </RefreshWrap>

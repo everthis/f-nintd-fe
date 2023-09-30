@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { API_ORIGIN } from './constant'
+import { useQuery } from './hooks'
+import { formatter as tagFormatter } from './tag'
 
 const UploadWrap = styled.div`
   user-select: none;
@@ -75,17 +77,16 @@ const imgTypeSet = new Set([
   'image/tiff',
 ])
 
-export function Upload({
-  tags = [],
-  setTags = () => {},
-  type = 'image',
-  useOriginalName = false,
-}) {
+export function Upload({ useOriginalName = false }) {
   const [selectedFiles, setSelectedFiles] = useState([])
   const [inputVal, setInputVal] = useState('')
   const [tagOpts, setTagOpts] = useState([])
   const [selectedTag, setSelectedTag] = useState('')
   const tagOptsRef = useRef(tagOpts)
+  const { data: tags = [], loading } = useQuery({
+    url: `${API_ORIGIN}/tags`,
+    formatter: tagFormatter,
+  })
 
   // On file select (from the pop up)
   function onFileChange(event) {
@@ -190,7 +191,6 @@ export function Upload({
       <Row>
         <UploadQueueSect>
           {selectedFiles.map((e, i) => {
-            console.log(e.type)
             return imgTypeSet.has(e.type) ? (
               <Img key={i} file={e} deleteFn={() => deleteFn(i)} />
             ) : (
