@@ -85,6 +85,46 @@ function AudioPlayer({ source, name }) {
   const [duration, setDuration] = useState(0)
   const [shouldShowPlayer, setShouldShowPlayer] = useState(true)
   const [paused, setPaused] = useState(true)
+  const [status, setStatus] = useState('')
+
+  // if (source) source += '#t=0.1'
+
+  function canplay(ev) {
+    setStatus(ev.type)
+    setDuration(ref.current.duration)
+    setIsReadyToPlay(true)
+  }
+  function loadstart(ev) {
+    setStatus(ev.type)
+  }
+  function loadedmetadata(ev) {
+    setStatus(ev.type)
+  }
+  function loadeddata(ev) {
+    setStatus(ev.type)
+  }
+  function progress(ev) {
+    // console.log('progress', ev)
+    // setStatus(ev.type)
+  }
+  function pause(ev) {
+    setStatus(ev.type)
+  }
+  function playing(ev) {
+    setStatus(ev.type)
+  }
+  function canplaythrough(ev) {
+    setStatus(ev.type)
+  }
+  function waiting(ev) {
+    setStatus(ev.type)
+  }
+  function play(ev) {
+    setStatus(ev.type)
+  }
+  function ended(ev) {
+    setStatus(ev.type)
+  }
 
   useEffect(() => {
     const audio = ref.current
@@ -94,17 +134,27 @@ function AudioPlayer({ source, name }) {
       if (!isNaN(percentage)) setVal(percentage)
     }
     function seeked(ev) {
-      audio.play()
-      setPaused(false)
+      setStatus(ev.type)
+      // audio.play()
+      // setPaused(false)
     }
-    function canplaythrough(ev) {
-      setDuration(audio.duration)
-      setIsReadyToPlay(true)
-    }
-    if (source) source += '#t=0.5'
-    if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-      audio.addEventListener('canplaythrough', canplaythrough)
 
+    audio.addEventListener('loadstart', loadstart)
+    audio.addEventListener('loadedmetadata', loadedmetadata)
+    audio.addEventListener('progress', progress)
+    audio.addEventListener('pause', pause)
+    audio.addEventListener('playing', playing)
+    audio.addEventListener('loadeddata', loadeddata)
+    audio.addEventListener('timeupdate', timeupdate)
+    audio.addEventListener('seeked', seeked)
+    audio.addEventListener('canplay', canplay)
+    audio.addEventListener('canplaythrough', canplaythrough)
+    audio.addEventListener('play', play)
+    audio.addEventListener('waiting', waiting)
+    audio.addEventListener('ended', ended)
+
+    if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+      // audio.addEventListener('canplay', canplay)
       audio.src = source
       audio.load()
     } else if (Hls.isSupported()) {
@@ -123,14 +173,22 @@ function AudioPlayer({ source, name }) {
       setShouldShowPlayer(false)
     }
 
-    audio.addEventListener('timeupdate', timeupdate)
-    audio.addEventListener('seeked', seeked)
-
     return () => {
+      audio.removeEventListener('loadstart', loadstart)
+      audio.removeEventListener('loadedmetadata', loadedmetadata)
+      audio.removeEventListener('progress', progress)
+      audio.removeEventListener('pause', pause)
+      audio.removeEventListener('playing', playing)
+      audio.removeEventListener('loadeddata', loadeddata)
       audio.removeEventListener('timeupdate', timeupdate)
       audio.removeEventListener('seeked', seeked)
+      audio.removeEventListener('canplay', canplay)
+      audio.removeEventListener('canplaythrough', canplaythrough)
+      audio.removeEventListener('play', play)
+      audio.removeEventListener('waiting', waiting)
+      audio.removeEventListener('ended', ended)
       if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-        audio.removeEventListener('canplaythrough', canplaythrough)
+        // audio.removeEventListener('canplay', canplay)
       }
     }
   }, [])
@@ -186,6 +244,7 @@ function AudioPlayer({ source, name }) {
           <div>
             {secondsToHms(duration)}/
             {secondsToHms(ref.current?.currentTime || 0)}
+            {status ? ` (${status})` : null}
           </div>
         </ProgressWrap>
         <Actions>
