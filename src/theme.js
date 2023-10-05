@@ -13,6 +13,7 @@ const theme = {
     '--title-bg-active': '#403a3a',
     '--color': '#333',
     '--active-color': '#fff',
+    '--highlight-color': '#9faab1',
   },
   light: {
     '--bg-color': '#ffffff',
@@ -21,6 +22,7 @@ const theme = {
     '--title-bg-active': '#777',
     '--color': '#424242',
     '--active-color': '#333',
+    '--highlight-color': '#e4e9ec',
   },
 }
 

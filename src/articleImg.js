@@ -56,6 +56,15 @@ const LazyImage = ({ width, height, src, ...rest }) => {
   )
 }
 
+export function SingleImage({ data }) {
+  const staticPrefix = ''
+  const img = data
+  const src = `${staticPrefix}${img.val}`
+  const { dimension = '' } = img
+  const [width, height] = dimension.split(',').map((e) => +e)
+  return <LazyImage key={src} src={src} width={width} height={height} />
+}
+
 export default function Image(props) {
   const { title, images, ratio } = props
   const [loaded, setLoaded] = useState(false)

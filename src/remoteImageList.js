@@ -24,7 +24,7 @@ export function RemoteImageList({ tags = defaultTags, cb, selectCb }) {
     setRemoteList(arr)
   }
   function queryByTags(tagVal) {
-    fetch(`${API_ORIGIN}/images/byTags?tags=` + tagVal, {
+    fetch(`${API_ORIGIN}/image/byTags?tags=` + tagVal, {
       method: 'GET',
     })
       .then((d) => d.json())

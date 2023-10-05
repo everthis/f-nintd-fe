@@ -28,8 +28,9 @@ const HorLine = styled.hr`
 `
 
 const EditorContainer = styled.div`
-  display: inline-block;
-  width: 600px;
+  display: block;
+  width: 650px;
+  margin: 0 auto;
 `
 
 const useCS = (name, initVal, setHook) => {
@@ -56,7 +57,7 @@ export function Create() {
   const [showUpload, setShowUpload] = useCS('upload', false, setStkVal)
   const [showImg, setShowImg] = useCS('image', false, setStkVal)
   const [showAddTag, setShowAddTag] = useCS('tag', false, setStkVal)
-  const [fayeIns, setFayeIns] = useState(null)
+
   const [paneMap, setPaneMap] = useState(new Map())
   const [checkedSet, setCheckedSet] = useState(new Set())
 
@@ -86,24 +87,6 @@ export function Create() {
     setTags(clone)
   }
 
-  useEffect(() => {
-    const client = new Faye.Client(`${API_ORIGIN}/faye`)
-    console.log(Faye, client)
-    setFayeIns(client)
-    return () => {
-      client.disconnect()
-    }
-  }, [])
-  const genRand = (len) => {
-    return Math.random()
-      .toString(36)
-      .substring(2, len + 2)
-  }
-  function publish() {
-    if (fayeIns) {
-      fayeIns.publish('/foo', genRand(12))
-    }
-  }
   function isLastInMap(map, key) {
     const it = map.keys()
     let last
@@ -147,10 +130,10 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowUpload(true)}
-            key="upload"
+            key='upload'
             left={left}
             top={top}
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={<Upload />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -164,12 +147,12 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowImg(true)}
-            key="image"
+            key='image'
             left={left}
             top={top}
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="80vh"
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='80vh'
             body={
               <ImageGridPane
                 showActions={false}
@@ -190,11 +173,11 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAudio(true)}
-            key="audio"
+            key='audio'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={<Audio />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -208,17 +191,17 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowArticleList(true)}
-            key="article"
+            key='article'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={<Article />}
             onClose={(ev) => {
               ev.stopPropagation()
               setShowArticleList(false)
             }}
-            width="600px"
+            width='600px'
           />
         ),
     text:
@@ -227,13 +210,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowText(true)}
-            key="text"
+            key='text'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="70vh"
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='70vh'
             body={<TextPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -247,13 +230,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAddTag(true)}
-            key="tag"
+            key='tag'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="50vw"
-            height="30vh"
+            bgColor='var(--bg-color)'
+            width='50vw'
+            height='30vh'
             body={<AddTagPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -265,8 +248,7 @@ export function Create() {
   return (
     <>
       <Header />
-      <VertGap height="1em" />
-
+      <VertGap height='1em' />
       <HorLine />
       <Toolbar
         showUpload={showUpload}
@@ -283,9 +265,7 @@ export function Create() {
         setShowAddTag={setShowAddTag}
       />
       <HorLine />
-      <p>
-        <button onClick={publish}>publish</button>
-      </p>
+
       <EditorContainer>
         <Editor imgList={checkedSet} />
       </EditorContainer>

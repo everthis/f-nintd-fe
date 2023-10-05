@@ -15,6 +15,10 @@ const Wrap = styled.div`
   position: relative;
 `
 
+const Textarea = styled.textarea`
+  background-color: var(--bg-color);
+`
+
 const ListWrap = styled.div`
   padding-right: 2rem;
 `
@@ -26,7 +30,7 @@ const InputSection = styled.div`
 `
 const Pre = styled.pre`
   white-space: break-spaces;
-  background-color: #e4e9ec;
+  background-color: var(--highlight-color);
   padding: 0.2rem;
   font-size: 14px;
   position: relative;
@@ -87,7 +91,7 @@ export function TextPane() {
   return (
     <Wrap>
       <InputSection ref={inputSecRef}>
-        <textarea rows="5" cols="50" ref={ref} />
+        <Textarea rows='5' cols='50' ref={ref} />
         <Btn onClick={addText}>Add text</Btn>
       </InputSection>
 
@@ -114,7 +118,7 @@ function PerText({ data, toggleOpts }) {
     <Pre>
       {data.content}
       <Pos>
-        <VdotsIcon onClick={toggleOpts} size="20px" />
+        <VdotsIcon onClick={toggleOpts} size='20px' />
       </Pos>
     </Pre>
   )

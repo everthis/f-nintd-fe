@@ -22,7 +22,7 @@ function App() {
       element: <HomePage />,
     },
     {
-      path: '/articles',
+      path: '/dashboard',
       element: <Create />,
     },
     {

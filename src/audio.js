@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 import { PlayIcon, PauseIcon } from './icon'
+import { useQuery } from './hooks'
 
 const HiddenInput = styled.input`
   opacity: 0;
@@ -52,7 +53,18 @@ const FixedRightWidthRow = styled.div`
     width: 100%;
   }
 `
-
+const SelectWrap = styled.span``
+const StyledAudioItem = styled.div``
+const AudioItemWrap = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  ${StyledAudioItem} {
+    flex: 1;
+  }
+`
+function isWechat() {
+  return /MicroMessenger/i.test(window.navigator.userAgent)
+}
 function secondsToHms(d) {
   d = Number(d)
   const h = Math.floor(d / 3600)
@@ -71,6 +83,8 @@ function AudioPlayer({ source, name }) {
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
   const [val, setVal] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [shouldShowPlayer, setShouldShowPlayer] = useState(true)
+  const [paused, setPaused] = useState(true)
 
   useEffect(() => {
     const audio = ref.current
@@ -81,37 +95,54 @@ function AudioPlayer({ source, name }) {
     }
     function seeked(ev) {
       audio.play()
+      setPaused(false)
     }
-    if (Hls.isSupported()) {
+    function canplaythrough(ev) {
+      setDuration(audio.duration)
+      setIsReadyToPlay(true)
+    }
+    if (source) source += '#t=0.5'
+    if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+      audio.addEventListener('canplaythrough', canplaythrough)
+
+      audio.src = source
+      audio.load()
+    } else if (Hls.isSupported()) {
       const hls = new Hls({
         maxBufferLength: 6,
       })
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         setIsReadyToPlay(true)
       })
-      hls.on(Hls.Events.LEVEL_LOADED, function () {
-        setDuration(audio.duration)
+      hls.on(Hls.Events.LEVEL_LOADED, function (ev, data) {
+        setDuration(data.details.totalduration)
       })
       hls.loadSource(source)
       hls.attachMedia(audio)
-      audio.addEventListener('timeupdate', timeupdate)
-      audio.addEventListener('seeked', seeked)
+    } else {
+      setShouldShowPlayer(false)
     }
 
+    audio.addEventListener('timeupdate', timeupdate)
+    audio.addEventListener('seeked', seeked)
+
     return () => {
-      if (Hls.isSupported()) {
-        audio.removeEventListener('timeupdate', timeupdate)
-        audio.removeEventListener('seeked', seeked)
+      audio.removeEventListener('timeupdate', timeupdate)
+      audio.removeEventListener('seeked', seeked)
+      if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+        audio.removeEventListener('canplaythrough', canplaythrough)
       }
     }
   }, [])
 
-  function togglePlay() {
+  function togglePlay(ev) {
     const audio = ref.current
     if (audio.paused) {
       audio.play()
+      setPaused(false)
     } else {
       audio.pause()
+      setPaused(true)
     }
   }
 
@@ -124,18 +155,21 @@ function AudioPlayer({ source, name }) {
     setVal(Number(ev.target.value))
   }
 
-  const btnContent =
-    ref.current == null ? (
-      <PlayIcon />
-    ) : ref.current.paused ? (
-      <PlayIcon />
-    ) : (
-      <PauseIcon />
-    )
+  // const btnContent =
+  //   ref.current == null ? (
+  //     <PlayIcon />
+  //   ) : ref.current.paused ? (
+  //     <PlayIcon />
+  //   ) : (
+  //     <PauseIcon />
+  //   )
 
+  const btnContent = paused ? <PlayIcon /> : <PauseIcon />
+
+  if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} />
+      <audio ref={ref} playsInline preload='metadata' />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
@@ -155,19 +189,24 @@ function AudioPlayer({ source, name }) {
           </div>
         </ProgressWrap>
         <Actions>
-          <span disabled={!isReadyToPlay} onClick={togglePlay}>
+          <button
+            type='button'
+            title='toggle play'
+            disabled={isWechat() ? false : !isReadyToPlay}
+            onClick={togglePlay}
+          >
             {btnContent}
-          </span>
+          </button>
         </Actions>
       </FixedRightWidthRow>
     </div>
   )
 }
 
-function AudioItem({ data }) {
+export function AudioItem({ data }) {
   const { name, m3u8_name, folder, url } = data
   return (
-    <div
+    <StyledAudioItem
       style={{
         marginBottom: '0.5em',
         borderBottom: '1px solid #ddd',
@@ -175,41 +214,46 @@ function AudioItem({ data }) {
       }}
     >
       <AudioPlayer source={url} name={name} />
-    </div>
+    </StyledAudioItem>
   )
 }
 
-function AudioList({ list }) {
+function AudioList({ list, onSelectChange }) {
   return (
     <>
       {list.map((e) => (
-        <AudioItem key={e.folder} data={e} />
+        <AudioItemWrap key={e.folder}>
+          {onSelectChange ? (
+            <SelectWrap>
+              <input
+                type='checkbox'
+                value={e.id}
+                name='audio'
+                onChange={onSelectChange}
+              />
+            </SelectWrap>
+          ) : null}
+          <AudioItem data={e} />
+        </AudioItemWrap>
       ))}
     </>
   )
 }
 
 export function Audio() {
-  const [audioList, setAudioList] = useState([])
-
-  function getList() {
-    fetch(`${API_ORIGIN}/audio/list`, {})
-      .then((d) => d.json())
-      .then((d) => {
-        setAudioList(d)
-      })
-  }
-
-  useEffect(() => {
-    getList()
-    return () => {
-      setAudioList([])
-    }
-  }, [])
+  // const [audioList, setAudioList] = useState([])
+  const { data: audioList = [], loading } = useQuery({
+    url: `${API_ORIGIN}/audio/list`,
+  })
 
   return (
     <div>
+      {loading ? 'loading' : ''}
       <AudioList list={audioList} />
     </div>
   )
+}
+
+export function AudioStateLess({ list = [], onSelectChange, showSelect }) {
+  return <AudioList list={list} onSelectChange={onSelectChange} />
 }

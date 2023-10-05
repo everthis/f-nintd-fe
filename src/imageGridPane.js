@@ -4,8 +4,10 @@ import styled from 'styled-components'
 import { Pane } from './pane'
 import { Tags, formatter as tagsFormatter } from './tag'
 import { ImgFromUrl } from './image'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, TYPE } from './constant'
 import { useQuery } from './hooks'
+import { downloadAndCreateHash } from './utils'
+import { AudioStateLess } from './audio'
 
 const Wrap = styled.div`
   position: relative;
@@ -84,6 +86,12 @@ const Status = styled.span`
   background-color: var(--bg-color);
   z-index: 1;
 `
+const TypeSelectionWrap = styled.div`
+  margin-bottom: .5rem;
+`
+
+const AudioSection = styled.div``
+
 const qsOfTags = (arr = []) =>
   arr
     .filter((e) => e.selected)
@@ -106,6 +114,9 @@ export function ImageGridPane({
 }) {
   const [tags, setTags] = useState([])
   const [imgs, setImgs] = useState([])
+  const [audios, setAudios] = useState([])
+  const [type, setType] = useState(TYPE.IMG)
+  const [selectedAudio, setSelectedAudio] = useState(new Map())
   const {
     data: tagsData,
     loading: tagsLoading,
@@ -120,7 +131,7 @@ export function ImageGridPane({
     loading: fetching,
     queryData: queryByTags,
   } = useQuery({
-    url: `${API_ORIGIN}/images/byTags`,
+    url: `${API_ORIGIN}/${type}/byTags`,
     params: fetchImgParams,
     formatter,
     // shouldFetch: (_, params) => params.tags.length > 0,
@@ -163,20 +174,35 @@ export function ImageGridPane({
 
   function applySelected() {
     const imgsArr = imgs.filter((e) => e.selected)
-    const res = imgsArr.map((e) => {
-      e.type = 'img'
+    const res = []
+    const resImgs = imgsArr.map((e) => {
+      e.type = TYPE.IMG
       e.val = e.name
       e.dimension = e.dimension
       return e
     })
+    const resAudio = []
+    for (const e of selectedAudio.values()) {
+      resAudio.push({
+        id: e.id,
+        type: TYPE.AUDIO,
+        url: e.url,
+        name: e.name,
+      })
+    }
+
+    res.push(...resImgs, ...resAudio)
     onConfirm(res)
   }
 
   function toggleSelectAll() {
-    const clone = imgs.slice(0)
-    const allChecked = imgs.filter((e) => e.selected).length === imgs.length
-    clone.forEach((e) => (e.selected = allChecked ? false : true))
-    setImgs(clone)
+    if (type === TYPE.IMG) {
+      const clone = imgs.slice(0)
+      const allChecked = imgs.filter((e) => e.selected).length === imgs.length
+      clone.forEach((e) => (e.selected = allChecked ? false : true))
+      setImgs(clone)
+    } else if (type === TYPE.AUDIO) {
+    }
   }
 
   function toggleTag(name, selected) {
@@ -199,8 +225,52 @@ export function ImageGridPane({
   }, [tagsLoading])
 
   useEffect(() => {
-    if (data) setImgs(data)
+    if (data && type === TYPE.IMG) {
+      setImgs(data)
+      setAudios([])
+    }
+    if (data && type === TYPE.AUDIO) {
+      setImgs([])
+      setAudios(data)
+    }
   }, [data])
+
+  useEffect(() => {
+    if (fetching) setSelectedAudio(new Set())
+  }, [fetching])
+
+  // async function chkDup() {
+  //   const hash = {}
+  //   for (const e of imgs) {
+  //     const h = await downloadAndCreateHash(e.name)
+  //     if (hash[h] == null) hash[h] = 0
+  //     hash[h]++
+  //   }
+
+  //   console.log(hash)
+  //   console.log(Object.keys(hash).length, imgs.length)
+  // }
+  // chkDup()
+
+  function onTypeChange(ev) {
+    setType(ev.target.value)
+  }
+
+  function findAudioById(id) {
+    for (const e of audios) {
+      if (e.id === id) return e
+    }
+  }
+
+  function onAudioSelectChange(ev) {
+    const { value, checked } = ev.target
+    const clone = new Map(selectedAudio)
+    const id = +value
+    if (checked) {
+      clone.set(id, findAudioById(id))
+    } else clone.delete(id)
+    setSelectedAudio(clone)
+  }
 
   return showPane ? (
     <Wrap>
@@ -210,56 +280,98 @@ export function ImageGridPane({
         toggleTag={toggleTag}
         disableDel={true}
       />
-
-      <ImgSection>
-        {fetching ? (
-          <Status>
-            <b>loading</b>
-          </Status>
-        ) : null}
-        {imgs.map((e) => (
-          <ImgWrap key={e.name}>
-            <ImgInnerContainer checked={e.selected}>
-              <ImgMidContainer checked={disabledSet.has(e.name)}>
-                <ImgInner checked={e.selected || disabledSet.has(e.name)}>
-                  <ImgFromUrl
-                    opts={[]}
-                    tags={e.tags}
-                    url={e.name}
-                    dimension={e.dimension}
-                    hideTags={true}
-                    hideDel={true}
-                    selectCb={selectCbFn}
-                    hideSelect={true}
-                  />
-                </ImgInner>
-              </ImgMidContainer>
-            </ImgInnerContainer>
-            {showActions && (
-              <Select>
-                {singleSelect ? (
-                  <input
-                    type="radio"
-                    value={e.name}
-                    name="radio"
-                    checked={e.selected}
-                    onChange={(ev) =>
-                      selectCbFn(e.name, ev.target.checked, true)
-                    }
-                  />
-                ) : (
-                  <input
-                    type="checkbox"
-                    checked={e.selected}
-                    disabled={disabledSet.has(e.name)}
-                    onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
-                  />
+      <TypeSelectionWrap>
+        <b>Type:</b>
+        <label>
+          <input
+            type='radio'
+            name='queryType'
+            value={TYPE.IMG}
+            checked={type === TYPE.IMG}
+            onChange={onTypeChange}
+            disabled={fetching}
+          />
+          image
+        </label>
+        <label>
+          <input
+            type='radio'
+            name='queryType'
+            value={TYPE.AUDIO}
+            checked={type === TYPE.AUDIO}
+            onChange={onTypeChange}
+            disabled={fetching}
+          />
+          audio
+        </label>
+      </TypeSelectionWrap>
+      {type === TYPE.IMG ? (
+        <ImgSection>
+          {fetching ? (
+            <Status>
+              <b>loading</b>
+            </Status>
+          ) : null}
+          {!fetching &&
+            imgs.map((e) => (
+              <ImgWrap key={e.name}>
+                <ImgInnerContainer checked={e.selected}>
+                  <ImgMidContainer checked={disabledSet.has(e.name)}>
+                    <ImgInner checked={e.selected || disabledSet.has(e.name)}>
+                      <ImgFromUrl
+                        opts={[]}
+                        tags={e.tags}
+                        url={e.name}
+                        dimension={e.dimension}
+                        hideTags={true}
+                        hideDel={true}
+                        selectCb={selectCbFn}
+                        hideSelect={true}
+                      />
+                    </ImgInner>
+                  </ImgMidContainer>
+                </ImgInnerContainer>
+                {showActions && (
+                  <Select>
+                    {singleSelect ? (
+                      <input
+                        type='radio'
+                        value={e.name}
+                        name='radio'
+                        checked={e.selected}
+                        onChange={(ev) =>
+                          selectCbFn(e.name, ev.target.checked, true)
+                        }
+                      />
+                    ) : (
+                      <input
+                        type='checkbox'
+                        checked={e.selected}
+                        disabled={disabledSet.has(e.name)}
+                        onChange={(ev) => selectCbFn(e.name, ev.target.checked)}
+                      />
+                    )}
+                  </Select>
                 )}
-              </Select>
-            )}
-          </ImgWrap>
-        ))}
-      </ImgSection>
+              </ImgWrap>
+            ))}
+        </ImgSection>
+      ) : null}
+      {type === TYPE.AUDIO ? (
+        <AudioSection>
+          {fetching ? (
+            <Status>
+              <b>loading</b>
+            </Status>
+          ) : null}
+          {!fetching && (
+            <AudioStateLess
+              list={audios}
+              onSelectChange={showActions ? onAudioSelectChange : null}
+            />
+          )}
+        </AudioSection>
+      ) : null}
       {showActions && (
         <OpSection>
           {singleSelect ? null : (

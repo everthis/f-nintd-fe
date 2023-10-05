@@ -12,12 +12,17 @@ const Wrap = styled.div`
 `
 
 function HomePageComp() {
-  const { data = [], err } = useQuery({
+  const {
+    data = [],
+    err,
+    loading,
+  } = useQuery({
     url: `${API_ORIGIN}/article_list_with_cover`,
   })
   return (
     <Wrap>
       <h1>Games gallery</h1>
+      {loading ? <h1>Loading</h1> : null}
       {data.map((e, i) => (
         <Card key={i} {...e} />
       ))}

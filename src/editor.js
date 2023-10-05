@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { Pane } from './pane'
 import { Tags } from './tag'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, TYPE } from './constant'
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -12,10 +12,12 @@ import {
   InsertBeforeIcon,
   InsertAfterIcon,
   RefreshIcon,
+  ReverseIcon,
 } from './icon'
 import { PaneContainer } from './pane'
 import { ImageGridPane } from './imageGridPane'
 import { ImgComp } from './image'
+import { AudioItem } from './audio'
 
 const Wrap = styled.div`
   position: relative;
@@ -23,9 +25,9 @@ const Wrap = styled.div`
 const EditorWrap = styled.div`
   position: relative;
   display: inline-block;
-  min-width: 600px;
+  width: 100%;
   min-height: 400px;
-  max-height: 70vh;
+  max-height: 50vh;
   border: 1px solid #333;
   resize: both;
   overflow-y: scroll;
@@ -65,7 +67,13 @@ const TitleRow = styled.div`
 const Section = styled.section`
   position: relative;
 `
-const SectionContent = styled.section``
+const SectionContent = styled.section`
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding:.5rem;
+`
 const SectionOp = styled.span`
   position: absolute;
   left: 100%;
@@ -107,15 +115,16 @@ const ImgInner = styled.div`
 
 const Op = styled.div`
   margin-top: 1em;
-  button + button {
-    margin-left: 3em;
-  }
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
 `
 
 const PreOp = styled.div`
   position: absolute;
   right: 100%;
   top: 50%;
+  transform: translate3d(0, -50%, 0);
 `
 
 const VertGap = styled.div`
@@ -133,6 +142,12 @@ const RefreshWrap = styled.span`
   position: absolute;
   left: 50%;
   top: -1rem;
+`
+
+const AbsPos = styled.span`
+  position: absolute;
+  left: 100%;
+  top: 50%;
 `
 
 export function Editor() {
@@ -159,11 +174,20 @@ export function Editor() {
     res.title = title
     res.path = title.toLowerCase().split(' ').join('_')
     for (const e of items) {
-      res.body.push({
-        type: e.type,
-        val: e.val,
-        dimension: e.dimension,
-      })
+      if (e.type === TYPE.IMG) {
+        res.body.push({
+          type: e.type,
+          val: e.val,
+          dimension: e.dimension,
+        })
+      } else if (e.type === TYPE.AUDIO) {
+        res.body.push({
+          type: e.type,
+          name: e.name,
+          url: e.url,
+          id: e.id,
+        })
+      }
     }
 
     if (coverImg?.val) {
@@ -209,7 +233,7 @@ export function Editor() {
     setImgs(arr)
   }
   function queryByTags(tagVal) {
-    fetch(`${API_ORIGIN}/images/byTags?tags=` + tagVal, {
+    fetch(`${API_ORIGIN}/image/byTags?tags=` + tagVal, {
       method: 'GET',
     })
       .then((d) => d.json())
@@ -219,14 +243,14 @@ export function Editor() {
   }
 
   const insertAssets = (arr) => {
+    const clone = items.slice()
     if (activeImgInArticleRef.current != null) {
       const idx = activeImgInArticleRef.current
-      const clone = items.slice()
       clone.splice(idx, 0, ...arr)
-      setItems(clone)
     } else {
-      setItems(arr)
+      clone.push(...arr)
     }
+    setItems(clone)
   }
 
   const coverSelectionBody = React.useMemo(
@@ -296,7 +320,7 @@ export function Editor() {
   function applySelected() {
     const imgsArr = imgs.filter((e) => e.selected)
     const res = imgsArr.map((e) => {
-      e.type = 'img'
+      e.type = TYPE.IMG
       e.val = e.name
       e.dimension = e.dimension
       return e
@@ -338,7 +362,7 @@ export function Editor() {
   }
 
   function clearEditor() {
-    setItems([])
+    resetEditor()
   }
 
   function titleChange(ev) {
@@ -372,6 +396,14 @@ export function Editor() {
     setCoverImg({})
   }
 
+  function reverseList() {
+    const clone = items.slice()
+    clone.reverse()
+    setItems(clone)
+  }
+
+  function addAudio() {}
+
   useEffect(() => {
     const cb = (ev) => {
       const { id } = ev.detail
@@ -392,24 +424,20 @@ export function Editor() {
           <input value={title} onChange={titleChange} />
         </label>
       </TitleRow>
-      <CoverWrap>
-        {coverImg?.val ? (
-          <>
-            <label>Cover:</label>
-            <ImgComp {...coverImg} />
-          </>
-        ) : null}
-      </CoverWrap>
+
       <EditorWrap>
         {items.map((e, idx) => (
-          <Section key={e.val}>
+          <Section key={idx}>
             <PreOp>
               <OpBtn onClick={() => deleteItem(idx)}>
                 <DeleteIcon />
               </OpBtn>
             </PreOp>
             <SectionContent>
-              {e.type === 'img' ? <ImgComp {...e} /> : null}
+              {e.type === TYPE.IMG || e.type === 'img' ? (
+                <ImgComp {...e} />
+              ) : null}
+              {e.type === TYPE.AUDIO ? <AudioItem data={e} /> : null}
               {e.type === 'text' ? <p>{e.val}</p> : null}
             </SectionContent>
             <SectionOp>
@@ -430,40 +458,55 @@ export function Editor() {
         ))}
       </EditorWrap>
       <Op>
-        <button onClick={clearEditor}>Clear editor</button>
+        <button onClick={clearEditor}>
+          <RefreshIcon />
+          Clear editor
+        </button>
+        <button onClick={reverseList}>
+          <ReverseIcon />
+          reverse List
+        </button>
         <button onClick={addCover}>add cover</button>
         <button onClick={addAssetsToTheEnd}>Add Assets</button>
         <button onClick={preview}>Preview</button>
         <button onClick={save}>Save</button>
       </Op>
-      <VertGap height="50px" />
+      <VertGap height='50px' />
+      <CoverWrap>
+        {coverImg?.val ? (
+          <>
+            <label>Cover:</label>
+            <ImgComp {...coverImg} />
+          </>
+        ) : null}
+      </CoverWrap>
       {showCoverPane ? (
-        <PaneContainer left="200px" top="50px" show={showCoverPane}>
+        <PaneContainer left='200px' top='50px' show={showCoverPane}>
           <Pane
             show={showCoverPane}
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={coverSelectionBody}
-            width="80vw"
-            height="80vh"
+            width='80vw'
+            height='80vh'
             onClose={() => setShowCoverPane(false)}
           />
         </PaneContainer>
       ) : null}
       {showPane ? (
-        <PaneContainer left="200px" top="50px" show={showPane}>
+        <PaneContainer left='200px' top='50px' show={showPane}>
           <Pane
             show={showPane}
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={imageGridBody}
-            width="80vw"
-            height="80vh"
+            width='80vw'
+            height='80vh'
             onClose={() => setShowPane(false)}
           />
         </PaneContainer>
       ) : null}
-      <RefreshWrap onClick={resetEditor}>
-        <RefreshIcon />
-      </RefreshWrap>
+      {/* <RefreshWrap onClick={resetEditor}>
+        
+      </RefreshWrap> */}
     </Wrap>
   )
 }

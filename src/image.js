@@ -83,7 +83,7 @@ export function ImgFromUrl({
 
   function onChangeFn(e) {
     // setTags(e.target.value)
-    console.log(e.target.value)
+    // console.log(e.target.value)
     const val = e.target.value
     if (val === '') return
     const idx = tags.map((e) => e.name).indexOf(val)
@@ -158,7 +158,7 @@ export function ImgFromUrl({
         {height ? (
           <RatioImg url={url} width={width} height={height} />
         ) : (
-          <img src={url} alt="preview image" loading="lazy" />
+          <img src={url} alt='preview image' loading='lazy' />
         )}
       </div>
       <div>
@@ -190,7 +190,7 @@ export function ImgFromUrl({
       </div>
       {hideSelect ? null : (
         <Select>
-          <input type="checkbox" onChange={selectChange} />
+          <input type='checkbox' onChange={selectChange} />
         </Select>
       )}
     </PerRemote>
@@ -200,7 +200,7 @@ export function ImgFromUrl({
 export function RatioImg({ width, height, url }) {
   return (
     <ImgWrap ratio={height / width} url={url}>
-      <img src={url} loading="lazy" />
+      <img src={url} loading='lazy' />
     </ImgWrap>
   )
 }
@@ -235,5 +235,5 @@ export function ImgComp({ dimension, val: url }) {
   if (height) {
     return <RatioImg url={url} height={height} width={width} />
   }
-  return <img src={url} loading="lazy" />
+  return <img src={url} loading='lazy' />
 }
