@@ -10,3 +10,6 @@ export const TYPE = {
   IMG: 'image',
   AUDIO: 'audio',
 }
+
+export const EMPTY_OBJ = {}
+export const EMPTY_ARR = []

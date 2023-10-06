@@ -69,6 +69,7 @@ export function RemoteImageList({ tags = defaultTags, cb, selectCb }) {
           tags={e.tags}
           url={e.name}
           key={e.name}
+          data={e}
           dimension={e.dimension}
           selectCb={selectCb}
           delCb={delCb}

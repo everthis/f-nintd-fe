@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, EMPTY_OBJ, EMPTY_ARR } from './constant'
 // import { Select } from './upload'
+import { Tags } from './tag'
+import { useQuery } from './hooks'
 
 const PerRemote = styled.div`
   position: relative;
@@ -45,10 +47,19 @@ const ImgWrap = styled.div`
     height: 100%;
   }
 `
+const OptsPaneWrap = styled.div`
+  position: absolute;
+  right: 1rem;
+  width: 5rem;
+  font-size: 14px;
+  background-color: var(--bg-color);
+  border: var(--border);
+`
 
 export function ImgFromUrl({
   url,
   opts,
+  data = EMPTY_OBJ,
   dimension = '',
   tags: defaultTags,
   selectCb = () => {},
@@ -57,6 +68,7 @@ export function ImgFromUrl({
   hideSelect = true,
   delCb = () => {},
 }) {
+  const { id } = data
   const [tags, setTags] = useState(defaultTags || [])
   const options = opts
   const [remoteList, setRemoteList] = useState([])
@@ -149,7 +161,7 @@ export function ImgFromUrl({
   function selectChange(ev) {
     selectCb(url, ev.target.checked)
   }
-
+  console.log(data)
   const ph = 'Select tags'
   const [width, height] = (dimension || '').split(',')
   return (
@@ -161,13 +173,14 @@ export function ImgFromUrl({
           <img src={url} alt='preview image' loading='lazy' />
         )}
       </div>
-      <div>
-        {hideDel ? null : (
+      {/* <OptsPane imageId={id} /> */}
+      {/* <div> */}
+      {/* {hideDel ? null : (
           <button onClick={() => delRemote(url)}>delete Remote</button>
-        )}
+        )} */}
 
-        {/* <input value={tags} onChange={onChangeFn} /> */}
-        {hideTags ? null : (
+      {/* <input value={tags} onChange={onChangeFn} /> */}
+      {/* {hideTags ? null : (
           <>
             {tags.map((e) => (
               <Tag name={e.name} image={url} key={e.name}>
@@ -185,15 +198,46 @@ export function ImgFromUrl({
               ))}
             </select>
           </>
-        )}
-        {/* <button onClick={updateTags}>Update</button> */}
-      </div>
+        )} */}
+      {/* <button onClick={updateTags}>Update</button> */}
+      {/* </div> */}
       {hideSelect ? null : (
         <Select>
           <input type='checkbox' onChange={selectChange} />
         </Select>
       )}
     </PerRemote>
+  )
+}
+
+const defaultPos = [0, 0]
+function OptsPane({ imageId, pos = defaultPos }) {
+  const {
+    data,
+    loading,
+    queryData: querySelectedTags,
+  } = useQuery({
+    url: `${API_ORIGIN}/imageTagRelation/image/${imageId}`,
+  })
+
+  const toggleTag = (tagId, selected) => {
+    postData(`${API_ORIGIN}/text_tag_relation`, {
+      imageId,
+      tagId,
+      selected,
+    }).then(() => querySelectedTags())
+  }
+  if (data == null) return null
+  return (
+    <OptsPaneWrap style={{ top: pos[1] + 'px' }}>
+      <Tags
+        loading={loading}
+        tags={data.tags}
+        toggleTag={toggleTag}
+        showAddTag={false}
+        disableDel
+      />
+    </OptsPaneWrap>
   )
 }
 

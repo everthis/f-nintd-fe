@@ -91,7 +91,6 @@ function AudioPlayer({ source, name }) {
 
   function canplay(ev) {
     setStatus(ev.type)
-    setDuration(ref.current.duration)
     setIsReadyToPlay(true)
   }
   function loadstart(ev) {
@@ -125,6 +124,9 @@ function AudioPlayer({ source, name }) {
   function ended(ev) {
     setStatus(ev.type)
   }
+  function durationchange(ev) {
+    setDuration(ev.target.duration)
+  }
 
   useEffect(() => {
     const audio = ref.current
@@ -152,6 +154,7 @@ function AudioPlayer({ source, name }) {
     audio.addEventListener('play', play)
     audio.addEventListener('waiting', waiting)
     audio.addEventListener('ended', ended)
+    audio.addEventListener('durationchange', durationchange)
 
     if (audio.canPlayType('application/vnd.apple.mpegurl')) {
       // audio.addEventListener('canplay', canplay)
@@ -165,7 +168,7 @@ function AudioPlayer({ source, name }) {
         setIsReadyToPlay(true)
       })
       hls.on(Hls.Events.LEVEL_LOADED, function (ev, data) {
-        setDuration(data.details.totalduration)
+        // setDuration(data.details.totalduration)
       })
       hls.loadSource(source)
       hls.attachMedia(audio)
@@ -187,6 +190,7 @@ function AudioPlayer({ source, name }) {
       audio.removeEventListener('play', play)
       audio.removeEventListener('waiting', waiting)
       audio.removeEventListener('ended', ended)
+      audio.removeEventListener('durationchange', durationchange)
       if (audio.canPlayType('application/vnd.apple.mpegurl')) {
         // audio.removeEventListener('canplay', canplay)
       }

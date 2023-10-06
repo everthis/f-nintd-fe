@@ -320,6 +320,7 @@ export function ImageGridPane({
                     <ImgInner checked={e.selected || disabledSet.has(e.name)}>
                       <ImgFromUrl
                         opts={[]}
+                        data={e}
                         tags={e.tags}
                         url={e.name}
                         dimension={e.dimension}
