@@ -179,8 +179,9 @@ export function Editor() {
       if (e.type === TYPE.IMG) {
         res.body.push({
           type: e.type,
-          val: e.val,
+          name: e.val || e.name, // for compatibility
           dimension: e.dimension,
+          id: e.id,
         })
       } else if (e.type === TYPE.AUDIO) {
         res.body.push({
@@ -192,9 +193,9 @@ export function Editor() {
       }
     }
 
-    if (coverImg?.val) {
-      const { val, type, dimension } = coverImg
-      res.cover = { val, type, dimension }
+    if (coverImg?.val || coverImg?.name) {
+      const { val, type, dimension, name } = coverImg
+      res.cover = { name: val || name, type, dimension }
     }
 
     const articleId = +articleIdRef.current.value
@@ -478,9 +479,9 @@ export function Editor() {
           <SaveIcon /> Save
         </button>
       </Op>
-      <VertGap height="50px" />
+      <VertGap height='50px' />
       <CoverWrap>
-        {coverImg?.val ? (
+        {coverImg?.name ? (
           <>
             <label>Cover:</label>
             <ImgComp {...coverImg} />
@@ -490,10 +491,10 @@ export function Editor() {
       {showCoverPane ? (
         <Pane
           show={showCoverPane}
-          bgColor="var(--bg-color)"
+          bgColor='var(--bg-color)'
           body={coverSelectionBody}
-          width="80vw"
-          height="80vh"
+          width='80vw'
+          height='80vh'
           left={100}
           top={100}
           onClose={() => setShowCoverPane(false)}
@@ -504,10 +505,10 @@ export function Editor() {
           left={100}
           top={100}
           show={showPane}
-          bgColor="var(--bg-color)"
+          bgColor='var(--bg-color)'
           body={imageGridBody}
-          width="80vw"
-          height="80vh"
+          width='80vw'
+          height='80vh'
           onClose={() => setShowPane(false)}
         />
       ) : null}

@@ -17,7 +17,7 @@ function HomePageComp() {
     err,
     loading,
   } = useQuery({
-    url: `${API_ORIGIN}/article_list_with_cover`,
+    url: `${API_ORIGIN}/articleListWithCover`,
   })
   return (
     <Wrap>

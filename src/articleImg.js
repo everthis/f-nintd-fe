@@ -59,7 +59,7 @@ const LazyImage = ({ width, height, src, ...rest }) => {
 export function SingleImage({ data }) {
   const staticPrefix = ''
   const img = data
-  const src = `${staticPrefix}${img.val}`
+  const src = `${staticPrefix}${img.val || img.name}`
   const { dimension = '' } = img
   const [width, height] = dimension.split(',').map((e) => +e)
   return <LazyImage key={src} src={src} width={width} height={height} />
