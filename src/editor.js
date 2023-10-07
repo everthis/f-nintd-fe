@@ -13,9 +13,11 @@ import {
   InsertAfterIcon,
   RefreshIcon,
   ReverseIcon,
+  AddIcon,
+  SaveIcon,
 } from './icon'
 import { PaneContainer } from './pane'
-import { ImageGridPane } from './imageGridPane'
+import { AssetGridPane } from './AssetGridPane'
 import { ImgComp } from './image'
 import { AudioItem } from './audio'
 
@@ -72,7 +74,7 @@ const SectionContent = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding:.5rem;
+  padding: 0.5rem;
 `
 const SectionOp = styled.span`
   position: absolute;
@@ -256,7 +258,7 @@ export function Editor() {
   const coverSelectionBody = React.useMemo(
     () =>
       showCoverPane ? (
-        <ImageGridPane
+        <AssetGridPane
           showActions
           singleSelect
           showPane={showCoverPane}
@@ -273,10 +275,10 @@ export function Editor() {
   const imageGridBody = React.useMemo(() => {
     const disabledSet = new Set()
     for (const e of items) {
-      disabledSet.add(e.val)
+      disabledSet.add(e)
     }
     return showPane ? (
-      <ImageGridPane
+      <AssetGridPane
         showActions
         showPane={showPane}
         setShowPane={setShowPane}
@@ -289,7 +291,7 @@ export function Editor() {
     ) : null
   }, [showPane])
 
-  // const insertImageGridBody = React.memo(() => (<ImageGridPane
+  // const insertImageGridBody = React.memo(() => (<AssetGridPane
   //   showActions
   //   showPane={showInsertPane}
   //   setShowPane={setShowInsertPane}
@@ -467,11 +469,16 @@ export function Editor() {
           reverse List
         </button>
         <button onClick={addCover}>add cover</button>
-        <button onClick={addAssetsToTheEnd}>Add Assets</button>
-        <button onClick={preview}>Preview</button>
-        <button onClick={save}>Save</button>
+        <button onClick={addAssetsToTheEnd}>
+          <AddIcon />
+          Add Assets
+        </button>
+        {/* <button onClick={preview}>Preview</button> */}
+        <button onClick={save}>
+          <SaveIcon /> Save
+        </button>
       </Op>
-      <VertGap height='50px' />
+      <VertGap height="50px" />
       <CoverWrap>
         {coverImg?.val ? (
           <>
@@ -481,28 +488,28 @@ export function Editor() {
         ) : null}
       </CoverWrap>
       {showCoverPane ? (
-        <PaneContainer left='200px' top='50px' show={showCoverPane}>
-          <Pane
-            show={showCoverPane}
-            bgColor='var(--bg-color)'
-            body={coverSelectionBody}
-            width='80vw'
-            height='80vh'
-            onClose={() => setShowCoverPane(false)}
-          />
-        </PaneContainer>
+        <Pane
+          show={showCoverPane}
+          bgColor="var(--bg-color)"
+          body={coverSelectionBody}
+          width="80vw"
+          height="80vh"
+          left={100}
+          top={100}
+          onClose={() => setShowCoverPane(false)}
+        />
       ) : null}
       {showPane ? (
-        <PaneContainer left='200px' top='50px' show={showPane}>
-          <Pane
-            show={showPane}
-            bgColor='var(--bg-color)'
-            body={imageGridBody}
-            width='80vw'
-            height='80vh'
-            onClose={() => setShowPane(false)}
-          />
-        </PaneContainer>
+        <Pane
+          left={100}
+          top={100}
+          show={showPane}
+          bgColor="var(--bg-color)"
+          body={imageGridBody}
+          width="80vw"
+          height="80vh"
+          onClose={() => setShowPane(false)}
+        />
       ) : null}
       {/* <RefreshWrap onClick={resetEditor}>
         

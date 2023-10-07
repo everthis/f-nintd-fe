@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import Hls from 'hls.js'
 import styled from 'styled-components'
 import { Nav } from './nav'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
 import { PlayIcon, PauseIcon } from './icon'
 import { useQuery } from './hooks'
 
@@ -231,7 +231,7 @@ function AudioPlayer({ source, name }) {
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload='metadata' />
+      <audio ref={ref} playsInline preload="metadata" />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
@@ -239,7 +239,7 @@ function AudioPlayer({ source, name }) {
         <ProgressWrap>
           <progress value={val} max={100} />
           <HiddenInput
-            type='range'
+            type="range"
             onChange={rangeChange}
             ref={progressRef}
             value={val}
@@ -253,8 +253,8 @@ function AudioPlayer({ source, name }) {
         </ProgressWrap>
         <Actions>
           <button
-            type='button'
-            title='toggle play'
+            type="button"
+            title="toggle play"
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -281,7 +281,7 @@ export function AudioItem({ data }) {
   )
 }
 
-function AudioList({ list, onSelectChange }) {
+function AudioList({ list, onSelectChange, selectedItems }) {
   return (
     <>
       {list.map((e) => (
@@ -289,10 +289,11 @@ function AudioList({ list, onSelectChange }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
-                onChange={onSelectChange}
+                name="audio"
+                checked={selectedItems.has(e)}
+                onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
             </SelectWrap>
           ) : null}
@@ -317,6 +318,18 @@ export function Audio() {
   )
 }
 
-export function AudioStateLess({ list = [], onSelectChange, showSelect }) {
-  return <AudioList list={list} onSelectChange={onSelectChange} />
+export function AudioStateLess({
+  list = EMPTY_ARR,
+  onSelectChange,
+  showSelect,
+  selectedItems = EMPTY_SET,
+}) {
+  if (list.length === 0 || list[0].type !== TYPE.AUDIO) return null
+  return (
+    <AudioList
+      list={list}
+      selectedItems={selectedItems}
+      onSelectChange={onSelectChange}
+    />
+  )
 }

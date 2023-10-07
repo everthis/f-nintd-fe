@@ -91,7 +91,7 @@ export function TextPane() {
   return (
     <Wrap>
       <InputSection ref={inputSecRef}>
-        <Textarea rows='5' cols='50' ref={ref} />
+        <Textarea rows="5" cols="50" ref={ref} />
         <Btn onClick={addText}>Add text</Btn>
       </InputSection>
 
@@ -118,7 +118,7 @@ function PerText({ data, toggleOpts }) {
     <Pre>
       {data.content}
       <Pos>
-        <VdotsIcon onClick={toggleOpts} size='20px' />
+        <VdotsIcon onClick={toggleOpts} size="20px" />
       </Pos>
     </Pre>
   )
@@ -130,16 +130,18 @@ function OptsPane({ textId, pos }) {
     loading,
     queryData: querySelectedTags,
   } = useQuery({
-    url: `${API_ORIGIN}/text_tag_relation/text/${textId}`,
+    url: `${API_ORIGIN}/textTagRelation/text/${textId}`,
   })
 
   const toggleTag = (tag, selected) => {
-    postData(`${API_ORIGIN}/text_tag_relation`, {
+    postData(`${API_ORIGIN}/textTagRelation`, {
       textId,
-      tag,
+      tag: tag.name,
       selected,
     }).then(() => querySelectedTags())
   }
+
+  const selectedTags = new Set(tags.filter((e) => e.selected))
 
   return (
     <OptsPaneWrap style={{ top: pos[1] + 'px' }}>
@@ -148,6 +150,7 @@ function OptsPane({ textId, pos }) {
         tags={tags}
         toggleTag={toggleTag}
         showAddTag={false}
+        selectedTags={selectedTags}
         disableDel
       />
     </OptsPaneWrap>

@@ -57,7 +57,6 @@ const OptsPaneWrap = styled.div`
 `
 
 export function ImgFromUrl({
-  url,
   opts,
   data = EMPTY_OBJ,
   dimension = '',
@@ -68,7 +67,7 @@ export function ImgFromUrl({
   hideSelect = true,
   delCb = () => {},
 }) {
-  const { id } = data
+  const { id, name: url } = data
   const [tags, setTags] = useState(defaultTags || [])
   const options = opts
   const [remoteList, setRemoteList] = useState([])
@@ -159,9 +158,9 @@ export function ImgFromUrl({
   }
 
   function selectChange(ev) {
-    selectCb(url, ev.target.checked)
+    selectCb(data, ev.target.checked)
   }
-  console.log(data)
+  // console.log(data)
   const ph = 'Select tags'
   const [width, height] = (dimension || '').split(',')
   return (
@@ -170,7 +169,7 @@ export function ImgFromUrl({
         {height ? (
           <RatioImg url={url} width={width} height={height} />
         ) : (
-          <img src={url} alt='preview image' loading='lazy' />
+          <img src={url} alt="preview image" loading="lazy" />
         )}
       </div>
       {/* <OptsPane imageId={id} /> */}
@@ -203,7 +202,7 @@ export function ImgFromUrl({
       {/* </div> */}
       {hideSelect ? null : (
         <Select>
-          <input type='checkbox' onChange={selectChange} />
+          <input type="checkbox" onChange={selectChange} />
         </Select>
       )}
     </PerRemote>
@@ -244,7 +243,7 @@ function OptsPane({ imageId, pos = defaultPos }) {
 export function RatioImg({ width, height, url }) {
   return (
     <ImgWrap ratio={height / width} url={url}>
-      <img src={url} loading='lazy' />
+      <img src={url} loading="lazy" />
     </ImgWrap>
   )
 }
@@ -271,7 +270,11 @@ function Tag({ name, image }) {
   )
 }
 
-export function ImgComp({ dimension, val: url }) {
+// display only
+export function ImgComp(props) {
+  let { dimension, name: url } = props
+  // for compatibility
+  if (url == null) url = props.val
   let height, width
   if (dimension) {
     ;[width, height] = dimension.split(',').map((e) => +e)
@@ -279,5 +282,5 @@ export function ImgComp({ dimension, val: url }) {
   if (height) {
     return <RatioImg url={url} height={height} width={width} />
   }
-  return <img src={url} loading='lazy' />
+  return <img src={url} loading="lazy" />
 }

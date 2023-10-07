@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, EMPTY_ARR } from './constant'
 import { useQuery } from './hooks'
 import { formatter as tagFormatter } from './tag'
 
@@ -83,9 +83,9 @@ export function Upload({ useOriginalName = false }) {
   const [tagOpts, setTagOpts] = useState([])
   const [selectedTag, setSelectedTag] = useState('')
   const tagOptsRef = useRef(tagOpts)
-  const { data: tags = [], loading } = useQuery({
+  const { data: tags = EMPTY_ARR, loading } = useQuery({
     url: `${API_ORIGIN}/tags`,
-    formatter: tagFormatter,
+    // formatter: tagFormatter,
   })
 
   // On file select (from the pop up)
@@ -170,8 +170,8 @@ export function Upload({ useOriginalName = false }) {
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className='image-input'
-          type='file'
+          className="image-input"
+          type="file"
           multiple
           onChange={onFileChange}
           value={inputVal}
@@ -213,8 +213,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt='preview image' loading='lazy' />
-      <a href='' onClick={delFn}>
+      <img src={image} alt="preview image" loading="lazy" />
+      <a href="" onClick={delFn}>
         delete
       </a>
     </PerLocal>

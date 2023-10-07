@@ -93,15 +93,16 @@ export function Tags({
   disableDel = false,
   loading = false,
   toggleTag = () => {},
+  selectedTags = new Set(),
+  deleteCb = () => {},
 }) {
-  const deleteCb = () => {}
   const tagsRes = tags.map((e) => (
     <Tag
       toggleSelect={toggleTag}
-      name={e.name}
-      key={e.name}
+      data={e}
+      key={e.id}
       disableDel={disableDel}
-      selected={e.selected}
+      selected={selectedTags.has(e)}
       deleteCb={deleteCb}
     />
   ))
@@ -122,10 +123,11 @@ export function Tags({
   )
 }
 
-function Tag({ name, selected, toggleSelect, disableDel = false, deleteCb }) {
+function Tag({ data, selected, toggleSelect, disableDel = false, deleteCb }) {
+  const { name, id } = data
   function delTag() {
     const obj = {
-      name,
+      id,
     }
     fetch(`${API_ORIGIN}/tags/del`, {
       method: 'POST',
@@ -141,7 +143,7 @@ function Tag({ name, selected, toggleSelect, disableDel = false, deleteCb }) {
     <TagWrap>
       <TagName
         selected={selected}
-        onClick={() => toggleSelect(name, !selected)}
+        onClick={() => toggleSelect(data, !selected)}
       >
         {name}
       </TagName>
@@ -160,11 +162,19 @@ export function AddTagPane({}) {
     data: tags,
     loading,
     queryData,
-  } = useQuery({ url: `${API_ORIGIN}/tags`, formatter })
+  } = useQuery({ url: `${API_ORIGIN}/tags` })
+  const deleteCb = useCallback(() => {
+    queryData()
+  }, [])
   return (
     <AddTagPaneWrap>
       <AddTag addCallback={queryData} />
-      <Tags tags={tags} loading={loading} showAddTag={false} />
+      <Tags
+        tags={tags}
+        loading={loading}
+        showAddTag={false}
+        deleteCb={deleteCb}
+      />
     </AddTagPaneWrap>
   )
 }

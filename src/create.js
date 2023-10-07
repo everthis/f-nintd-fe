@@ -11,7 +11,7 @@ import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
 import { Header } from './header'
 import { Audio } from './audio'
-import { ImageGridPane } from './imageGridPane'
+import { AssetGridPane } from './AssetGridPane'
 
 import './index.scss'
 import * as Faye from 'faye'
@@ -130,10 +130,10 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowUpload(true)}
-            key='upload'
+            key="upload"
             left={left}
             top={top}
-            bgColor='var(--bg-color)'
+            bgColor="var(--bg-color)"
             body={<Upload />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -147,14 +147,14 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowImg(true)}
-            key='image'
+            key="image"
             left={left}
             top={top}
-            bgColor='var(--bg-color)'
-            width='80vw'
-            height='80vh'
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="80vh"
             body={
-              <ImageGridPane
+              <AssetGridPane
                 showActions={false}
                 showPane
                 setShowPane={setShowImg}
@@ -173,11 +173,11 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAudio(true)}
-            key='audio'
+            key="audio"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
+            bgColor="var(--bg-color)"
             body={<Audio />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -191,17 +191,17 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowArticleList(true)}
-            key='article'
+            key="article"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
+            bgColor="var(--bg-color)"
             body={<Article />}
             onClose={(ev) => {
               ev.stopPropagation()
               setShowArticleList(false)
             }}
-            width='600px'
+            width="600px"
           />
         ),
     text:
@@ -210,13 +210,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowText(true)}
-            key='text'
+            key="text"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
-            width='80vw'
-            height='70vh'
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="70vh"
             body={<TextPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -230,13 +230,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAddTag(true)}
-            key='tag'
+            key="tag"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
-            width='50vw'
-            height='30vh'
+            bgColor="var(--bg-color)"
+            width="50vw"
+            height="30vh"
             body={<AddTagPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -248,7 +248,7 @@ export function Create() {
   return (
     <>
       <Header />
-      <VertGap height='1em' />
+      <VertGap height="1em" />
       <HorLine />
       <Toolbar
         showUpload={showUpload}

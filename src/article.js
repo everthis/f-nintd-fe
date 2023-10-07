@@ -107,7 +107,7 @@ function ListItem({
   return (
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
-        <ImgComp {...cover} />
+        <ImgComp {...cover} name={cover.name || cover.val} />
         <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
           {title}
         </Link>
@@ -154,7 +154,7 @@ export function Article(props) {
     data = [],
     loading,
     queryData,
-  } = useQuery({ url: `${API_ORIGIN}/article_list_with_cover` })
+  } = useQuery({ url: `${API_ORIGIN}/articleListWithCover` })
 
   const itemDelCb = () => {
     queryData()

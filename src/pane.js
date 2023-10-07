@@ -8,6 +8,7 @@ export const PaneContainer = styled.span`
   left: ${({ left }) => left};
   top: ${({ top }) => top};
   visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
+  transform: translate3d(0, 0, 0);
 `
 const Wrap = styled.span`
   display: inline-block;
