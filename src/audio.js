@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
 import { PlayIcon, PauseIcon } from './icon'
-import { useQuery } from './hooks'
+import { useQuery, useChecked } from './hooks'
 
 const HiddenInput = styled.input`
   opacity: 0;
@@ -281,7 +281,9 @@ export function AudioItem({ data }) {
   )
 }
 
-function AudioList({ list, onSelectChange, selectedItems }) {
+function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
+  const { chkExists } = useChecked(selectedItems)
+  console.log(selectedItems)
   return (
     <>
       {list.map((e) => (
@@ -292,7 +294,7 @@ function AudioList({ list, onSelectChange, selectedItems }) {
                 type="checkbox"
                 value={e.id}
                 name="audio"
-                checked={selectedItems.has(e)}
+                checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
             </SelectWrap>

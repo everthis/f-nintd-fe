@@ -5,7 +5,7 @@ import { Pane } from './pane'
 import { Tags, formatter as tagsFormatter } from './tag'
 import { ImgFromUrl } from './image'
 import { API_ORIGIN, EMPTY_ARR, TYPE } from './constant'
-import { useQuery } from './hooks'
+import { useQuery, useChecked } from './hooks'
 import { downloadAndCreateHash } from './utils'
 import { AudioStateLess } from './audio'
 
@@ -77,7 +77,7 @@ const ImgInnerContainer = styled.div`
   background-color: ${({ checked }) => (checked ? '#717de9' : '#ddd')};
 `
 const ImgMidContainer = styled.div`
-  background-color: ${({ checked }) => (checked ? '#d6c0c0' : 'transparent')};
+  background-color: ${({ checked }) => (checked ? 'red' : 'transparent')};
 `
 const ImgInner = styled.div`
   transition: transform 0.135s cubic-bezier(0, 0, 0.2, 1);
@@ -119,10 +119,11 @@ export function AssetGridPane({
   onConfirm,
   showActions = true,
   singleSelect = false,
-  disabledSet = new Set(),
+  alreadySelectedSet = new Set(),
 }) {
+  console.log(alreadySelectedSet)
   const [selectedTags, setSelectedTags] = useState(new Set())
-  const [type, setType] = useState(TYPE.IMG)
+  const [type, setType] = useState(TYPE.IMAGE)
   const [selectedAudio, setSelectedAudio] = useState(new Map())
   const [showOptsPane, setShowOptsPane] = useState(false)
   const [selectedItems, setSelectedItems] = useState(new Set())
@@ -145,6 +146,8 @@ export function AssetGridPane({
     // formatter,
     // shouldFetch: (_, params) => params.tags.length > 0,
   })
+
+  const { chkExists } = useChecked(alreadySelectedSet)
 
   // const closePane = () => {
   //   setTags([])
@@ -358,9 +361,9 @@ export function AssetGridPane({
               validImgFormat(items) &&
               items.map((e) => (
                 <ImgWrap key={e.name}>
-                  <ImgInnerContainer checked={e.selected}>
-                    <ImgMidContainer checked={disabledSet.has(e.name)}>
-                      <ImgInner checked={e.selected || disabledSet.has(e.name)}>
+                  <ImgInnerContainer checked={chkExists(e)}>
+                    <ImgMidContainer checked={chkExists(e)}>
+                      <ImgInner checked={chkExists(e)}>
                         <ImgFromUrl
                           opts={[]}
                           data={e}
@@ -382,7 +385,7 @@ export function AssetGridPane({
                           type="radio"
                           value={e.name}
                           name="radio"
-                          checked={selectedItems.has(e)}
+                          checked={chkExists(e)}
                           onChange={(ev) =>
                             selectCbFn(e, ev.target.checked, true)
                           }
@@ -390,8 +393,8 @@ export function AssetGridPane({
                       ) : (
                         <input
                           type="checkbox"
-                          checked={selectedItems.has(e)}
-                          disabled={disabledSet.has(e)}
+                          checked={chkExists(e)}
+                          disabled={chkExists(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
                         />
                       )}
@@ -413,7 +416,7 @@ export function AssetGridPane({
               <AudioStateLess
                 list={items}
                 onSelectChange={showActions ? selectCbFn : null}
-                selectedItems={selectedItems}
+                selectedItems={alreadySelectedSet}
               />
             )}
           </AudioSection>

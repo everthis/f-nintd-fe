@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 
 import { serialize } from './utils'
 
@@ -32,4 +32,27 @@ export function useQuery({
   }, [url, params])
 
   return { err, data, loading, queryData }
+}
+
+export function useChecked(selectedItems) {
+  const selectedKeySet = useMemo(() => {
+    const set = new Set()
+    for (const e of selectedItems) {
+      const { type, id } = e
+      const k = `${type},${id}`
+      set.add(k)
+    }
+    return set
+  }, [selectedItems])
+
+  const chkExists = useCallback(
+    (e) => {
+      const { type, id } = e
+      const k = `${type},${id}`
+      return selectedKeySet.has(k)
+    },
+    [selectedKeySet]
+  )
+
+  return { chkExists }
 }

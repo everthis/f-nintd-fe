@@ -274,9 +274,9 @@ export function Editor() {
   )
 
   const imageGridBody = React.useMemo(() => {
-    const disabledSet = new Set()
+    const alreadySelectedSet = new Set()
     for (const e of items) {
-      disabledSet.add(e)
+      alreadySelectedSet.add(e)
     }
     return showPane ? (
       <AssetGridPane
@@ -287,7 +287,7 @@ export function Editor() {
           insertAssets(res)
           setShowPane(false)
         }}
-        disabledSet={disabledSet}
+        alreadySelectedSet={alreadySelectedSet}
       />
     ) : null
   }, [showPane])
@@ -479,7 +479,7 @@ export function Editor() {
           <SaveIcon /> Save
         </button>
       </Op>
-      <VertGap height='50px' />
+      <VertGap height="50px" />
       <CoverWrap>
         {coverImg?.name ? (
           <>
@@ -491,10 +491,10 @@ export function Editor() {
       {showCoverPane ? (
         <Pane
           show={showCoverPane}
-          bgColor='var(--bg-color)'
+          bgColor="var(--bg-color)"
           body={coverSelectionBody}
-          width='80vw'
-          height='80vh'
+          width="80vw"
+          height="80vh"
           left={100}
           top={100}
           onClose={() => setShowCoverPane(false)}
@@ -505,10 +505,10 @@ export function Editor() {
           left={100}
           top={100}
           show={showPane}
-          bgColor='var(--bg-color)'
+          bgColor="var(--bg-color)"
           body={imageGridBody}
-          width='80vw'
-          height='80vh'
+          width="80vw"
+          height="80vh"
           onClose={() => setShowPane(false)}
         />
       ) : null}
