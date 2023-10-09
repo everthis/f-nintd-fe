@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { postData } from './utils'
 import { API_ORIGIN } from './constant'
-import { useQuery } from './hooks'
+import { useQuery, usePostData } from './hooks'
 import { VdotsIcon } from './icon'
 import { Tags } from './tag'
 
@@ -66,10 +66,12 @@ export function TextPane() {
   const addText = () => {
     const val = ref.current.value
     if (val == null || val.trim() === '') return
-    postData(`${API_ORIGIN}/text/new`, { content: val }).then((d) => {
-      ref.current.value = ''
-      queryData()
-    })
+    postData({ url: `${API_ORIGIN}/text/new`, payload: { content: val } }).then(
+      (d) => {
+        ref.current.value = ''
+        queryData()
+      }
+    )
   }
   const toggleOpts = (id, ev) => {
     setActiveId(id)
@@ -133,11 +135,15 @@ function OptsPane({ textId, pos }) {
     url: `${API_ORIGIN}/textTagRelation/text/${textId}`,
   })
 
+  const { loading: posting, postData } = usePostData()
   const toggleTag = (tag, selected) => {
-    postData(`${API_ORIGIN}/textTagRelation`, {
-      textId,
-      tag: tag.name,
-      selected,
+    postData({
+      url: `${API_ORIGIN}/textTagRelation`,
+      payload: {
+        textId,
+        tag: tag.name,
+        selected,
+      },
     }).then(() => querySelectedTags())
   }
 
@@ -146,7 +152,7 @@ function OptsPane({ textId, pos }) {
   return (
     <OptsPaneWrap style={{ top: pos[1] + 'px' }}>
       <Tags
-        loading={loading}
+        loading={loading || posting}
         tags={tags}
         toggleTag={toggleTag}
         showAddTag={false}

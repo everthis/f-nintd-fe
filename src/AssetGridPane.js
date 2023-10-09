@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 
 import { Pane } from './pane'
-import { Tags, formatter as tagsFormatter } from './tag'
-import { ImgFromUrl } from './image'
+import { Tags, TagsWrap, formatter as tagsFormatter } from './tag'
+import { ImgFromUrl, ImgFromUrlWrap } from './image'
 import { API_ORIGIN, EMPTY_ARR, TYPE } from './constant'
-import { useQuery, useChecked } from './hooks'
-import { downloadAndCreateHash } from './utils'
+import { useQuery, useChecked, usePostData } from './hooks'
 import { AudioStateLess } from './audio'
+import { Btn, Button } from './btn'
 
 const StickyWrap = styled.div``
 const Wrap = styled.div`
@@ -19,7 +19,6 @@ const Wrap = styled.div`
     flex-grow: 0;
     position: sticky;
     background-color: var(--bg-color);
-    z-index: 1;
     margin-top: 0;
     padding-top: 0.5em;
   }
@@ -37,6 +36,7 @@ const Wrap = styled.div`
 const ContentWrap = styled.div`
   flex: 1;
   overflow-y: scroll;
+  overflow-x: hidden;
 `
 
 const Select = styled.span`
@@ -121,12 +121,12 @@ export function AssetGridPane({
   singleSelect = false,
   alreadySelectedSet = new Set(),
 }) {
-  console.log(alreadySelectedSet)
   const [selectedTags, setSelectedTags] = useState(new Set())
   const [type, setType] = useState(TYPE.IMAGE)
   const [selectedAudio, setSelectedAudio] = useState(new Map())
   const [showOptsPane, setShowOptsPane] = useState(false)
   const [selectedItems, setSelectedItems] = useState(new Set())
+  const [activeItem, setActiveItem] = useState(null)
   const {
     data: tags = EMPTY_ARR,
     loading: tagsLoading,
@@ -312,6 +312,16 @@ export function AssetGridPane({
     return true
   }
 
+  function toggleOpts(ev, item) {
+    const val = !showOptsPane
+    setShowOptsPane(val)
+    if (val) {
+      setActiveItem(item)
+    } else {
+      setActiveItem(null)
+    }
+  }
+
   return showPane ? (
     <Wrap>
       <StickyWrap>
@@ -374,6 +384,7 @@ export function AssetGridPane({
                           hideDel={true}
                           selectCb={selectCbFn}
                           hideSelect={true}
+                          toggleOpts={toggleOpts}
                         />
                       </ImgInner>
                     </ImgMidContainer>
@@ -402,7 +413,6 @@ export function AssetGridPane({
                   )}
                 </ImgWrap>
               ))}
-            {showOptsPane ? <p>ops</p> : null}
           </ImgSection>
         ) : null}
         {type === TYPE.AUDIO ? (
@@ -421,6 +431,13 @@ export function AssetGridPane({
             )}
           </AudioSection>
         ) : null}
+
+        <Opts
+          show={showOptsPane}
+          toggleDisplay={toggleOpts}
+          type={type}
+          id={activeItem?.id}
+        />
       </ContentWrap>
       {showActions && (
         <OpSection>
@@ -432,4 +449,127 @@ export function AssetGridPane({
       )}
     </Wrap>
   ) : null
+}
+
+const OptsBg = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color);
+  opacity: 0;
+  transition: transform 0.05s cubic-bezier(0.93, 0.24, 0.84, 0.59);
+  will-change: transform, opacity;
+  transform: translateX(100%);
+  &.slide-in {
+    transform: translateX(0);
+    opacity: 0.5;
+  }
+  &.slide-out {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+`
+const OptsContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 40%;
+  padding: 0.3rem;
+  max-width: 900px;
+  background-color: var(--highlight-color);
+  transition: transform 0.2s cubic-bezier(0.6, 0.8, 0.99, 0.8);
+  will-change: transform;
+  transform: translateX(100%);
+  &.slide-in {
+    transform: translateX(0);
+  }
+  &.slide-out {
+    transform: translateX(100%);
+  }
+  ${TagsWrap} {
+    flex: 1;
+  }
+  ${Button} {
+    flex-grow: 0;
+  }
+`
+
+function Opts({ show, toggleDisplay, type, id }) {
+  const ref = useRef()
+  const bgRef = useRef()
+  const [selectedTags, setSelectedTags] = useState(new Set())
+
+  const shouldFetch = () => type != null && id != null
+  const { data: imgData, loading } = useQuery({
+    url: `${API_ORIGIN}/${type}TagRelation/${type}/${id}`,
+    shouldFetch,
+  })
+  const { data: tags = EMPTY_ARR, loading: tagsLoading } = useQuery({
+    url: `${API_ORIGIN}/tags`,
+    shouldFetch,
+  })
+
+  const { loading: deleteItemInProgress, postData: execDeleteItem } =
+    usePostData({
+      url: `${API_ORIGIN}/${type}/${id}`,
+      method: 'DELETE',
+    })
+
+  useEffect(() => {
+    if (ref.current == null) return
+    if (show) {
+      ref.current.classList.remove('slide-out')
+      ref.current.classList.add('slide-in')
+      bgRef.current.classList.remove('slide-out')
+      bgRef.current.classList.add('slide-in')
+    } else {
+      ref.current.classList.remove('slide-in')
+      ref.current.classList.add('slide-out')
+      bgRef.current.classList.remove('slide-in')
+      bgRef.current.classList.add('slide-out')
+    }
+  }, [show])
+
+  useEffect(() => {
+    if (tags.length && imgData) {
+      const set = new Set()
+      for (const t of imgData.tags) {
+        set.add(t.id)
+      }
+      const res = new Set()
+      for (const t of tags) {
+        if (set.has(t.id)) res.add(t)
+      }
+      setSelectedTags(res)
+    }
+  }, [tags, imgData])
+
+  const toggleTag = (item, selected) => {}
+
+  const deleteItem = () => {}
+
+  return (
+    <>
+      <OptsBg ref={bgRef} onClick={toggleDisplay}></OptsBg>
+      <OptsContent ref={ref}>
+        <ImgFromUrlWrap data={imgData} loading={loading} />
+        <Tags
+          tags={tags}
+          showAddTag={false}
+          toggleTag={toggleTag}
+          disableDel={true}
+          loading={tagsLoading}
+          selectedTags={selectedTags}
+        />
+        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
+          Delete
+        </Btn>
+      </OptsContent>
+    </>
+  )
 }

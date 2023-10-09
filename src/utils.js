@@ -1,6 +1,12 @@
-export function postData(url, payload, shouldStringify = true, headers = {}) {
+export function postData({
+  url,
+  method = 'POST',
+  payload = null,
+  shouldStringify = true,
+  headers = {},
+}) {
   const opts = {
-    method: 'POST',
+    method,
     headers: {
       'Content-Type': 'application/json',
     },

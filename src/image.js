@@ -4,6 +4,7 @@ import { API_ORIGIN, EMPTY_OBJ, EMPTY_ARR } from './constant'
 // import { Select } from './upload'
 import { Tags } from './tag'
 import { useQuery } from './hooks'
+import { VdotsIcon } from './icon'
 
 const PerRemote = styled.div`
   position: relative;
@@ -55,21 +56,35 @@ const OptsPaneWrap = styled.div`
   background-color: var(--bg-color);
   border: var(--border);
 `
+const Pos = styled.span`
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.2rem;
+  font-size: 0;
+  background-color: var(--bg-color);
+  opacity: 0.3;
+  border-radius: 50%;
+  overflow: hidden;
+  &:hover {
+    opacity: 0.9;
+  }
+`
 
 export function ImgFromUrl({
   opts,
   data = EMPTY_OBJ,
   dimension = '',
-  tags: defaultTags,
+  // tags: defaultTags,
   selectCb = () => {},
   hideTags = false,
   hideDel = false,
   hideSelect = true,
   delCb = () => {},
+  toggleOpts,
 }) {
   const { id, name: url } = data
-  const [tags, setTags] = useState(defaultTags || [])
-  const options = opts
+  // const [tags, setTags] = useState(defaultTags || [])
+  // const options = opts
   const [remoteList, setRemoteList] = useState([])
 
   // function updateTags() {
@@ -87,6 +102,8 @@ export function ImgFromUrl({
   //     },
   //   }).then((d) => d.text())
   // }
+
+  /*
 
   useEffect(() => {
     setTags(defaultTags)
@@ -157,12 +174,14 @@ export function ImgFromUrl({
       .then((d) => delCb())
   }
 
+  */
+
   function selectChange(ev) {
     selectCb(data, ev.target.checked)
   }
   // console.log(data)
   const ph = 'Select tags'
-  const [width, height] = (dimension || '').split(',')
+  const [width, height] = (data?.dimension || '').split(',')
   return (
     <PerRemote>
       <div>
@@ -172,6 +191,12 @@ export function ImgFromUrl({
           <img src={url} alt="preview image" loading="lazy" />
         )}
       </div>
+      {toggleOpts ? (
+        <Pos>
+          <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size="20px" />
+        </Pos>
+      ) : null}
+
       {/* <OptsPane imageId={id} /> */}
       {/* <div> */}
       {/* {hideDel ? null : (
@@ -209,6 +234,12 @@ export function ImgFromUrl({
   )
 }
 
+export function ImgFromUrlWrap(props) {
+  const { loading, ...nextProps } = props
+  if (loading) return <p>Loading</p>
+  return <ImgFromUrl {...nextProps} />
+}
+
 const defaultPos = [0, 0]
 function OptsPane({ imageId, pos = defaultPos }) {
   const {
@@ -220,10 +251,13 @@ function OptsPane({ imageId, pos = defaultPos }) {
   })
 
   const toggleTag = (tagId, selected) => {
-    postData(`${API_ORIGIN}/text_tag_relation`, {
-      imageId,
-      tagId,
-      selected,
+    postData({
+      url: `${API_ORIGIN}/text_tag_relation`,
+      payload: {
+        imageId,
+        tagId,
+        selected,
+      },
     }).then(() => querySelectedTags())
   }
   if (data == null) return null

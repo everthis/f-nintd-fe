@@ -36,11 +36,10 @@ const Head = styled.div`
   }
 `
 const Body = styled.div`
-  padding: 0 5px;
+  margin: 0 5px;
   height: 100%;
   max-height: calc(100vh - 100px);
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
 `
 
 export const Pane = React.memo(function PaneFn({

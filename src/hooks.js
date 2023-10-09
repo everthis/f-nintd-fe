@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 
-import { serialize } from './utils'
+import { serialize, postData as postDataFn } from './utils'
+import { EMPTY_OBJ } from './constant'
 
 const defaultFormatter = (d) => d
 const defaultParams = {}
@@ -25,11 +26,12 @@ export function useQuery({
       .catch((e) => setErr(e))
       .finally((d) => setLoading(false))
   }
+  const shouldFetchNow = shouldFetch(url, params)
   useEffect(() => {
     if (!fetchMannually) {
-      if (shouldFetch(url, params)) queryData()
+      if (shouldFetchNow) queryData()
     }
-  }, [url, params])
+  }, [url, params, shouldFetchNow])
 
   return { err, data, loading, queryData }
 }
@@ -55,4 +57,30 @@ export function useChecked(selectedItems) {
   )
 
   return { chkExists }
+}
+
+export function usePostData(/*{
+  url,
+  method = 'POST',
+  payload = EMPTY_OBJ,
+  shouldStringify = true,
+  headers = EMPTY_OBJ,
+}*/) {
+  const [loading, setLoading] = useState(false)
+  const postData = useCallback(
+    ({ url, method, payload, shouldStringify, headers }) => {
+      setLoading(true)
+      /*{ url, method, payload, shouldStringify, headers } */
+      return postDataFn({
+        url,
+        method,
+        payload,
+        shouldStringify,
+        headers,
+      }).finally(() => setLoading(false))
+    },
+    []
+  )
+
+  return { loading, postData }
 }

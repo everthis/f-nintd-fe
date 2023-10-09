@@ -4,7 +4,7 @@ import { API_ORIGIN } from './constant'
 import { DeleteIcon } from './icon'
 import { useQuery } from './hooks'
 
-const TagsWrap = styled.div`
+export const TagsWrap = styled.div`
   user-select: none;
   display: flex;
   margin: 0.5em 0 0 0;
@@ -95,6 +95,7 @@ export function Tags({
   toggleTag = () => {},
   selectedTags = new Set(),
   deleteCb = () => {},
+  queryData = () => {},
 }) {
   const tagsRes = tags.map((e) => (
     <Tag
@@ -116,7 +117,7 @@ export function Tags({
         {loading ? <Hint>loading</Hint> : null}
       </Label>
       <div>
-        {tagsRes}
+        {!loading && tagsRes}
         {showAddTag ? <AddTag addCallback={queryData} /> : null}
       </div>
     </TagsWrap>

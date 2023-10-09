@@ -68,7 +68,7 @@ function ThemeComp() {
 
   return (
     <Wrap>
-      <ToggleIcon size='20px' onClick={toggleTheme} />
+      <ToggleIcon size="20px" onClick={toggleTheme} />
       <span>{theme}</span>
     </Wrap>
   )
