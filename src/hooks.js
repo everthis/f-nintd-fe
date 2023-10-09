@@ -68,7 +68,13 @@ export function usePostData(/*{
 }*/) {
   const [loading, setLoading] = useState(false)
   const postData = useCallback(
-    ({ url, method, payload, shouldStringify, headers }) => {
+    ({
+      url,
+      method = 'POST',
+      payload = EMPTY_OBJ,
+      shouldStringify = true,
+      headers,
+    }) => {
       setLoading(true)
       /*{ url, method, payload, shouldStringify, headers } */
       return postDataFn({

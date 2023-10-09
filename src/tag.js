@@ -8,6 +8,8 @@ export const TagsWrap = styled.div`
   user-select: none;
   display: flex;
   margin: 0.5em 0 0 0;
+  background-color: var(--bg-color);
+  user-select: none;
 `
 const TagWrap = styled.span`
   margin-right: 10px;

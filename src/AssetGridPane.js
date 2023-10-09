@@ -62,6 +62,7 @@ const ImgSection = styled.section`
   display: flex;
   flex-wrap: wrap;
   position: relative;
+  user-select: none;
 `
 const OpSection = styled.div`
   padding-top: 1rem;
@@ -96,6 +97,7 @@ const Status = styled.span`
 `
 const TypeSelectionWrap = styled.div`
   margin-bottom: 0.5rem;
+  user-select: none;
 `
 
 const AudioSection = styled.div`
@@ -106,6 +108,7 @@ const qsOfTags = (set = new Set()) =>
   Array.from(set)
     .map((e) => encodeURIComponent(e.name))
     .join(',')
+/*
 const formatter = (arr) => {
   arr.forEach((e) => {
     e.tags = e.tags.map((e) => ({ name: e, selected: false }))
@@ -113,6 +116,7 @@ const formatter = (arr) => {
   })
   return arr
 }
+*/
 export function AssetGridPane({
   showPane,
   setShowPane,
@@ -322,6 +326,10 @@ export function AssetGridPane({
     }
   }
 
+  function updateCb() {
+    queryByTags()
+  }
+
   return showPane ? (
     <Wrap>
       <StickyWrap>
@@ -337,8 +345,8 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type="radio"
-              name="queryType"
+              type='radio'
+              name='queryType'
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
               onChange={onTypeChange}
@@ -348,8 +356,8 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
-              name="queryType"
+              type='radio'
+              name='queryType'
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
               onChange={onTypeChange}
@@ -393,9 +401,9 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type="radio"
+                          type='radio'
                           value={e.name}
-                          name="radio"
+                          name='radio'
                           checked={chkExists(e)}
                           onChange={(ev) =>
                             selectCbFn(e, ev.target.checked, true)
@@ -403,7 +411,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={chkExists(e)}
                           disabled={chkExists(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
@@ -437,6 +445,7 @@ export function AssetGridPane({
           toggleDisplay={toggleOpts}
           type={type}
           id={activeItem?.id}
+          updateCb={updateCb}
         />
       </ContentWrap>
       {showActions && (
@@ -481,10 +490,12 @@ const OptsContent = styled.div`
   width: 40%;
   padding: 0.3rem;
   max-width: 900px;
-  background-color: var(--highlight-color);
+  background-color: var(--bg-color);
   transition: transform 0.2s cubic-bezier(0.6, 0.8, 0.99, 0.8);
   will-change: transform;
   transform: translateX(100%);
+  overflow-y: scroll;
+  user-select: none;
   &.slide-in {
     transform: translateX(0);
   }
@@ -499,13 +510,17 @@ const OptsContent = styled.div`
   }
 `
 
-function Opts({ show, toggleDisplay, type, id }) {
+function Opts({ show, toggleDisplay, type, id, updateCb }) {
   const ref = useRef()
   const bgRef = useRef()
   const [selectedTags, setSelectedTags] = useState(new Set())
 
   const shouldFetch = () => type != null && id != null
-  const { data: imgData, loading } = useQuery({
+  const {
+    data: imgData,
+    loading,
+    queryData: fetchRelation,
+  } = useQuery({
     url: `${API_ORIGIN}/${type}TagRelation/${type}/${id}`,
     shouldFetch,
   })
@@ -515,10 +530,9 @@ function Opts({ show, toggleDisplay, type, id }) {
   })
 
   const { loading: deleteItemInProgress, postData: execDeleteItem } =
-    usePostData({
-      url: `${API_ORIGIN}/${type}/${id}`,
-      method: 'DELETE',
-    })
+    usePostData()
+  const { loading: updateTagsInProgress, postData: execUpdateTag } =
+    usePostData()
 
   useEffect(() => {
     if (ref.current == null) return
@@ -549,9 +563,25 @@ function Opts({ show, toggleDisplay, type, id }) {
     }
   }, [tags, imgData])
 
-  const toggleTag = (item, selected) => {}
+  const toggleTag = (item, selected) => {
+    execUpdateTag({
+      url: `${API_ORIGIN}/${type}TagRelation/${id}/${item.id}`,
+      method: selected ? 'POST' : 'DELETE',
+    }).then(() => {
+      fetchRelation()
+      updateCb()
+    })
+  }
 
-  const deleteItem = () => {}
+  const deleteItem = () => {
+    execDeleteItem({
+      url: `${API_ORIGIN}/${type}/${id}`,
+      method: 'DELETE',
+    }).then(() => {
+      updateCb()
+      toggleDisplay()
+    })
+  }
 
   return (
     <>
@@ -566,7 +596,7 @@ function Opts({ show, toggleDisplay, type, id }) {
           loading={tagsLoading}
           selectedTags={selectedTags}
         />
-        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>
