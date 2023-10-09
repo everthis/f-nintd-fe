@@ -7,7 +7,6 @@ export function Nav() {
       <Link to="/homepage" style={{ marginRight: '1em' }}>
         Homepage
       </Link>
-      <Link to="/articles">Articles</Link>
     </div>
   )
 }

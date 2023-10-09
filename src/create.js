@@ -9,7 +9,6 @@ import { Pane } from './pane'
 import { Editor } from './editor'
 import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
-import { Header } from './header'
 import { Audio } from './audio'
 import { AssetGridPane } from './AssetGridPane'
 
@@ -247,9 +246,6 @@ export function Create() {
   }
   return (
     <>
-      <Header />
-      <VertGap height="1em" />
-      <HorLine />
       <Toolbar
         showUpload={showUpload}
         setShowUpload={setShowUpload}

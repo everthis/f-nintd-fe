@@ -9,7 +9,7 @@ const Center = styled.div`
   display: flex;
   justify-content: center;
 `
-const ThemeWrap = styled.span`
+export const ThemeWrap = styled.span`
   margin: 0 0 0 1em;
 `
 

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
+
+import { Theme } from './theme'
+import { ThemeWrap } from './header'
 
 const ToolbarWrap = styled.div`
   display: flex;
@@ -15,6 +19,7 @@ import {
   AudioIcon,
   AddTagIcon,
   TextIcon,
+  MenuIcon,
 } from './icon'
 import { API_ORIGIN } from './constant'
 
@@ -67,6 +72,15 @@ export function Toolbar({
       <TextIcon checked={showText} onClick={toggleText} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
       <AddTagIcon checked={showAddTag} onClick={toggleAddTag} />
+      <MenuIcon checked={showAddTag} onClick={toggleAddTag} />
+      <ThemeWrap>
+        <Theme />
+      </ThemeWrap>
+
+      <Link to="/homepage" style={{ marginRight: '1em' }}>
+        Homepage
+      </Link>
+
       {/* <button onClick={listImagesWithoutTags}>List Images Without Tags</button> */}
     </ToolbarWrap>
   )
