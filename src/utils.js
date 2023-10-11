@@ -47,3 +47,22 @@ export function downloadAndCreateHash(urlToFile) {
       return calculateMD5(blob)
     })
 }
+
+export function streamData(response, readCb) {
+  const reader = response.body.getReader()
+  // read() returns a promise that resolves when a value has been received
+  reader
+    .read()
+    .then(function pump({ done, value }) {
+      readCb({ done, value })
+      if (done) {
+        // Do something with last chunk of data then exit reader
+        return
+      }
+      // Otherwise do something here to process current chunk
+
+      // Read some more, and call this function again
+      return reader.read().then(pump)
+    })
+    .catch((err) => console.error(err))
+}
