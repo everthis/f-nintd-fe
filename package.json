@@ -25,7 +25,8 @@
     "react-router-dom": "^6.8.1",
     "sass": "^1.51.0",
     "sass-loader": "^12.6.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "webaudio-peaks": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",

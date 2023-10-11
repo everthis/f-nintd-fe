@@ -39,7 +39,8 @@ const Body = styled.div`
   margin: 0 5px;
   height: 100%;
   max-height: calc(100vh - 100px);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `
 
 export const Pane = React.memo(function PaneFn({
@@ -149,12 +150,12 @@ export const Pane = React.memo(function PaneFn({
       style={styles}
       onClick={onClick}
       show={show}
-      className="pane"
+      className='pane'
     >
       <Wrap bgColor={bgColor} width={width} height={height}>
         <Head ref={ref}>
           {header}
-          {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
+          {showClose ? <CloseIcon size='20px' onClick={closePane} /> : null}
         </Head>
         <Body>{body || children}</Body>
       </Wrap>
