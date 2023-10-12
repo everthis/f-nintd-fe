@@ -1,3 +1,5 @@
+import EventEmitter from 'event-emitter'
+
 /*
  * virtual-dom hook for drawing to the canvas element.
  */
@@ -112,4 +114,100 @@ export function pixelsToSeconds(pixels, resolution, sampleRate) {
 
 export function secondsToPixels(seconds, resolution, sampleRate) {
   return Math.ceil((seconds * sampleRate) / resolution)
+}
+
+export const STATE_UNINITIALIZED = 0
+export const STATE_LOADING = 1
+export const STATE_DECODING = 2
+export const STATE_FINISHED = 3
+
+export class Loader {
+  constructor(src, audioContext, ee = EventEmitter()) {
+    this.src = src
+    this.ac = audioContext
+    this.audioRequestState = STATE_UNINITIALIZED
+    this.ee = ee
+  }
+
+  setStateChange(state) {
+    this.audioRequestState = state
+    this.ee.emit('audiorequeststatechange', this.audioRequestState, this.src)
+  }
+
+  fileProgress(e) {
+    let percentComplete = 0
+
+    if (this.audioRequestState === STATE_UNINITIALIZED) {
+      this.setStateChange(STATE_LOADING)
+    }
+
+    if (e.lengthComputable) {
+      percentComplete = (e.loaded / e.total) * 100
+    }
+
+    this.ee.emit('loadprogress', percentComplete, this.src)
+  }
+
+  fileLoad(e) {
+    const audioData = e.target.response || e.target.result
+
+    this.setStateChange(STATE_DECODING)
+
+    return new Promise((resolve, reject) => {
+      this.ac.decodeAudioData(
+        audioData,
+        (audioBuffer) => {
+          this.audioBuffer = audioBuffer
+          this.setStateChange(STATE_FINISHED)
+
+          resolve(audioBuffer)
+        },
+        (err) => {
+          if (err === null) {
+            // Safari issues with null error
+            reject(Error('MediaDecodeAudioDataUnknownContentType'))
+          } else {
+            reject(err)
+          }
+        }
+      )
+    })
+  }
+}
+
+export class BlobLoader extends Loader {
+  /*
+   * Loads an audio file via a FileReader
+   */
+  load() {
+    return new Promise((resolve, reject) => {
+      if (
+        this.src.type.match(/audio.*/) ||
+        // added for problems with Firefox mime types + ogg.
+        this.src.type.match(/video\/ogg/)
+      ) {
+        const fr = new FileReader()
+
+        fr.readAsArrayBuffer(this.src)
+
+        fr.addEventListener('progress', (e) => {
+          super.fileProgress(e)
+        })
+
+        fr.addEventListener('load', (e) => {
+          const decoderPromise = super.fileLoad(e)
+
+          decoderPromise
+            .then((audioBuffer) => {
+              resolve(audioBuffer)
+            })
+            .catch(reject)
+        })
+
+        fr.addEventListener('error', reject)
+      } else {
+        reject(Error(`Unsupported file type ${this.src.type}`))
+      }
+    })
+  }
 }
