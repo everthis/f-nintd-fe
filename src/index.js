@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Create } from './create'
 import { HomePage } from './homepage'
 import { Preview } from './preview'
+import { Waveform } from './waveform'
 
 import './index.scss'
 
@@ -24,6 +25,10 @@ function App() {
     {
       path: '/dashboard',
       element: <Create />,
+    },
+    {
+      path: '/test',
+      element: <Waveform />,
     },
     {
       path: '/article/:id',
