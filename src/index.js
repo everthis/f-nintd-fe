@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Create } from './create'
 import { HomePage } from './homepage'
 import { Preview } from './preview'
+import { AudioWave } from './audioWave'
 
 import './index.scss'
 
@@ -28,6 +29,10 @@ function App() {
     {
       path: '/article/:id',
       element: <Preview />,
+    },
+    {
+      path: '/test',
+      element: <AudioWave />,
     },
   ])
 
