@@ -66,3 +66,27 @@ export function streamData(response, readCb) {
     })
     .catch((err) => console.error(err))
 }
+
+export function samlpePeaks(arr, targetLen) {
+  return pare(arr, targetLen)
+}
+function pare(a, m) {
+  let b = new Array(m)
+  let n2 = a.length - 2
+  let m2 = m - 2
+  b[0] = a[0]
+  let i = 0
+  let j = 0
+  while (j < n2) {
+    let diff = (i + 1) * n2 - (j + 1) * m2
+    if (diff < n2 / 2) {
+      i += 1
+      j += 1
+      b[i] = a[j]
+    } else {
+      j += 1
+    }
+  }
+  b[m2 + 1] = a[n2 + 1]
+  return b
+}

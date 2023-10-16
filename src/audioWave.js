@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { API_ORIGIN } from './constant'
+import { samlpePeaks } from './utils'
 
 const peaks = [
   -5564, 5702, -5651, 5642, -5672, 5915, -5689, 5840, -5698, 5830, -5756, 5755,
@@ -271,8 +272,6 @@ const Wave = styled.div`
     height: 128px;
   }
 `
-
-function samlpePeaks(arr) {}
 
 export function AudioWave() {
   const ref = useRef()
