@@ -5,6 +5,7 @@ import { Create } from './create'
 import { HomePage } from './homepage'
 import { Preview } from './preview'
 import { Waveform } from './waveform'
+import { AudioWave } from './audioWave'
 
 import './index.scss'
 
@@ -27,12 +28,12 @@ function App() {
       element: <Create />,
     },
     {
-      path: '/test',
-      element: <Waveform />,
-    },
-    {
       path: '/article/:id',
       element: <Preview />,
+    },
+    {
+      path: '/test',
+      element: <AudioWave />,
     },
   ])
 

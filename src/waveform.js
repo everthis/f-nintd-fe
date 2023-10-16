@@ -284,7 +284,8 @@ export function Waveform() {
     const color = '#f9431e'
     const offset = 0
     const canvas = ref.current
-    const len = canvas.width / scale
+    // const len = canvas.width / scale
+    const len = peaks.length / scale
     const cc = canvas.getContext('2d')
     const h2 = canvas.height / scale / 2
     const maxValue = 2 ** (bits - 1)
@@ -297,7 +298,7 @@ export function Waveform() {
     cc.save()
     cc.fillStyle = color
     cc.scale(scale, scale)
-    console.log(scale, len, h2, maxValue, width, gap)
+    console.log(len, scale, len, h2, maxValue, width, gap)
     //2 1000 64 32768 1 0
     // 1 300 75 32768 1 0
 
