@@ -67,7 +67,20 @@ export function streamData(response, readCb) {
     .catch((err) => console.error(err))
 }
 
-export function samlpePeaks(arr, targetLen) {
+export function samplePeaksData(arr, targetLen) {
+  const n = arr.length / 2
+  const idxArr = Array.from({ length: n }, (_, i) => i)
+  const selectedIdxArr = samlpeArr(idxArr, targetLen)
+  const res = []
+  for (const idx of selectedIdxArr) {
+    res.push(arr[2 * idx], arr[2 * idx + 1])
+  }
+
+  return res
+}
+
+export function samlpeArr(arr, targetLen) {
+  if (arr.length <= targetLen) return arr
   return pare(arr, targetLen)
 }
 function pare(a, m) {

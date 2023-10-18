@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { API_ORIGIN } from './constant'
-import { samlpePeaks } from './utils'
+import { samlpePeaks, samplePeaksData } from './utils'
 
 const peaks = [
   -5564, 5702, -5651, 5642, -5672, 5915, -5689, 5840, -5698, 5830, -5756, 5755,
@@ -279,34 +279,36 @@ export function AudioWave() {
   const dpr = window.devicePixelRatio
   function wave() {
     const canvas = ref.current
-
+    // console.log(peaks.length)
+    const peaksData = samplePeaksData(peaks, canvas.width / dpr)
+    // console.log(peaksData.length)
+    // console.log(peaksData)
     const bits = 16
-    let singleBarPixel = ~~(canvas.width / dpr / (peaks.length / 2))
+    let singleBarPixel = ~~(canvas.width / dpr / (peaksData.length / 2))
     singleBarPixel = singleBarPixel < 1 ? 1 : singleBarPixel
-    const peaksLen = peaks.length / 2
-    const barWidth = 1
+    // const barWidth = 1
     const barGap = 0
     const color = '#005BBB'
     const offset = 0
 
     const scale = dpr
-    const len = canvas.width / scale
+    // const len = canvas.width / scale
     const cc = canvas.getContext('2d')
     const h2 = canvas.height / scale / 2
     const maxValue = 2 ** (bits - 1)
-    const width = barWidth
+    // const width = barWidth
     const gap = barGap
-    const barStart = width + gap
+    // const barStart = width + gap
 
     cc.clearRect(0, 0, canvas.width, canvas.height)
 
     cc.save()
     cc.fillStyle = color
     cc.scale(scale, scale)
-    console.log(singleBarPixel)
-    for (let idx = 0; idx < peaksLen; idx += barStart) {
-      const minPeak = peaks[(idx + offset) * 2] / maxValue
-      const maxPeak = peaks[(idx + offset) * 2 + 1] / maxValue
+    // console.log(singleBarPixel)
+    for (let idx = 0, len = peaksData.length / 2; idx < len; idx++) {
+      const minPeak = peaksData[(idx + offset) * 2] / maxValue
+      const maxPeak = peaksData[(idx + offset) * 2 + 1] / maxValue
       drawFrame(
         cc,
         h2,
@@ -324,8 +326,8 @@ export function AudioWave() {
   function drawFrame(cc, h2, x, minPeak, maxPeak, width, gap) {
     const min = Math.abs(minPeak * h2)
     const max = Math.abs(maxPeak * h2)
-    console.log(x, 0, width, h2 - max)
-    console.log(x, h2 + min, width, h2 - min)
+    // console.log(x, 0, width, h2 - max)
+    // console.log(x, h2 + min, width, h2 - min)
 
     // draw max
     cc.fillRect(x, 0, width, h2 - max)
