@@ -33,6 +33,7 @@ button {
 button,
 input {
   border: 1px solid var(--color);
+  accent-color: orange;
 }
 button:disabled,
 button[disabled] {

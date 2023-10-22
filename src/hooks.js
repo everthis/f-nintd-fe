@@ -59,6 +59,20 @@ export function useChecked(selectedItems) {
   return { chkExists }
 }
 
+export function useCombineSets(...sets) {
+  const [res, setRes] = useState(new Set())
+
+  useEffect(() => {
+    const tmp = new Set()
+    for (const s of sets) {
+      for (const e of s) tmp.add(e)
+    }
+    setRes(tmp)
+  }, [...sets])
+
+  return res
+}
+
 export function usePostData(/*{
   url,
   method = 'POST',

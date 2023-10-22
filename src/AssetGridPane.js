@@ -5,7 +5,7 @@ import { Pane } from './pane'
 import { Tags, TagsWrap, formatter as tagsFormatter } from './tag'
 import { ImgFromUrl, ImgFromUrlWrap } from './image'
 import { API_ORIGIN, EMPTY_ARR, TYPE } from './constant'
-import { useQuery, useChecked, usePostData } from './hooks'
+import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import { AudioStateLess } from './audio'
 import { Btn, Button } from './btn'
 
@@ -78,7 +78,7 @@ const ImgInnerContainer = styled.div`
   background-color: ${({ checked }) => (checked ? '#717de9' : '#ddd')};
 `
 const ImgMidContainer = styled.div`
-  background-color: ${({ checked }) => (checked ? 'red' : 'transparent')};
+  background-color: ${({ checked }) => (checked ? 'blue' : 'transparent')};
 `
 const ImgInner = styled.div`
   transition: transform 0.135s cubic-bezier(0, 0, 0.2, 1);
@@ -117,6 +117,7 @@ const formatter = (arr) => {
   return arr
 }
 */
+
 export function AssetGridPane({
   showPane,
   setShowPane,
@@ -151,7 +152,9 @@ export function AssetGridPane({
     // shouldFetch: (_, params) => params.tags.length > 0,
   })
 
-  const { chkExists } = useChecked(alreadySelectedSet)
+  const { chkExists } = useChecked(
+    useCombineSets(alreadySelectedSet, selectedItems)
+  )
 
   // const closePane = () => {
   //   setTags([])
@@ -413,7 +416,6 @@ export function AssetGridPane({
                         <input
                           type='checkbox'
                           checked={chkExists(e)}
-                          disabled={chkExists(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
                         />
                       )}
