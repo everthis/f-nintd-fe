@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useId } from 'react'
 import styled from 'styled-components'
 
 import { Pane } from './pane'
@@ -125,9 +125,11 @@ export function AssetGridPane({
   showActions = true,
   singleSelect = false,
   alreadySelectedSet = new Set(),
+  defaultType = TYPE.IMAGE,
 }) {
+  const compId = useId()
   const [selectedTags, setSelectedTags] = useState(new Set())
-  const [type, setType] = useState(TYPE.IMAGE)
+  const [type, setType] = useState(defaultType)
   const [selectedAudio, setSelectedAudio] = useState(new Map())
   const [showOptsPane, setShowOptsPane] = useState(false)
   const [selectedItems, setSelectedItems] = useState(new Set())
@@ -348,8 +350,8 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type='radio'
-              name='queryType'
+              type="radio"
+              name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
               onChange={onTypeChange}
@@ -359,8 +361,8 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type='radio'
-              name='queryType'
+              type="radio"
+              name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
               onChange={onTypeChange}
@@ -404,9 +406,9 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type='radio'
+                          type="radio"
                           value={e.name}
-                          name='radio'
+                          name={`${compId}_radio`}
                           checked={chkExists(e)}
                           onChange={(ev) =>
                             selectCbFn(e, ev.target.checked, true)
@@ -414,7 +416,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type='checkbox'
+                          type="checkbox"
                           checked={chkExists(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
                         />
@@ -598,7 +600,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           loading={tagsLoading}
           selectedTags={selectedTags}
         />
-        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>

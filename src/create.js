@@ -14,7 +14,7 @@ import { AssetGridPane } from './AssetGridPane'
 
 import './index.scss'
 import * as Faye from 'faye'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, TYPE } from './constant'
 import { TextPane } from './text'
 
 const VertGap = styled.div`
@@ -158,6 +158,7 @@ export function Create() {
                 showPane
                 setShowPane={setShowImg}
                 onConfirm={() => {}}
+                defaultType={TYPE.IMAGE}
               />
             }
             onClose={(ev) => {
@@ -177,7 +178,18 @@ export function Create() {
             top={top}
             show
             bgColor="var(--bg-color)"
-            body={<Audio />}
+            // body={<Audio />}
+            width="80vw"
+            height="80vh"
+            body={
+              <AssetGridPane
+                showActions={false}
+                showPane
+                setShowPane={setShowAudio}
+                onConfirm={() => {}}
+                defaultType={TYPE.AUDIO}
+              />
+            }
             onClose={(ev) => {
               ev.stopPropagation()
               setShowAudio(false)
