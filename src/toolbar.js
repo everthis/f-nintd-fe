@@ -20,6 +20,8 @@ import {
   AddTagIcon,
   TextIcon,
   MenuIcon,
+  WriteIcon,
+  QuoteIcon,
 } from './icon'
 import { API_ORIGIN } from './constant'
 
@@ -67,6 +69,7 @@ export function Toolbar({
   return (
     <ToolbarWrap>
       <UploadIcon checked={showUpload} onClick={toggleUpload} />
+      <WriteIcon checked={showUpload} onClick={toggleUpload} />
       <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <TextIcon checked={showText} onClick={toggleText} />
@@ -77,7 +80,7 @@ export function Toolbar({
         <Theme />
       </ThemeWrap>
 
-      <Link to="/homepage" style={{ marginRight: '1em' }}>
+      <Link to='/homepage' style={{ marginRight: '1em' }}>
         Homepage
       </Link>
 
