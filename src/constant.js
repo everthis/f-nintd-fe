@@ -10,6 +10,7 @@ export const TYPE = {
   IMG: 'image',
   IMAGE: 'image',
   AUDIO: 'audio',
+  TEXT: 'text',
 }
 
 export const EMPTY_OBJ = {}

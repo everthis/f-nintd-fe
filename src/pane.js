@@ -150,12 +150,12 @@ export const Pane = React.memo(function PaneFn({
       style={styles}
       onClick={onClick}
       show={show}
-      className='pane'
+      className="pane"
     >
       <Wrap bgColor={bgColor} width={width} height={height}>
         <Head ref={ref}>
           {header}
-          {showClose ? <CloseIcon size='20px' onClick={closePane} /> : null}
+          {showClose ? <CloseIcon size="20px" onClick={closePane} /> : null}
         </Head>
         <Body>{body || children}</Body>
       </Wrap>

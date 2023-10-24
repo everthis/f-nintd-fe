@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { postData } from './utils'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, TYPE } from './constant'
 import { useQuery, usePostData } from './hooks'
 import { VdotsIcon } from './icon'
 import { Tags } from './tag'
@@ -51,6 +51,7 @@ const OptsPaneWrap = styled.div`
   background-color: var(--bg-color);
   border: var(--border);
 `
+const SelectWrap = styled.span``
 
 export function TextPane() {
   const ref = useRef()
@@ -160,5 +161,65 @@ function OptsPane({ textId, pos }) {
         disableDel
       />
     </OptsPaneWrap>
+  )
+}
+
+export function SingleTextWithLoading({ data, loading }) {
+  if (loading) return <p>Loading</p>
+  if (data?.type !== TYPE.TEXT) return null
+  return <PerText data={data} />
+}
+function SingleText({ onSelectChange, data, toggleOpts }) {
+  return (
+    <>
+      {onSelectChange ? (
+        <SelectWrap>
+          <input
+            type="checkbox"
+            value={data.id}
+            name="audio"
+            // checked={chkExists(e)}
+            onChange={(ev) => onSelectChange(e, ev.target.checked)}
+          />
+        </SelectWrap>
+      ) : null}
+      <PerText
+        key={data.id}
+        data={data}
+        toggleOpts={(ev) => toggleOpts(ev, data)}
+      />
+    </>
+  )
+}
+function TextList({ list, onSelectChange, selectedItems, toggleOpts }) {
+  // console.log(list)
+  return (
+    <ListWrap>
+      {list.map((e, i) => (
+        <SingleText
+          key={i}
+          onSelectChange={onSelectChange}
+          data={e}
+          toggleOpts={toggleOpts}
+        />
+      ))}
+    </ListWrap>
+  )
+}
+
+export function TextStateLess({
+  list,
+  onSelectChange = () => {},
+  selectedItems,
+  toggleOpts,
+}) {
+  if (list.length === 0 || list[0].type !== TYPE.TEXT) return null
+  return (
+    <TextList
+      list={list}
+      selectedItems={selectedItems}
+      onSelectChange={onSelectChange}
+      toggleOpts={toggleOpts}
+    />
   )
 }

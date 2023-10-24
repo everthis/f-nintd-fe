@@ -4,9 +4,10 @@ import styled from 'styled-components'
 import { Pane } from './pane'
 import { Tags, TagsWrap, formatter as tagsFormatter } from './tag'
 import { ImgFromUrl, ImgFromUrlWrap } from './image'
-import { API_ORIGIN, EMPTY_ARR, TYPE } from './constant'
+import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import { AudioStateLess } from './audio'
+import { TextStateLess, SingleTextWithLoading } from './text'
 import { Btn, Button } from './btn'
 
 const StickyWrap = styled.div``
@@ -103,6 +104,9 @@ const TypeSelectionWrap = styled.div`
 const AudioSection = styled.div`
   position: relative;
 `
+const TextSection = styled.div`
+  position: relative;
+`
 
 const qsOfTags = (set = new Set()) =>
   Array.from(set)
@@ -124,22 +128,22 @@ export function AssetGridPane({
   onConfirm,
   showActions = true,
   singleSelect = false,
-  alreadySelectedSet = new Set(),
+  alreadySelectedSet = EMPTY_SET,
   defaultType = TYPE.IMAGE,
 }) {
   const compId = useId()
-  const [selectedTags, setSelectedTags] = useState(new Set())
+  const [selectedTags, setSelectedTags] = useState(EMPTY_SET)
   const [type, setType] = useState(defaultType)
-  const [selectedAudio, setSelectedAudio] = useState(new Map())
+  const [selectedAudio, setSelectedAudio] = useState(EMPTY_MAP)
   const [showOptsPane, setShowOptsPane] = useState(false)
-  const [selectedItems, setSelectedItems] = useState(new Set())
+  const [selectedItems, setSelectedItems] = useState(EMPTY_SET)
   const [activeItem, setActiveItem] = useState(null)
   const {
     data: tags = EMPTY_ARR,
     loading: tagsLoading,
     queryData,
   } = useQuery({ url: `${API_ORIGIN}/tags` })
-  const fetchImgParams = useMemo(
+  const fetchAssetsParams = useMemo(
     () => (selectedTags.size ? { tags: qsOfTags(selectedTags) } : undefined),
     [selectedTags]
   )
@@ -149,7 +153,7 @@ export function AssetGridPane({
     queryData: queryByTags,
   } = useQuery({
     url: `${API_ORIGIN}/${type}/byTags`,
-    params: fetchImgParams,
+    params: fetchAssetsParams,
     // formatter,
     // shouldFetch: (_, params) => params.tags.length > 0,
   })
@@ -370,6 +374,17 @@ export function AssetGridPane({
             />
             audio
           </label>
+          <label>
+            <input
+              type="radio"
+              name={`${compId}_queryType`}
+              value={TYPE.TEXT}
+              checked={type === TYPE.TEXT}
+              onChange={onTypeChange}
+              disabled={fetching}
+            />
+            text
+          </label>
         </TypeSelectionWrap>
       </StickyWrap>
       <ContentWrap>
@@ -442,6 +457,23 @@ export function AssetGridPane({
               />
             )}
           </AudioSection>
+        ) : null}
+        {type === TYPE.TEXT ? (
+          <TextSection>
+            {fetching ? (
+              <Status>
+                <b>loading</b>
+              </Status>
+            ) : null}
+            {!fetching && (
+              <TextStateLess
+                list={items}
+                onSelectChange={showActions ? selectCbFn : null}
+                selectedItems={alreadySelectedSet}
+                toggleOpts={toggleOpts}
+              />
+            )}
+          </TextSection>
         ) : null}
 
         <Opts
@@ -521,7 +553,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
 
   const shouldFetch = () => type != null && id != null
   const {
-    data: imgData,
+    data: assetData,
     loading,
     queryData: fetchRelation,
   } = useQuery({
@@ -554,9 +586,9 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
   }, [show])
 
   useEffect(() => {
-    if (tags.length && imgData) {
+    if (tags.length && assetData) {
       const set = new Set()
-      for (const t of imgData.tags) {
+      for (const t of assetData.tags) {
         set.add(t.id)
       }
       const res = new Set()
@@ -565,7 +597,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
       }
       setSelectedTags(res)
     }
-  }, [tags, imgData])
+  }, [tags, assetData])
 
   const toggleTag = (item, selected) => {
     execUpdateTag({
@@ -591,7 +623,12 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
     <>
       <OptsBg ref={bgRef} onClick={toggleDisplay}></OptsBg>
       <OptsContent ref={ref}>
-        <ImgFromUrlWrap data={imgData} loading={loading} />
+        {type === TYPE.IMAGE ? (
+          <ImgFromUrlWrap data={assetData} loading={loading} />
+        ) : null}
+        {type === TYPE.TEXT ? (
+          <SingleTextWithLoading data={assetData} loading={loading} />
+        ) : null}
         <Tags
           tags={tags}
           showAddTag={false}

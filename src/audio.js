@@ -283,7 +283,7 @@ export function AudioItem({ data }) {
 
 function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
   const { chkExists } = useChecked(selectedItems)
-  console.log(selectedItems)
+  // console.log(selectedItems)
   return (
     <>
       {list.map((e) => (
