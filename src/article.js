@@ -108,7 +108,7 @@ function ListItem({
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
         <ImgComp {...cover} name={cover.name || cover.val} />
-        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
+        <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
           {title}
         </Link>
       </ArticleItemContent>
@@ -116,7 +116,7 @@ function ListItem({
         <StatusWrap>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`article_${id}_status`}
               value={ARTICLE_STATUS.WIP}
               checked={status === 0}
@@ -127,7 +127,7 @@ function ListItem({
           <br />
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`article_${id}_status`}
               value={ARTICLE_STATUS.PUBLIC}
               checked={status === 1}
@@ -154,7 +154,7 @@ export function Article(props) {
     data = [],
     loading,
     queryData,
-  } = useQuery({ url: `${API_ORIGIN}/articleListWithCover` })
+  } = useQuery({ url: `${API_ORIGIN}/articleListWithCover?status=1,0` })
 
   const itemDelCb = () => {
     queryData()

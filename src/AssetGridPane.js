@@ -7,7 +7,7 @@ import { ImgFromUrl, ImgFromUrlWrap } from './image'
 import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import { AudioStateLess } from './audio'
-import { TextStateLess, SingleTextWithLoading } from './text'
+import { TextStateLess, SingleTextWithLoading, AddTextPane } from './text'
 import { Btn, Button } from './btn'
 
 const StickyWrap = styled.div``
@@ -355,7 +355,7 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
@@ -366,7 +366,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
@@ -377,7 +377,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.TEXT}
               checked={type === TYPE.TEXT}
@@ -422,7 +422,7 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type="radio"
+                          type='radio'
                           value={e.name}
                           name={`${compId}_radio`}
                           checked={chkExists(e)}
@@ -432,7 +432,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={chkExists(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
                         />
@@ -642,7 +642,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           loading={tagsLoading}
           selectedTags={selectedTags}
         />
-        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>

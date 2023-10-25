@@ -62,6 +62,30 @@ const SingleTextWrap = styled.div`
   }
 `
 
+export function AddTextPane() {
+  const ref = useRef()
+  const inputSecRef = useRef()
+
+  const addText = () => {
+    const val = ref.current.value
+    if (val == null || val.trim() === '') return
+    postData({ url: `${API_ORIGIN}/text/new`, payload: { content: val } }).then(
+      (d) => {
+        ref.current.value = ''
+      }
+    )
+  }
+
+  return (
+    <Wrap>
+      <InputSection ref={inputSecRef}>
+        <Textarea rows='5' cols='50' ref={ref} />
+        <Btn onClick={addText}>Add text</Btn>
+      </InputSection>
+    </Wrap>
+  )
+}
+
 export function TextPane() {
   const ref = useRef()
   const inputSecRef = useRef()
@@ -103,7 +127,7 @@ export function TextPane() {
   return (
     <Wrap>
       <InputSection ref={inputSecRef}>
-        <Textarea rows="5" cols="50" ref={ref} />
+        <Textarea rows='5' cols='50' ref={ref} />
         <Btn onClick={addText}>Add text</Btn>
       </InputSection>
 
@@ -131,7 +155,7 @@ export function PerText({ data, toggleOpts = () => {}, showOpts = true }) {
       {data.content}
       {showOpts ? (
         <Pos>
-          <VdotsIcon onClick={toggleOpts} size="20px" />
+          <VdotsIcon onClick={toggleOpts} size='20px' />
         </Pos>
       ) : null}
     </Pre>
@@ -186,9 +210,9 @@ function SingleText({ onSelectChange, data, toggleOpts, chkSelected }) {
       {onSelectChange ? (
         <SelectWrap>
           <input
-            type="checkbox"
+            type='checkbox'
             value={data.id}
-            name="audio"
+            name='audio'
             checked={chkSelected(data)}
             onChange={(ev) => onSelectChange(data, ev.target.checked)}
           />

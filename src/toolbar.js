@@ -80,12 +80,12 @@ export function Toolbar({
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <TextIcon checked={showText} onClick={toggleText} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
-      <MenuIcon checked={showAddTag} onClick={toggleAddTag} />
+      {/* <MenuIcon checked={showAddTag} onClick={toggleAddTag} /> */}
       <ThemeWrap>
         <Theme />
       </ThemeWrap>
 
-      <Link to="/homepage" style={{ marginRight: '1em' }}>
+      <Link to='/homepage' style={{ marginRight: '1em' }}>
         Homepage
       </Link>
 
