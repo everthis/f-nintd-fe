@@ -39,11 +39,15 @@ export function useQuery({
 }
 
 export function useChecked(selectedItems) {
+  const genKey = (e) => {
+    const { type, id } = e
+    const k = `${type},${id}`
+    return k
+  }
   const selectedKeySet = useMemo(() => {
     const set = new Set()
     for (const e of selectedItems) {
-      const { type, id } = e
-      const k = `${type},${id}`
+      const k = genKey(e)
       set.add(k)
     }
     return set
@@ -51,14 +55,29 @@ export function useChecked(selectedItems) {
 
   const chkExists = useCallback(
     (e) => {
-      const { type, id } = e
-      const k = `${type},${id}`
+      const k = genKey(e)
       return selectedKeySet.has(k)
     },
     [selectedKeySet]
   )
 
-  return { chkExists }
+  const chkExistItem = useCallback(
+    (e) => {
+      const targetKey = genKey(e)
+      let res = null
+      for (const item of selectedItems) {
+        const k = genKey(item)
+        if (k === targetKey) {
+          res = item
+          break
+        }
+      }
+      return res
+    },
+    [selectedKeySet]
+  )
+
+  return { chkExists, chkExistItem }
 }
 
 export function useCombineSets(...sets) {

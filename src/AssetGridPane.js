@@ -136,7 +136,7 @@ export function AssetGridPane({
   const [type, setType] = useState(defaultType)
   const [selectedAudio, setSelectedAudio] = useState(EMPTY_MAP)
   const [showOptsPane, setShowOptsPane] = useState(false)
-  const [selectedItems, setSelectedItems] = useState(EMPTY_SET)
+  const [selectedItems, setSelectedItems] = useState(alreadySelectedSet)
   const [activeItem, setActiveItem] = useState(null)
   const {
     data: tags = EMPTY_ARR,
@@ -158,9 +158,7 @@ export function AssetGridPane({
     // shouldFetch: (_, params) => params.tags.length > 0,
   })
 
-  const { chkExists } = useChecked(
-    useCombineSets(alreadySelectedSet, selectedItems)
-  )
+  const { chkExists, chkExistItem } = useChecked(useCombineSets(selectedItems))
 
   // const closePane = () => {
   //   setTags([])
@@ -180,12 +178,15 @@ export function AssetGridPane({
   function selectCbFn(item, bool, isSingleSelect) {
     const clone = new Set(selectedItems)
     if (bool) {
-      if (!clone.has(item)) {
+      if (!chkExists(item)) {
         if (isSingleSelect) clone.clear()
         clone.add(item)
       }
     } else {
-      if (clone.has(item)) clone.delete(item)
+      if (chkExists(item)) {
+        const e = chkExistItem(item)
+        clone.delete(e)
+      }
     }
     setSelectedItems(clone)
     // const clone = [...imgs]
@@ -453,7 +454,7 @@ export function AssetGridPane({
               <AudioStateLess
                 list={items}
                 onSelectChange={showActions ? selectCbFn : null}
-                selectedItems={alreadySelectedSet}
+                selectedItems={selectedItems}
               />
             )}
           </AudioSection>
