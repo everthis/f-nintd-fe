@@ -20,7 +20,9 @@ export function useQuery({
     setLoading(true)
     const reqUrl =
       url + `${Object.keys(params).length ? '?' + serialize(params) : ''}`
-    return fetch(reqUrl)
+    return fetch(reqUrl, {
+      credentials: 'include',
+    })
       .then((d) => d.json())
       .then((d) => setData(formatter(d)))
       .catch((e) => setErr(e))

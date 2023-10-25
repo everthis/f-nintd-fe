@@ -62,6 +62,7 @@ export const Pane = React.memo(function PaneFn({
 }) {
   const ref = useRef(null)
   // const [initPos, setInitPos] = useState([0, 0])
+  const { scrollX, scrollY } = window
   const [pos, setPos] = useState([0, 0])
   const leftTopRef = useRef([left, top])
   const canMoveRef = useRef(false)
@@ -83,7 +84,7 @@ export const Pane = React.memo(function PaneFn({
   function mouseMove(ev) {
     if (!canMoveRef.current) return
     const s = shiftRef.current
-    const i = initPosRef.current
+    // const i = initPosRef.current
     // const newP = [ev.pageX - s[0] - i[0], ev.pageY - s[1] - i[1]]
     const newP = [ev.clientX - s[0], ev.clientY - s[1]]
     setPos(newP)

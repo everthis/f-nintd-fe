@@ -20,6 +20,7 @@ import { PaneContainer } from './pane'
 import { AssetGridPane } from './AssetGridPane'
 import { ImgComp } from './image'
 import { AudioItem } from './audio'
+import { PerText } from './text'
 
 const Wrap = styled.div`
   position: relative;
@@ -188,6 +189,11 @@ export function Editor() {
           type: e.type,
           name: e.name,
           url: e.url,
+          id: e.id,
+        })
+      } else if (e.type === TYPE.TEXT) {
+        res.body.push({
+          type: e.type,
           id: e.id,
         })
       }
@@ -424,7 +430,7 @@ export function Editor() {
       <TitleRow>
         <label>
           Title:
-          <input value={title} onChange={titleChange} />
+          <input type="text" value={title} onChange={titleChange} />
         </label>
       </TitleRow>
 
@@ -441,7 +447,9 @@ export function Editor() {
                 <ImgComp {...e} />
               ) : null}
               {e.type === TYPE.AUDIO ? <AudioItem data={e} /> : null}
-              {e.type === 'text' ? <p>{e.val}</p> : null}
+              {e.type === TYPE.TEXT ? (
+                <PerText data={e} showOpts={false} />
+              ) : null}
             </SectionContent>
             <SectionOp>
               <OpBtn onClick={() => moveUp(e)}>

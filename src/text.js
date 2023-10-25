@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useId } from 'react'
 import styled from 'styled-components'
 import { postData } from './utils'
 import { API_ORIGIN, TYPE } from './constant'
@@ -52,6 +52,15 @@ const OptsPaneWrap = styled.div`
   border: var(--border);
 `
 const SelectWrap = styled.span``
+
+const SingleTextWrap = styled.div`
+  display: flex;
+  padding: 0.5rem 0;
+  ${Pre} {
+    flex: 1;
+    margin: 0;
+  }
+`
 
 export function TextPane() {
   const ref = useRef()
@@ -116,13 +125,15 @@ export function TextPane() {
   )
 }
 
-function PerText({ data, toggleOpts }) {
+export function PerText({ data, toggleOpts = () => {}, showOpts = true }) {
   return (
     <Pre>
       {data.content}
-      <Pos>
-        <VdotsIcon onClick={toggleOpts} size="20px" />
-      </Pos>
+      {showOpts ? (
+        <Pos>
+          <VdotsIcon onClick={toggleOpts} size="20px" />
+        </Pos>
+      ) : null}
     </Pre>
   )
 }
@@ -164,22 +175,22 @@ function OptsPane({ textId, pos }) {
   )
 }
 
-export function SingleTextWithLoading({ data, loading }) {
+export function SingleTextWithLoading({ data, loading, showOpts, toggleOpts }) {
   if (loading) return <p>Loading</p>
   if (data?.type !== TYPE.TEXT) return null
-  return <PerText data={data} />
+  return <PerText data={data} showOpts={showOpts} toggleOpts={toggleOpts} />
 }
-function SingleText({ onSelectChange, data, toggleOpts }) {
+function SingleText({ onSelectChange, data, toggleOpts, chkSelected }) {
   return (
-    <>
+    <SingleTextWrap>
       {onSelectChange ? (
         <SelectWrap>
           <input
             type="checkbox"
             value={data.id}
             name="audio"
-            // checked={chkExists(e)}
-            onChange={(ev) => onSelectChange(e, ev.target.checked)}
+            checked={chkSelected(data)}
+            onChange={(ev) => onSelectChange(data, ev.target.checked)}
           />
         </SelectWrap>
       ) : null}
@@ -188,10 +199,10 @@ function SingleText({ onSelectChange, data, toggleOpts }) {
         data={data}
         toggleOpts={(ev) => toggleOpts(ev, data)}
       />
-    </>
+    </SingleTextWrap>
   )
 }
-function TextList({ list, onSelectChange, selectedItems, toggleOpts }) {
+function TextList({ list, onSelectChange, chkSelected, toggleOpts }) {
   // console.log(list)
   return (
     <ListWrap>
@@ -201,6 +212,7 @@ function TextList({ list, onSelectChange, selectedItems, toggleOpts }) {
           onSelectChange={onSelectChange}
           data={e}
           toggleOpts={toggleOpts}
+          chkSelected={chkSelected}
         />
       ))}
     </ListWrap>
@@ -210,14 +222,14 @@ function TextList({ list, onSelectChange, selectedItems, toggleOpts }) {
 export function TextStateLess({
   list,
   onSelectChange = () => {},
-  selectedItems,
+  chkSelected,
   toggleOpts,
 }) {
   if (list.length === 0 || list[0].type !== TYPE.TEXT) return null
   return (
     <TextList
       list={list}
-      selectedItems={selectedItems}
+      chkSelected={chkSelected}
       onSelectChange={onSelectChange}
       toggleOpts={toggleOpts}
     />

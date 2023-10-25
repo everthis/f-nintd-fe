@@ -38,6 +38,8 @@ export function Toolbar({
   setShowImg,
   showAddTag,
   setShowAddTag,
+  showCreate,
+  setShowCreate,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -59,6 +61,9 @@ export function Toolbar({
   function toggleAddTag() {
     setShowAddTag(!showAddTag)
   }
+  function toggleCreate() {
+    setShowCreate(!showCreate)
+  }
   function listImagesWithoutTags() {
     fetch(`${API_ORIGIN}/images/withoutTags`, {
       method: 'GET',
@@ -69,18 +74,18 @@ export function Toolbar({
   return (
     <ToolbarWrap>
       <UploadIcon checked={showUpload} onClick={toggleUpload} />
-      <WriteIcon checked={showUpload} onClick={toggleUpload} />
+      <WriteIcon checked={showCreate} onClick={toggleCreate} />
+      <AddTagIcon checked={showAddTag} onClick={toggleAddTag} />
       <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <TextIcon checked={showText} onClick={toggleText} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
-      <AddTagIcon checked={showAddTag} onClick={toggleAddTag} />
       <MenuIcon checked={showAddTag} onClick={toggleAddTag} />
       <ThemeWrap>
         <Theme />
       </ThemeWrap>
 
-      <Link to='/homepage' style={{ marginRight: '1em' }}>
+      <Link to="/homepage" style={{ marginRight: '1em' }}>
         Homepage
       </Link>
 

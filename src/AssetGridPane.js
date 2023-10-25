@@ -469,7 +469,7 @@ export function AssetGridPane({
               <TextStateLess
                 list={items}
                 onSelectChange={showActions ? selectCbFn : null}
-                selectedItems={alreadySelectedSet}
+                chkSelected={chkExists}
                 toggleOpts={toggleOpts}
               />
             )}
@@ -627,7 +627,11 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           <ImgFromUrlWrap data={assetData} loading={loading} />
         ) : null}
         {type === TYPE.TEXT ? (
-          <SingleTextWithLoading data={assetData} loading={loading} />
+          <SingleTextWithLoading
+            data={assetData}
+            loading={loading}
+            showOpts={false}
+          />
         ) : null}
         <Tags
           tags={tags}

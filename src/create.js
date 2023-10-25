@@ -56,6 +56,7 @@ export function Create() {
   const [showUpload, setShowUpload] = useCS('upload', false, setStkVal)
   const [showImg, setShowImg] = useCS('image', false, setStkVal)
   const [showAddTag, setShowAddTag] = useCS('tag', false, setStkVal)
+  const [showCreate, setShowCreate] = useCS('create', false, setStkVal)
 
   const [paneMap, setPaneMap] = useState(new Map())
   const [checkedSet, setCheckedSet] = useState(new Set())
@@ -271,6 +272,8 @@ export function Create() {
         setShowImg={setShowImg}
         showAddTag={showAddTag}
         setShowAddTag={setShowAddTag}
+        showCreate={showCreate}
+        setShowCreate={setShowCreate}
       />
       <HorLine />
 
