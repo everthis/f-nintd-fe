@@ -130,6 +130,7 @@ export function AssetGridPane({
   singleSelect = false,
   alreadySelectedSet = EMPTY_SET,
   defaultType = TYPE.IMAGE,
+  disabledAssetsSet = EMPTY_SET,
 }) {
   const compId = useId()
   const [selectedTags, setSelectedTags] = useState(EMPTY_SET)
@@ -159,6 +160,7 @@ export function AssetGridPane({
   })
 
   const { chkExists, chkExistItem } = useChecked(useCombineSets(selectedItems))
+  const { chkExists: chkDisabled } = useChecked(disabledAssetsSet)
 
   // const closePane = () => {
   //   setTags([])
@@ -209,7 +211,11 @@ export function AssetGridPane({
   }
 
   function applySelected() {
-    onConfirm(Array.from(selectedItems))
+    const clone = new Set(selectedItems)
+    for (const e of clone) {
+      if (chkDisabled(e)) clone.delete(e)
+    }
+    onConfirm(Array.from(clone))
   }
   // function applySelected() {
   //   const imgsArr = imgs.filter((e) => e.selected)
@@ -355,7 +361,7 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
@@ -366,7 +372,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
@@ -377,7 +383,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.TEXT}
               checked={type === TYPE.TEXT}
@@ -422,18 +428,20 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type='radio'
+                          type="radio"
                           value={e.name}
                           name={`${compId}_radio`}
                           checked={chkExists(e)}
+                          disabled={chkDisabled(e)}
                           onChange={(ev) =>
                             selectCbFn(e, ev.target.checked, true)
                           }
                         />
                       ) : (
                         <input
-                          type='checkbox'
+                          type="checkbox"
                           checked={chkExists(e)}
+                          disabled={chkDisabled(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
                         />
                       )}
@@ -642,7 +650,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           loading={tagsLoading}
           selectedTags={selectedTags}
         />
-        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>

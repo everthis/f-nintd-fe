@@ -79,7 +79,7 @@ export function AddTextPane() {
   return (
     <Wrap>
       <InputSection ref={inputSecRef}>
-        <Textarea rows='5' cols='50' ref={ref} />
+        <Textarea rows="5" cols="50" ref={ref} />
         <Btn onClick={addText}>Add text</Btn>
       </InputSection>
     </Wrap>
@@ -127,7 +127,7 @@ export function TextPane() {
   return (
     <Wrap>
       <InputSection ref={inputSecRef}>
-        <Textarea rows='5' cols='50' ref={ref} />
+        <Textarea rows="5" cols="50" ref={ref} />
         <Btn onClick={addText}>Add text</Btn>
       </InputSection>
 
@@ -140,6 +140,7 @@ export function TextPane() {
               key={i}
               data={e}
               toggleOpts={(ev) => toggleOpts(e.id, ev)}
+              showOpts
             />
           ))}
           {showOpts ? <OptsPane textId={activeId} pos={optsCoord} /> : null}
@@ -149,13 +150,13 @@ export function TextPane() {
   )
 }
 
-export function PerText({ data, toggleOpts = () => {}, showOpts = true }) {
+export function PerText({ data, toggleOpts = () => {}, showOpts = false }) {
   return (
     <Pre>
       {data.content}
       {showOpts ? (
         <Pos>
-          <VdotsIcon onClick={toggleOpts} size='20px' />
+          <VdotsIcon onClick={toggleOpts} size="20px" />
         </Pos>
       ) : null}
     </Pre>
@@ -210,9 +211,9 @@ function SingleText({ onSelectChange, data, toggleOpts, chkSelected }) {
       {onSelectChange ? (
         <SelectWrap>
           <input
-            type='checkbox'
+            type="checkbox"
             value={data.id}
-            name='audio'
+            name="audio"
             checked={chkSelected(data)}
             onChange={(ev) => onSelectChange(data, ev.target.checked)}
           />
@@ -222,6 +223,7 @@ function SingleText({ onSelectChange, data, toggleOpts, chkSelected }) {
         key={data.id}
         data={data}
         toggleOpts={(ev) => toggleOpts(ev, data)}
+        showOpts
       />
     </SingleTextWrap>
   )

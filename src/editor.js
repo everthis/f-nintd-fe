@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { Pane } from './pane'
 import { Tags } from './tag'
-import { API_ORIGIN, TYPE } from './constant'
+import { API_ORIGIN, EMPTY_SET, TYPE } from './constant'
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -179,31 +179,15 @@ export function Editor() {
     res.title = title
     res.path = title.toLowerCase().split(' ').join('_')
     for (const e of items) {
-      if (e.type === TYPE.IMG) {
-        res.body.push({
-          type: e.type,
-          name: e.val || e.name, // for compatibility
-          dimension: e.dimension,
-          id: e.id,
-        })
-      } else if (e.type === TYPE.AUDIO) {
-        res.body.push({
-          type: e.type,
-          name: e.name,
-          url: e.url,
-          id: e.id,
-        })
-      } else if (e.type === TYPE.TEXT) {
-        res.body.push({
-          type: e.type,
-          id: e.id,
-        })
-      }
+      res.body.push({
+        type: e.type,
+        id: e.id,
+      })
     }
 
     if (coverImg?.val || coverImg?.name) {
-      const { val, type, dimension, name } = coverImg
-      res.cover = { name: val || name, type, dimension }
+      const { type, id } = coverImg
+      res.cover = { type, id }
     }
 
     const articleId = +articleIdRef.current.value
@@ -292,6 +276,9 @@ export function Editor() {
         showActions
         showPane={showPane}
         setShowPane={setShowPane}
+        disabledAssetsSet={
+          activeImgInArticleRef.current == null ? EMPTY_SET : alreadySelectedSet
+        }
         onConfirm={(res) => {
           insertAssets(res)
           setShowPane(false)

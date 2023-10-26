@@ -5,6 +5,7 @@ import { API_ORIGIN, TYPE } from './constant'
 import Image, { SingleImage } from './articleImg'
 import { AudioItem } from './audio'
 import { useQuery } from './hooks'
+import { PerText } from './text'
 
 const Center = styled.div`
   text-align: center;
@@ -64,6 +65,9 @@ function ContentItem({ data }) {
       break
     case TYPE.AUDIO:
       Comp = AudioItem
+      break
+    case TYPE.TEXT:
+      Comp = PerText
       break
     default:
   }
