@@ -15,6 +15,8 @@ import {
   ReverseIcon,
   AddIcon,
   SaveIcon,
+  ManageIcon,
+  CoverIcon,
 } from './icon'
 import { PaneContainer } from './pane'
 import { AssetGridPane } from './AssetGridPane'
@@ -222,7 +224,7 @@ export function Editor() {
       .then((d) => d.text())
       .then((d) => alert('ok'))
   }
-  const addAssetsToTheEnd = () => {
+  const manageAssets = () => {
     activeImgInArticleRef.current = null
     setShowPane(true)
   }
@@ -252,12 +254,13 @@ export function Editor() {
   }
 
   const insertAssets = (arr) => {
-    const clone = items.slice()
+    let clone = items.slice()
     if (activeImgInArticleRef.current != null) {
       const idx = activeImgInArticleRef.current
       clone.splice(idx, 0, ...arr)
     } else {
-      clone.push(...arr)
+      // replace existing
+      clone = arr
     }
     setItems(clone)
   }
@@ -477,10 +480,13 @@ export function Editor() {
           <ReverseIcon />
           reverse List
         </button>
-        <button onClick={addCover}>add cover</button>
-        <button onClick={addAssetsToTheEnd}>
-          <AddIcon />
-          Add Assets
+        <button onClick={addCover}>
+          <CoverIcon />
+          add cover
+        </button>
+        <button onClick={manageAssets}>
+          <ManageIcon />
+          Manage Assets
         </button>
         {/* <button onClick={preview}>Preview</button> */}
         <button onClick={save}>

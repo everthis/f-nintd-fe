@@ -117,8 +117,8 @@ export const Pane = React.memo(function PaneFn({
   }
   useEffect(() => {
     resize()
-    const { scrollX, scrollY } = window
-    setPos([scrollX, scrollY])
+    // const { scrollX, scrollY } = window
+    // setPos([scrollX, scrollY])
 
     window.addEventListener('mousedown', mouseDown)
     window.addEventListener('mousemove', mouseMove)
