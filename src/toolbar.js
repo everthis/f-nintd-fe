@@ -22,6 +22,7 @@ import {
   MenuIcon,
   WriteIcon,
   QuoteIcon,
+  WaveformIcon,
 } from './icon'
 import { API_ORIGIN } from './constant'
 
@@ -40,6 +41,8 @@ export function Toolbar({
   setShowAddTag,
   showCreate,
   setShowCreate,
+  showWaveform,
+  setShowWaveform,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -64,6 +67,9 @@ export function Toolbar({
   function toggleCreate() {
     setShowCreate(!showCreate)
   }
+  function toggleWaveform() {
+    setShowWaveform(!showWaveform)
+  }
   function listImagesWithoutTags() {
     fetch(`${API_ORIGIN}/images/withoutTags`, {
       method: 'GET',
@@ -79,6 +85,7 @@ export function Toolbar({
       <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <TextIcon checked={showText} onClick={toggleText} />
+      <WaveformIcon checked={showWaveform} onClick={toggleWaveform} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
       {/* <MenuIcon checked={showAddTag} onClick={toggleAddTag} /> */}
       <ThemeWrap>

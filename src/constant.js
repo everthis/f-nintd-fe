@@ -1,5 +1,5 @@
-export const API_ORIGIN = 'http://127.0.0.1:8083'
-// export const API_ORIGIN = 'http://192.168.2.114:8083'
+// export const API_ORIGIN = 'http://127.0.0.1:8083'
+export const API_ORIGIN = 'http://192.168.2.114:8083'
 /*
 export const API_ORIGIN = PRODUCTION
   ? 'https://be.everthis.com'
@@ -11,6 +11,7 @@ export const TYPE = {
   IMAGE: 'image',
   AUDIO: 'audio',
   TEXT: 'text',
+  WAVEFORM: 'waveform',
 }
 
 export const EMPTY_OBJ = {}

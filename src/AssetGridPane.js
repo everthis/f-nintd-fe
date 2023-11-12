@@ -361,7 +361,7 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
@@ -372,7 +372,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
@@ -383,7 +383,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.TEXT}
               checked={type === TYPE.TEXT}
@@ -391,6 +391,17 @@ export function AssetGridPane({
               disabled={fetching}
             />
             text
+          </label>
+          <label>
+            <input
+              type='radio'
+              name={`${compId}_queryType`}
+              value={TYPE.WAVEFORM}
+              checked={type === TYPE.WAVEFORM}
+              onChange={onTypeChange}
+              disabled={fetching}
+            />
+            waveform
           </label>
         </TypeSelectionWrap>
       </StickyWrap>
@@ -428,7 +439,7 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type="radio"
+                          type='radio'
                           value={e.name}
                           name={`${compId}_radio`}
                           checked={chkExists(e)}
@@ -439,7 +450,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={chkExists(e)}
                           disabled={chkDisabled(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
@@ -650,7 +661,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           loading={tagsLoading}
           selectedTags={selectedTags}
         />
-        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>
