@@ -4,8 +4,8 @@ import Hls from 'hls.js'
 import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
-import { PlayIcon, PauseIcon } from './icon'
-import { useQuery, useChecked } from './hooks'
+import { PlayIcon, PauseIcon, WaveformIcon } from './icon'
+import { useQuery, useChecked, usePostData } from './hooks'
 
 const HiddenInput = styled.input`
   opacity: 0;
@@ -36,11 +36,17 @@ const ProgressWrap = styled.div`
   }
 `
 
-const Actions = styled.span``
+const Actions = styled.span`
+  display: flex;
+  gap: 10px;
+  button {
+    cursor: pointer;
+  }
+`
 
 const FixedRightWidthRow = styled.div`
   position: relative;
-  padding-right: 2.5em;
+  padding-right: 6.5em;
   display: flex;
   height: 2em;
 
@@ -77,7 +83,7 @@ function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay
 }
 
-function AudioPlayer({ source, name }) {
+function AudioPlayer({ source, name, id }) {
   const ref = useRef()
   const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
@@ -86,6 +92,7 @@ function AudioPlayer({ source, name }) {
   const [shouldShowPlayer, setShouldShowPlayer] = useState(true)
   const [paused, setPaused] = useState(true)
   const [status, setStatus] = useState('')
+  const { loading: genPeaksInProgress, postData: genPeaksFn } = usePostData()
 
   // if (source) source += '#t=0.1'
 
@@ -216,6 +223,15 @@ function AudioPlayer({ source, name }) {
     }
     setVal(Number(ev.target.value))
   }
+  function genPeaks() {
+    genPeaksFn({
+      url: `${API_ORIGIN}/waveform/fromM3U8`,
+      payload: {
+        audio_id: id,
+        m3u8: source,
+      },
+    })
+  }
 
   // const btnContent =
   //   ref.current == null ? (
@@ -231,7 +247,7 @@ function AudioPlayer({ source, name }) {
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload="metadata" />
+      <audio ref={ref} playsInline preload='metadata' />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
@@ -239,7 +255,7 @@ function AudioPlayer({ source, name }) {
         <ProgressWrap>
           <progress value={val} max={100} />
           <HiddenInput
-            type="range"
+            type='range'
             onChange={rangeChange}
             ref={progressRef}
             value={val}
@@ -252,9 +268,12 @@ function AudioPlayer({ source, name }) {
           </div>
         </ProgressWrap>
         <Actions>
+          <button onClick={genPeaks}>
+            <WaveformIcon />
+          </button>
           <button
-            type="button"
-            title="toggle play"
+            type='button'
+            title='toggle play'
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -267,7 +286,7 @@ function AudioPlayer({ source, name }) {
 }
 
 export function AudioItem({ data }) {
-  const { name, m3u8_name, folder, url } = data
+  const { name, m3u8_name, folder, url, id } = data
   return (
     <StyledAudioItem
       style={{
@@ -276,7 +295,7 @@ export function AudioItem({ data }) {
         paddingBottom: '0.5em',
       }}
     >
-      <AudioPlayer source={url} name={name} />
+      <AudioPlayer source={url} name={name} id={id} />
     </StyledAudioItem>
   )
 }
@@ -291,9 +310,9 @@ function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type="checkbox"
+                type='checkbox'
                 value={e.id}
-                name="audio"
+                name='audio'
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
