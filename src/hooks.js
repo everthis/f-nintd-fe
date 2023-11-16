@@ -11,24 +11,24 @@ export function useQuery({
   formatter = defaultFormatter,
   fetchMannually = false,
   shouldFetch = () => true,
+  includeCredentials = true,
 }) {
   const [err, setErr] = useState(null)
   const [data, setData] = useState(undefined)
-  const [loading, setLoading] = useState(false)
+  const shouldFetchNow = shouldFetch(url, params)
+  const [loading, setLoading] = useState(shouldFetchNow)
 
   const queryData = () => {
     setLoading(true)
     const reqUrl =
       url + `${Object.keys(params).length ? '?' + serialize(params) : ''}`
-    return fetch(reqUrl, {
-      credentials: 'include',
-    })
+    const opts = includeCredentials ? { credentials: 'include' } : {}
+    return fetch(reqUrl, opts)
       .then((d) => d.json())
       .then((d) => setData(formatter(d)))
       .catch((e) => setErr(e))
       .finally((d) => setLoading(false))
   }
-  const shouldFetchNow = shouldFetch(url, params)
   useEffect(() => {
     if (!fetchMannually) {
       if (shouldFetchNow) queryData()

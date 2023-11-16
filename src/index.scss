@@ -50,3 +50,25 @@ button[disabled] {
 }
 
 /* Hide handler for WebKit browsers */
+
+.progress {
+  /* background: */
+  &::-webkit-progress-bar {
+    background-color: transparent;
+    width: 100%;
+  }
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  border-radius: 0;
+  height: 100%;
+
+  /* value: */
+  &::-webkit-progress-value {
+    background-color: rgba(4, 9, 9, 0.35) !important;
+  }
+  &::-moz-progress-bar {
+    background-color: rgba(4, 9, 9, 0.35) !important;
+  }
+  color: rgba(4, 9, 9, 0.35);
+}

@@ -6,26 +6,13 @@ import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
 import { PlayIcon, PauseIcon, WaveformIcon } from './icon'
 import { useQuery, useChecked, usePostData } from './hooks'
+import { AudioWave } from './audioWave'
 
 const HiddenInput = styled.input`
   opacity: 0;
 `
 const ProgressWrap = styled.div`
   position: relative;
-  progress {
-    display: block;
-    width: 100%;
-    border-radius: 0;
-    height: 10px;
-  }
-  progress::-webkit-progress-bar {
-    background-color: var(--bg-color);
-    border: 1px solid #c4b2b2;
-    border-radius: 0;
-  }
-  progress::-webkit-progress-value {
-    background-color: purple;
-  }
   ${HiddenInput} {
     position: absolute;
     top: 0;
@@ -33,6 +20,8 @@ const ProgressWrap = styled.div`
     width: 100%;
     z-index: 1;
     cursor: pointer;
+    height: 100%;
+    margin: 0;
   }
 `
 
@@ -68,6 +57,24 @@ const AudioItemWrap = styled.div`
     flex: 1;
   }
 `
+
+const WaveformWrap = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+`
+const ProgressContrlWrap = styled.div`
+  position: relative;
+  z-index: 1;
+  height: 100%;
+`
+const WaveControl = styled.div`
+  height: 100%;
+`
+
+const ProgressStatus = styled.div``
 function isWechat() {
   return /MicroMessenger/i.test(window.navigator.userAgent)
 }
@@ -83,7 +90,7 @@ function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay
 }
 
-function AudioPlayer({ source, name, id }) {
+function AudioPlayer({ source, name, id, waveform }) {
   const ref = useRef()
   const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
@@ -247,33 +254,37 @@ function AudioPlayer({ source, name, id }) {
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload='metadata' />
+      <audio ref={ref} playsInline preload="metadata" />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
       <FixedRightWidthRow>
         <ProgressWrap>
-          <progress value={val} max={100} />
-          <HiddenInput
-            type='range'
-            onChange={rangeChange}
-            ref={progressRef}
-            value={val}
-            max={100}
-          />
-          <div>
-            {secondsToHms(duration)}/
-            {secondsToHms(ref.current?.currentTime || 0)}
-            {status ? ` (${status})` : null}
-          </div>
+          <WaveControl>
+            {waveform ? (
+              <WaveformWrap>
+                <AudioWave url={waveform} />
+              </WaveformWrap>
+            ) : null}
+            <ProgressContrlWrap>
+              <progress className="progress" value={val} max={100} />
+              <HiddenInput
+                type="range"
+                onChange={rangeChange}
+                ref={progressRef}
+                value={val}
+                max={100}
+              />
+            </ProgressContrlWrap>
+          </WaveControl>
         </ProgressWrap>
         <Actions>
           <button onClick={genPeaks}>
             <WaveformIcon />
           </button>
           <button
-            type='button'
-            title='toggle play'
+            type="button"
+            title="toggle play"
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -281,12 +292,18 @@ function AudioPlayer({ source, name, id }) {
           </button>
         </Actions>
       </FixedRightWidthRow>
+      <ProgressStatus>
+        <div>
+          {secondsToHms(duration)}/{secondsToHms(ref.current?.currentTime || 0)}
+          {status ? ` (${status})` : null}
+        </div>
+      </ProgressStatus>
     </div>
   )
 }
 
 export function AudioItem({ data }) {
-  const { name, m3u8_name, folder, url, id } = data
+  const { name, url, id, waveform } = data
   return (
     <StyledAudioItem
       style={{
@@ -295,7 +312,7 @@ export function AudioItem({ data }) {
         paddingBottom: '0.5em',
       }}
     >
-      <AudioPlayer source={url} name={name} id={id} />
+      <AudioPlayer source={url} name={name} id={id} waveform={waveform} />
     </StyledAudioItem>
   )
 }
@@ -306,13 +323,13 @@ function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
   return (
     <>
       {list.map((e) => (
-        <AudioItemWrap key={e.folder}>
+        <AudioItemWrap key={e.id}>
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
