@@ -37,7 +37,6 @@ const Wrap = styled.div`
 `
 const ContentWrap = styled.div`
   flex: 1;
-  overflow-y: scroll;
   overflow-x: hidden;
 `
 
