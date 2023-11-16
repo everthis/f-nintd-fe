@@ -104,6 +104,7 @@ const TypeSelectionWrap = styled.div`
 
 const AudioSection = styled.div`
   position: relative;
+  height: 100%;
 `
 const TextSection = styled.div`
   position: relative;

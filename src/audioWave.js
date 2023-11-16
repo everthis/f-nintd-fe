@@ -118,7 +118,7 @@ export function WaveformStateLess({
   return (
     <>
       {list.map((e) => (
-        <AudioWave url={e.m3u8} />
+        <AudioWave key={e.id} url={e.m3u8} />
       ))}
     </>
   )

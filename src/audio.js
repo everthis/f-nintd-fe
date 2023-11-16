@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import Hls from 'hls.js'
 import styled from 'styled-components'
+import { FixedSizeList as List } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
+
 import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
 import { PlayIcon, PauseIcon, WaveformIcon } from './icon'
@@ -294,7 +297,7 @@ function AudioPlayer({ source, name, id, waveform }) {
       </FixedRightWidthRow>
       <ProgressStatus>
         <div>
-          {secondsToHms(duration)}/{secondsToHms(ref.current?.currentTime || 0)}
+          {secondsToHms(ref.current?.currentTime || 0)}/{secondsToHms(duration)}
           {status ? ` (${status})` : null}
         </div>
       </ProgressStatus>
@@ -342,6 +345,50 @@ function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
   )
 }
 
+function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
+  const { chkExists } = useChecked(selectedItems)
+  const itemCount = list.length
+
+  const Row = useCallback(
+    ({ index, data }) => {
+      const e = data[index]
+      return (
+        <AudioItemWrap key={e.id}>
+          {onSelectChange ? (
+            <SelectWrap>
+              <input
+                type="checkbox"
+                value={e.id}
+                name="audio"
+                checked={chkExists(e)}
+                onChange={(ev) => onSelectChange(e, ev.target.checked)}
+              />
+            </SelectWrap>
+          ) : null}
+          <AudioItem data={e} />
+        </AudioItemWrap>
+      )
+    },
+    [onSelectChange, selectedItems]
+  )
+
+  return (
+    <AutoSizer>
+      {({ height, width }) => (
+        <List
+          height={height}
+          itemCount={itemCount}
+          itemSize={87}
+          itemData={list}
+          width={width}
+        >
+          {Row}
+        </List>
+      )}
+    </AutoSizer>
+  )
+}
+
 export function Audio() {
   // const [audioList, setAudioList] = useState([])
   const { data: audioList = [], loading } = useQuery({
@@ -364,7 +411,7 @@ export function AudioStateLess({
 }) {
   if (list.length === 0 || list[0].type !== TYPE.AUDIO) return null
   return (
-    <AudioList
+    <AudioListV2
       list={list}
       selectedItems={selectedItems}
       onSelectChange={onSelectChange}
