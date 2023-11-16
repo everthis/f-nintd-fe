@@ -93,7 +93,7 @@ function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay
 }
 
-function AudioPlayer({ source, name, id, waveform }) {
+const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
   const ref = useRef()
   const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
@@ -257,7 +257,7 @@ function AudioPlayer({ source, name, id, waveform }) {
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload="metadata" />
+      <audio ref={ref} playsInline preload='metadata' />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
@@ -270,9 +270,9 @@ function AudioPlayer({ source, name, id, waveform }) {
               </WaveformWrap>
             ) : null}
             <ProgressContrlWrap>
-              <progress className="progress" value={val} max={100} />
+              <progress className='progress' value={val} max={100} />
               <HiddenInput
-                type="range"
+                type='range'
                 onChange={rangeChange}
                 ref={progressRef}
                 value={val}
@@ -286,8 +286,8 @@ function AudioPlayer({ source, name, id, waveform }) {
             <WaveformIcon />
           </button>
           <button
-            type="button"
-            title="toggle play"
+            type='button'
+            title='toggle play'
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -303,7 +303,7 @@ function AudioPlayer({ source, name, id, waveform }) {
       </ProgressStatus>
     </div>
   )
-}
+})
 
 export function AudioItem({ data }) {
   const { name, url, id, waveform } = data
@@ -315,7 +315,8 @@ export function AudioItem({ data }) {
         paddingBottom: '0.5em',
       }}
     >
-      <AudioPlayer source={url} name={name} id={id} waveform={waveform} />
+      <div style={{ height: '90px' }}>ok</div>
+      {/* <AudioPlayer source={url} name={name} id={id} waveform={waveform} /> */}
     </StyledAudioItem>
   )
 }
@@ -330,9 +331,9 @@ function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type="checkbox"
+                type='checkbox'
                 value={e.id}
-                name="audio"
+                name='audio'
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -351,15 +352,16 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
 
   const Row = useCallback(
     ({ index, data }) => {
+      console.log(index)
       const e = data[index]
       return (
         <AudioItemWrap key={e.id}>
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type="checkbox"
+                type='checkbox'
                 value={e.id}
-                name="audio"
+                name='audio'
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -373,18 +375,22 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
   )
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <List
-          height={height}
-          itemCount={itemCount}
-          itemSize={87}
-          itemData={list}
-          width={width}
-        >
-          {Row}
-        </List>
-      )}
+    <AutoSizer style={{ width: '100%', height: '100%' }}>
+      {({ height, width }) => {
+        console.log('resize', height, width)
+        return (
+          <List
+            height={height}
+            itemCount={itemCount}
+            itemSize={87}
+            itemData={list}
+            width={width}
+            overscanCount={2}
+          >
+            {Row}
+          </List>
+        )
+      }}
     </AutoSizer>
   )
 }

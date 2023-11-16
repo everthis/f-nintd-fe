@@ -21,7 +21,7 @@ const Wave = styled.div`
   }
 `
 
-export function AudioWave({ url }) {
+export const AudioWave = React.memo(function ({ url }) {
   const ref = useRef()
   const { data, loading } = useQuery({ url, includeCredentials: false })
 
@@ -106,7 +106,7 @@ export function AudioWave({ url }) {
       </Wave>
     </Wrap>
   )
-}
+})
 
 export function WaveformStateLess({
   list,
