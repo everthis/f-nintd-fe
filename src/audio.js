@@ -28,7 +28,7 @@ const ProgressWrap = styled.div`
 
 const Actions = styled.span`
   display: flex;
-  gap: 10px;
+  gap: 5px;
   button {
     cursor: pointer;
   }
@@ -36,17 +36,16 @@ const Actions = styled.span`
 
 const FixedRightWidthRow = styled.div`
   position: relative;
-  padding-right: 6.5em;
+  flex-wrap: nowrap;
   display: flex;
   height: 2em;
 
   ${Actions} {
-    position: absolute;
-    top: 0;
-    right: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
   ${ProgressWrap} {
-    width: 100%;
+    flex: 1;
   }
 `
 const SelectWrap = styled.span``
@@ -139,6 +138,7 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
   }
   function ended(ev) {
     setStatus(ev.type)
+    setPaused(true)
   }
   function durationchange(ev) {
     setDuration(ev.target.duration)
