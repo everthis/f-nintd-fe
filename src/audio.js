@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
-import { PlayIcon, PauseIcon, WaveformIcon } from './icon'
+import { PlayIcon, PauseIcon, WaveformIcon, VdotsIcon } from './icon'
 import { useQuery, useChecked, usePostData } from './hooks'
 import { AudioWave } from './audioWave'
 
@@ -91,7 +91,8 @@ function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay
 }
 
-const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
+const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
+  const { name, url: source, id, waveform } = data
   const ref = useRef()
   const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
@@ -280,7 +281,7 @@ const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
           </WaveControl>
         </ProgressWrap>
         <Actions>
-          <button onClick={genPeaks}>
+          <button onClick={genPeaks} disabled={!!waveform}>
             <WaveformIcon />
           </button>
           <button
@@ -291,6 +292,11 @@ const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
           >
             {btnContent}
           </button>
+          {toggleOpts ? (
+            <button>
+              <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size="20px" />
+            </button>
+          ) : null}
         </Actions>
       </FixedRightWidthRow>
       <ProgressStatus>
@@ -303,8 +309,10 @@ const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
   )
 })
 
-export function AudioItem({ data }) {
-  const { name, url, id, waveform } = data
+export function AudioItem({ data, toggleOpts, loading }) {
+  if (data == null) return null
+  if (loading) return <div>Loading</div>
+
   return (
     <StyledAudioItem
       style={{
@@ -313,18 +321,17 @@ export function AudioItem({ data }) {
         paddingBottom: '0.5em',
       }}
     >
-      {/* <div style={{ height: '90px' }}>ok</div> */}
-      <AudioPlayer source={url} name={name} id={id} waveform={waveform} />
+      <AudioPlayer data={data} toggleOpts={toggleOpts} />
     </StyledAudioItem>
   )
 }
 
-function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
+function AudioList({ list, onSelectChange, chkSelected, toggleOpts }) {
   const ref = useRef()
   const pageSize = 10
   const [page, setPage] = useState(0)
   const pageRef = useRef(page)
-  const { chkExists } = useChecked(selectedItems)
+  const chkExists = chkSelected
 
   useEffect(() => {
     pageRef.current = page
@@ -362,7 +369,7 @@ function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
               />
             </SelectWrap>
           ) : null}
-          <AudioItem data={e} />
+          <AudioItem data={e} toggleOpts={toggleOpts} />
         </AudioItemWrap>
       ))}
       <div ref={ref} style={{ height: '15px' }}></div>
@@ -437,14 +444,16 @@ export function AudioStateLess({
   list = EMPTY_ARR,
   onSelectChange,
   showSelect,
-  selectedItems = EMPTY_SET,
+  chkSelected = () => {},
+  toggleOpts = () => {},
 }) {
   if (list.length === 0 || list[0].type !== TYPE.AUDIO) return null
   return (
     <AudioList
       list={list}
-      selectedItems={selectedItems}
+      chkSelected={chkSelected}
       onSelectChange={onSelectChange}
+      toggleOpts={toggleOpts}
     />
   )
 }

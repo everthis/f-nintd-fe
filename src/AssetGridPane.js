@@ -6,7 +6,7 @@ import { Tags, TagsWrap, formatter as tagsFormatter } from './tag'
 import { ImgFromUrl, ImgFromUrlWrap } from './image'
 import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
-import { AudioStateLess } from './audio'
+import { AudioStateLess, AudioItem } from './audio'
 import { TextStateLess, SingleTextWithLoading, AddTextPane } from './text'
 import { Btn, Button } from './btn'
 import { WaveformStateLess } from './audioWave'
@@ -477,7 +477,8 @@ export function AssetGridPane({
               <AudioStateLess
                 list={items}
                 onSelectChange={showActions ? selectCbFn : null}
-                selectedItems={selectedItems}
+                chkSelected={chkExists}
+                toggleOpts={toggleOpts}
               />
             )}
           </AudioSection>
@@ -673,6 +674,9 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
             loading={loading}
             showOpts={false}
           />
+        ) : null}
+        {type === TYPE.AUDIO ? (
+          <AudioItem data={assetData} loading={loading} />
         ) : null}
         <Tags
           tags={tags}
