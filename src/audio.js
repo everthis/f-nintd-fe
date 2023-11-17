@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useId } from 'react'
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import Hls from 'hls.js'
 import styled from 'styled-components'
-import { FixedSizeList as List } from 'react-window'
-import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
@@ -257,7 +255,7 @@ const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload='metadata' />
+      <audio ref={ref} playsInline preload="metadata" />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
@@ -270,9 +268,9 @@ const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
               </WaveformWrap>
             ) : null}
             <ProgressContrlWrap>
-              <progress className='progress' value={val} max={100} />
+              <progress className="progress" value={val} max={100} />
               <HiddenInput
-                type='range'
+                type="range"
                 onChange={rangeChange}
                 ref={progressRef}
                 value={val}
@@ -286,8 +284,8 @@ const AudioPlayer = React.memo(function ({ source, name, id, waveform }) {
             <WaveformIcon />
           </button>
           <button
-            type='button'
-            title='toggle play'
+            type="button"
+            title="toggle play"
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -315,25 +313,50 @@ export function AudioItem({ data }) {
         paddingBottom: '0.5em',
       }}
     >
-      <div style={{ height: '90px' }}>ok</div>
-      {/* <AudioPlayer source={url} name={name} id={id} waveform={waveform} /> */}
+      {/* <div style={{ height: '90px' }}>ok</div> */}
+      <AudioPlayer source={url} name={name} id={id} waveform={waveform} />
     </StyledAudioItem>
   )
 }
 
 function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
+  const ref = useRef()
+  const pageSize = 10
+  const [page, setPage] = useState(0)
+  const pageRef = useRef(page)
   const { chkExists } = useChecked(selectedItems)
-  // console.log(selectedItems)
+
+  useEffect(() => {
+    pageRef.current = page
+  }, [page])
+  useEffect(() => {
+    const el = ref.current
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        // el is visible
+        const page = pageRef.current
+        if ((page + 1) * pageSize < list.length) {
+          setPage(page + 1)
+        }
+      } else {
+        // el is not visible
+      }
+    })
+
+    observer.observe(el)
+    return () => observer.unobserve(el)
+  }, [])
+  const itemsToDisplay = list.slice(0, (page + 1) * pageSize)
   return (
     <>
-      {list.map((e) => (
+      {itemsToDisplay.map((e) => (
         <AudioItemWrap key={e.id}>
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -342,6 +365,7 @@ function AudioList({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           <AudioItem data={e} />
         </AudioItemWrap>
       ))}
+      <div ref={ref} style={{ height: '15px' }}></div>
     </>
   )
 }
@@ -359,9 +383,9 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -417,7 +441,7 @@ export function AudioStateLess({
 }) {
   if (list.length === 0 || list[0].type !== TYPE.AUDIO) return null
   return (
-    <AudioListV2
+    <AudioList
       list={list}
       selectedItems={selectedItems}
       onSelectChange={onSelectChange}
