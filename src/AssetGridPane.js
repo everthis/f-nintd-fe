@@ -366,7 +366,7 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
@@ -377,7 +377,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
@@ -388,7 +388,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.TEXT}
               checked={type === TYPE.TEXT}
@@ -399,7 +399,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.WAVEFORM}
               checked={type === TYPE.WAVEFORM}
@@ -444,7 +444,7 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type="radio"
+                          type='radio'
                           value={e.name}
                           name={`${compId}_radio`}
                           checked={chkExists(e)}
@@ -455,7 +455,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={chkExists(e)}
                           disabled={chkDisabled(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
@@ -480,6 +480,7 @@ export function AssetGridPane({
                 onSelectChange={showActions ? selectCbFn : null}
                 chkSelected={chkExists}
                 toggleOpts={toggleOpts}
+                refetchList={queryByTags}
               />
             )}
           </AudioSection>
@@ -566,9 +567,9 @@ const OptsContent = styled.div`
   right: 0;
   top: 0;
   height: 100%;
-  width: 40%;
+  width: ${({ width }) => width ?? '40%'};
   padding: 0.3rem;
-  max-width: 900px;
+  max-width: 1000px;
   background-color: var(--bg-color);
   transition: transform 0.2s cubic-bezier(0.6, 0.8, 0.99, 0.8);
   will-change: transform;
@@ -662,10 +663,14 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
     })
   }
 
+  const toggleEdit = (ev, data) => {
+    console.log(ev, data)
+  }
+
   return (
     <>
       <OptsBg ref={bgRef} onClick={toggleDisplay}></OptsBg>
-      <OptsContent ref={ref}>
+      <OptsContent ref={ref} width={type === TYPE.AUDIO ? '60%' : '40%'}>
         {type === TYPE.IMAGE ? (
           <ImgFromUrlWrap data={assetData} loading={loading} />
         ) : null}
@@ -677,7 +682,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           />
         ) : null}
         {type === TYPE.AUDIO ? (
-          <AudioItem data={assetData} loading={loading} />
+          <AudioItem data={assetData} loading={loading} showEdit />
         ) : null}
         <Tags
           tags={tags}
@@ -687,7 +692,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           loading={tagsLoading}
           selectedTags={selectedTags}
         />
-        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>

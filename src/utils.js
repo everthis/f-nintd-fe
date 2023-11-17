@@ -80,7 +80,7 @@ export function samplePeaksData(arr, targetLen) {
 }
 
 export function samlpeArr(arr, targetLen) {
-  if (arr.length <= targetLen) return arr
+  if (arr.length <= targetLen) return extend(arr, targetLen)
   return pare(arr, targetLen)
 }
 function pare(a, m) {
@@ -102,4 +102,24 @@ function pare(a, m) {
   }
   b[m2 + 1] = a[n2 + 1]
   return b
+}
+
+// arr.length < targetLen
+function extend(arr, targetLen) {
+  const n = arr.length
+  const needToAdd = targetLen - n
+  const targetRatio = needToAdd / n
+  const res = []
+  let alreadyAdd = 0,
+    num = 0
+  for (let i = 0; i < n; i++) {
+    num++
+    res.push(i)
+    while (alreadyAdd / num < targetRatio && res.length + n - num < targetLen) {
+      res.push(i)
+      alreadyAdd++
+    }
+  }
+
+  return res
 }

@@ -5,7 +5,13 @@ import styled from 'styled-components'
 
 import { Nav } from './nav'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
-import { PlayIcon, PauseIcon, WaveformIcon, VdotsIcon } from './icon'
+import {
+  PlayIcon,
+  PauseIcon,
+  WaveformIcon,
+  VdotsIcon,
+  EditIconV2,
+} from './icon'
 import { useQuery, useChecked, usePostData } from './hooks'
 import { AudioWave } from './audioWave'
 
@@ -90,7 +96,12 @@ function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay
 }
 
-const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
+const AudioPlayer = React.memo(function ({
+  data,
+  toggleOpts,
+  refetchList,
+  showEdit = false,
+}) {
   const { name, url: source, id, waveform } = data
   const ref = useRef()
   const progressRef = useRef()
@@ -239,7 +250,7 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
         audio_id: id,
         m3u8: source,
       },
-    })
+    }).then(refetchList)
   }
 
   // const btnContent =
@@ -256,7 +267,7 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload="metadata" />
+      <audio ref={ref} playsInline preload='metadata' />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       <div>{name}</div>
@@ -269,9 +280,9 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
               </WaveformWrap>
             ) : null}
             <ProgressContrlWrap>
-              <progress className="progress" value={val} max={100} />
+              <progress className='progress' value={val} max={100} />
               <HiddenInput
-                type="range"
+                type='range'
                 onChange={rangeChange}
                 ref={progressRef}
                 value={val}
@@ -285,8 +296,8 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
             <WaveformIcon />
           </button>
           <button
-            type="button"
-            title="toggle play"
+            type='button'
+            title='toggle play'
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -294,7 +305,12 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
           </button>
           {toggleOpts ? (
             <button>
-              <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size="20px" />
+              <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size='20px' />
+            </button>
+          ) : null}
+          {showEdit ? (
+            <button>
+              <EditIconV2 onClick={(ev) => toggleEdit(ev, data)} size='28px' />
             </button>
           ) : null}
         </Actions>
@@ -309,8 +325,14 @@ const AudioPlayer = React.memo(function ({ data, toggleOpts }) {
   )
 })
 
-export function AudioItem({ data, toggleOpts, loading }) {
-  if (data == null) return null
+export function AudioItem({
+  data,
+  toggleOpts,
+  loading,
+  refetchList,
+  showEdit,
+}) {
+  if (data == null || data.type !== TYPE.AUDIO) return null
   if (loading) return <div>Loading</div>
 
   return (
@@ -321,14 +343,26 @@ export function AudioItem({ data, toggleOpts, loading }) {
         paddingBottom: '0.5em',
       }}
     >
-      <AudioPlayer data={data} toggleOpts={toggleOpts} />
+      <AudioPlayer
+        data={data}
+        toggleOpts={toggleOpts}
+        refetchList={refetchList}
+        showEdit={showEdit}
+      />
     </StyledAudioItem>
   )
 }
 
-function AudioList({ list, onSelectChange, chkSelected, toggleOpts }) {
+function AudioList({
+  list,
+  onSelectChange,
+  chkSelected,
+  toggleOpts,
+  refetchList,
+}) {
   const ref = useRef()
-  const pageSize = 10
+  const rootRef = useRef()
+  const pageSize = 6
   const [page, setPage] = useState(0)
   const pageRef = useRef(page)
   const chkExists = chkSelected
@@ -338,42 +372,51 @@ function AudioList({ list, onSelectChange, chkSelected, toggleOpts }) {
   }, [page])
   useEffect(() => {
     const el = ref.current
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries, oo) => {
+      // console.log('trigger', oo)
       if (entries[0].isIntersecting) {
         // el is visible
+        // console.log('vis')
         const page = pageRef.current
         if ((page + 1) * pageSize < list.length) {
           setPage(page + 1)
+          observer.unobserve(el)
+          observer.observe(el)
         }
       } else {
+        // console.log('not vis')
         // el is not visible
       }
     })
 
     observer.observe(el)
-    return () => observer.unobserve(el)
+    return () => observer.disconnect()
   }, [])
   const itemsToDisplay = list.slice(0, (page + 1) * pageSize)
   return (
-    <>
+    <div ref={rootRef}>
       {itemsToDisplay.map((e) => (
         <AudioItemWrap key={e.id}>
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type="checkbox"
+                type='checkbox'
                 value={e.id}
-                name="audio"
+                name='audio'
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
             </SelectWrap>
           ) : null}
-          <AudioItem data={e} toggleOpts={toggleOpts} />
+          <AudioItem
+            data={e}
+            toggleOpts={toggleOpts}
+            refetchList={refetchList}
+          />
         </AudioItemWrap>
       ))}
       <div ref={ref} style={{ height: '15px' }}></div>
-    </>
+    </div>
   )
 }
 
@@ -390,9 +433,9 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type="checkbox"
+                type='checkbox'
                 value={e.id}
-                name="audio"
+                name='audio'
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -417,6 +460,7 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
             itemData={list}
             width={width}
             overscanCount={2}
+            className='ll'
           >
             {Row}
           </List>
@@ -446,6 +490,7 @@ export function AudioStateLess({
   showSelect,
   chkSelected = () => {},
   toggleOpts = () => {},
+  refetchList,
 }) {
   if (list.length === 0 || list[0].type !== TYPE.AUDIO) return null
   return (
@@ -454,6 +499,7 @@ export function AudioStateLess({
       chkSelected={chkSelected}
       onSelectChange={onSelectChange}
       toggleOpts={toggleOpts}
+      refetchList={refetchList}
     />
   )
 }
