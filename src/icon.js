@@ -917,3 +917,57 @@ export function EditIconV2({ size, checked, onClick }) {
     </Wrap>
   )
 }
+
+export function CorrectIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg
+        viewBox='0 0 24 24'
+        role='img'
+        xmlns='http://www.w3.org/2000/svg'
+        stroke='#000000'
+        strokeWidth='1'
+        strokeLinecap='square'
+        strokeLinejoin='miter'
+        fill='none'
+        color='#000000'
+      >
+        <polyline points='5 11 10 19 17 7' /> <circle cx='12' cy='12' r='11' />
+      </svg>
+    </Wrap>
+  )
+}
+
+export function CancelIcon({ size, checked, onClick }) {
+  const styles = {
+    fill: 'none',
+    stroke: '#1d1d1b',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    strokeWidth: '2px',
+  }
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'>
+        <circle style={styles} cx='24' cy='24' r='23' />
+        <line style={styles} x1='12' x2='36' y1='12' y2='36' />
+        <line style={styles} x1='12' x2='36' y1='36' y2='12' />
+      </svg>
+    </Wrap>
+  )
+}
+
+export function TagCoverIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg
+        fill='#000000'
+        viewBox='0 0 32 32'
+        version='1.1'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path d='M30.531 15.47l-14.001-14c-0.136-0.136-0.323-0.22-0.53-0.22-0 0-0 0-0 0h-14c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0 0 0 0 0 0 0.207 0.084 0.395 0.22 0.53l14 14.001c0.136 0.135 0.323 0.219 0.53 0.219s0.394-0.084 0.53-0.219l14.001-14.001c0.135-0.136 0.218-0.323 0.218-0.53s-0.083-0.394-0.218-0.53l0 0zM16 28.939l-13.25-13.25v-12.939h12.939l13.25 13.25zM8 5.249c-1.519 0-2.75 1.231-2.75 2.75s1.231 2.75 2.75 2.75c1.519 0 2.75-1.231 2.75-2.75v0c-0.002-1.518-1.232-2.748-2.75-2.75h-0zM8 9.249c-0.69 0-1.25-0.56-1.25-1.25s0.56-1.25 1.25-1.25c0.69 0 1.25 0.56 1.25 1.25v0c-0.001 0.69-0.56 1.249-1.25 1.25h-0z'></path>
+      </svg>
+    </Wrap>
+  )
+}

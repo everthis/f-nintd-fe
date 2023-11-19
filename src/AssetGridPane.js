@@ -10,6 +10,7 @@ import { AudioStateLess, AudioItem } from './audio'
 import { TextStateLess, SingleTextWithLoading, AddTextPane } from './text'
 import { Btn, Button } from './btn'
 import { WaveformStateLess } from './audioWave'
+import { TagCoverIcon } from './icon'
 
 const StickyWrap = styled.div``
 const Wrap = styled.div`
@@ -105,6 +106,7 @@ const AudioSection = styled.div`
   position: relative;
   height: 100%;
   z-index: 0;
+  padding: 0 5px 0 0;
 `
 const TextSection = styled.div`
   position: relative;
@@ -663,14 +665,20 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
     })
   }
 
-  const toggleEdit = (ev, data) => {
-    console.log(ev, data)
-  }
+  const opts = useMemo(() => {
+    return (
+      <>
+        <span>
+          <TagCoverIcon size={'22px'} />
+        </span>
+      </>
+    )
+  }, [])
 
   return (
     <>
       <OptsBg ref={bgRef} onClick={toggleDisplay}></OptsBg>
-      <OptsContent ref={ref} width={type === TYPE.AUDIO ? '60%' : '40%'}>
+      <OptsContent ref={ref} width={type === TYPE.AUDIO ? '70%' : '40%'}>
         {type === TYPE.IMAGE ? (
           <ImgFromUrlWrap data={assetData} loading={loading} />
         ) : null}
@@ -682,7 +690,12 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           />
         ) : null}
         {type === TYPE.AUDIO ? (
-          <AudioItem data={assetData} loading={loading} showEdit />
+          <AudioItem
+            data={assetData}
+            loading={loading}
+            showEdit
+            updateCb={updateCb}
+          />
         ) : null}
         <Tags
           tags={tags}
@@ -691,6 +704,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           disableDel={true}
           loading={tagsLoading}
           selectedTags={selectedTags}
+          opts={opts}
         />
         <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete

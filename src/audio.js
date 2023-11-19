@@ -11,6 +11,8 @@ import {
   WaveformIcon,
   VdotsIcon,
   EditIconV2,
+  CorrectIcon,
+  CancelIcon,
 } from './icon'
 import { useQuery, useChecked, usePostData } from './hooks'
 import { AudioWave } from './audioWave'
@@ -79,6 +81,22 @@ const ProgressContrlWrap = styled.div`
 const WaveControl = styled.div`
   height: 100%;
 `
+const BlockInput = styled.input`
+  display: inline-block;
+  flex: 1;
+  outline: none;
+  border: 1px solid #333;
+`
+const InputWrap = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0 0 .5rem 0;
+`
+const NameOps = styled.span`
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 .5rem;
+`
 
 const ProgressStatus = styled.div``
 function isWechat() {
@@ -99,11 +117,12 @@ function secondsToHms(d) {
 const AudioPlayer = React.memo(function ({
   data,
   toggleOpts,
-  refetchList,
+  updateCb,
   showEdit = false,
 }) {
   const { name, url: source, id, waveform } = data
   const ref = useRef()
+  const nameInputRef = useRef()
   const progressRef = useRef()
   const [isReadyToPlay, setIsReadyToPlay] = useState(false)
   const [val, setVal] = useState(0)
@@ -111,7 +130,11 @@ const AudioPlayer = React.memo(function ({
   const [shouldShowPlayer, setShouldShowPlayer] = useState(true)
   const [paused, setPaused] = useState(true)
   const [status, setStatus] = useState('')
+  const [isEditMode, setIsEditMode] = useState(false)
   const { loading: genPeaksInProgress, postData: genPeaksFn } = usePostData()
+  const [audioName, setAudioName] = useState(name)
+  const { loading: nameChangeInProgress, postData: submitNameChange } =
+    usePostData()
 
   // if (source) source += '#t=0.1'
 
@@ -250,7 +273,26 @@ const AudioPlayer = React.memo(function ({
         audio_id: id,
         m3u8: source,
       },
-    }).then(refetchList)
+    }).then(updateCb)
+  }
+  function toggleEdit() {
+    setIsEditMode(!isEditMode)
+  }
+  function changeName() {
+    const el = nameInputRef.current
+    const val = el.value
+    console.log(val)
+    submitNameChange({
+      url: `${API_ORIGIN}/audio/${id}`,
+      method: 'PATCH',
+      payload: {
+        name: val,
+      },
+    }).then(() => {
+      setAudioName(val)
+      setIsEditMode(false)
+      updateCb()
+    })
   }
 
   // const btnContent =
@@ -270,7 +312,18 @@ const AudioPlayer = React.memo(function ({
       <audio ref={ref} playsInline preload='metadata' />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
-      <div>{name}</div>
+      {isEditMode ? (
+        <InputWrap>
+          <BlockInput ref={nameInputRef} defaultValue={audioName} />
+          <NameOps>
+            <CancelIcon onClick={toggleEdit} />
+            <CorrectIcon onClick={changeName} />
+          </NameOps>
+        </InputWrap>
+      ) : (
+        <div>{audioName}</div>
+      )}
+
       <FixedRightWidthRow>
         <ProgressWrap>
           <WaveControl>
@@ -310,7 +363,7 @@ const AudioPlayer = React.memo(function ({
           ) : null}
           {showEdit ? (
             <button>
-              <EditIconV2 onClick={(ev) => toggleEdit(ev, data)} size='28px' />
+              <EditIconV2 onClick={toggleEdit} size='28px' />
             </button>
           ) : null}
         </Actions>
@@ -325,13 +378,7 @@ const AudioPlayer = React.memo(function ({
   )
 })
 
-export function AudioItem({
-  data,
-  toggleOpts,
-  loading,
-  refetchList,
-  showEdit,
-}) {
+export function AudioItem({ data, toggleOpts, loading, updateCb, showEdit }) {
   if (data == null || data.type !== TYPE.AUDIO) return null
   if (loading) return <div>Loading</div>
 
@@ -346,7 +393,7 @@ export function AudioItem({
       <AudioPlayer
         data={data}
         toggleOpts={toggleOpts}
-        refetchList={refetchList}
+        updateCb={updateCb}
         showEdit={showEdit}
       />
     </StyledAudioItem>
@@ -408,11 +455,7 @@ function AudioList({
               />
             </SelectWrap>
           ) : null}
-          <AudioItem
-            data={e}
-            toggleOpts={toggleOpts}
-            refetchList={refetchList}
-          />
+          <AudioItem data={e} toggleOpts={toggleOpts} updateCb={refetchList} />
         </AudioItemWrap>
       ))}
       <div ref={ref} style={{ height: '15px' }}></div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { API_ORIGIN } from './constant'
 import { DeleteIcon } from './icon'
@@ -13,14 +13,14 @@ export const TagsWrap = styled.div`
 `
 const TagWrap = styled.span`
   margin-right: 10px;
-  border: 1px solid #333;
   padding: 0;
   display: inline-flex;
   margin: 0 0.5em 0.5em 0;
   height: 24px;
-`
+  `
 const TagName = styled.span`
   cursor: pointer;
+  border: 1px solid #333;
   display: inline-block;
   padding: 1px 5px;
   ${({ selected }) => {
@@ -44,6 +44,7 @@ const Hint = styled.span`
 const Label = styled.div`
   width: 3.3rem;
 `
+const TagCoverWrap = styled.div``
 const AddTagPaneWrap = styled.div``
 
 export function AddTag({ addCallback }) {
@@ -98,6 +99,7 @@ export function Tags({
   selectedTags = new Set(),
   deleteCb = () => {},
   queryData = () => {},
+  opts = [],
 }) {
   const tagsRes = tags.map((e) => (
     <Tag
@@ -107,6 +109,7 @@ export function Tags({
       disableDel={disableDel}
       selected={selectedTags.has(e)}
       deleteCb={deleteCb}
+      opts={opts}
     />
   ))
 
@@ -126,7 +129,14 @@ export function Tags({
   )
 }
 
-function Tag({ data, selected, toggleSelect, disableDel = false, deleteCb }) {
+function Tag({
+  data,
+  selected,
+  toggleSelect,
+  disableDel = false,
+  deleteCb,
+  opts,
+}) {
   const { name, id } = data
   function delTag() {
     const obj = {
@@ -155,12 +165,14 @@ function Tag({ data, selected, toggleSelect, disableDel = false, deleteCb }) {
           <DeleteIcon size={'20px'} />
         </DelTag>
       )}
+      {opts}
     </TagWrap>
   )
 }
 
 export const formatter = (arr) => arr.map((e) => ({ name: e, selected: false }))
 export function AddTagPane({}) {
+  const [selected, setSelected] = useState(undefined)
   const {
     data: tags,
     loading,
@@ -169,6 +181,24 @@ export function AddTagPane({}) {
   const deleteCb = useCallback(() => {
     queryData()
   }, [])
+
+  // single select
+  const toggleTag = (data, selected) => {
+    if (selected) {
+      setSelected(new Set([data]))
+    } else {
+      setSelected(undefined)
+    }
+  }
+  const tagCover = useMemo(() => {
+    const res = []
+    if (selected) {
+      for (const e of selected) {
+        res.push(<EditTagCover key={e.id} data={e} />)
+      }
+    }
+    return res
+  }, [selected])
   return (
     <AddTagPaneWrap>
       <AddTag addCallback={queryData} />
@@ -177,7 +207,15 @@ export function AddTagPane({}) {
         loading={loading}
         showAddTag={false}
         deleteCb={deleteCb}
+        toggleTag={toggleTag}
+        selectedTags={selected}
       />
+      {selected ? <TagCoverWrap>{tagCover}</TagCoverWrap> : null}
     </AddTagPaneWrap>
   )
+}
+
+function EditTagCover({ data }) {
+  const { id, name } = data
+  return <div>{name}</div>
 }
