@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { API_ORIGIN } from './constant'
+import { API_ORIGIN, EMPTY_OBJ } from './constant'
 import { DeleteIcon } from './icon'
 import { useQuery } from './hooks'
+import { ImgFromUrl, ImgFromUrlWrap } from './image'
 
 export const TagsWrap = styled.div`
   user-select: none;
@@ -17,7 +18,7 @@ const TagWrap = styled.span`
   display: inline-flex;
   margin: 0 0.5em 0.5em 0;
   height: 24px;
-  `
+`
 const TagName = styled.span`
   cursor: pointer;
   border: 1px solid #333;
@@ -99,7 +100,7 @@ export function Tags({
   selectedTags = new Set(),
   deleteCb = () => {},
   queryData = () => {},
-  opts = [],
+  opts,
 }) {
   const tagsRes = tags.map((e) => (
     <Tag
@@ -135,7 +136,7 @@ function Tag({
   toggleSelect,
   disableDel = false,
   deleteCb,
-  opts,
+  opts = () => null,
 }) {
   const { name, id } = data
   function delTag() {
@@ -165,7 +166,7 @@ function Tag({
           <DeleteIcon size={'20px'} />
         </DelTag>
       )}
-      {opts}
+      {opts(data)}
     </TagWrap>
   )
 }
@@ -178,6 +179,7 @@ export function AddTagPane({}) {
     loading,
     queryData,
   } = useQuery({ url: `${API_ORIGIN}/tags` })
+
   const deleteCb = useCallback(() => {
     queryData()
   }, [])
@@ -199,6 +201,7 @@ export function AddTagPane({}) {
     }
     return res
   }, [selected])
+
   return (
     <AddTagPaneWrap>
       <AddTag addCallback={queryData} />
@@ -217,5 +220,12 @@ export function AddTagPane({}) {
 
 function EditTagCover({ data }) {
   const { id, name } = data
-  return <div>{name}</div>
+  const { data: tagCover = EMPTY_OBJ, loading: coverLoading } = useQuery({
+    url: `${API_ORIGIN}/tagCoverRelation/${id}`,
+  })
+  return (
+    <div>
+      {name}: <ImgFromUrlWrap data={tagCover.cover} loading={coverLoading} />
+    </div>
+  )
 }

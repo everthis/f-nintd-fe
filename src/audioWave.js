@@ -29,7 +29,7 @@ export const AudioWave = React.memo(function ({ url }) {
   function wave(peaks) {
     const canvas = ref.current
     // console.log(peaks.length)
-    const peaksData = samplePeaksData(peaks, canvas.width / dpr)
+    const peaksData = samplePeaksData(peaks, Math.ceil(canvas.width / dpr))
     // console.log(peaksData.length)
     // console.log(peaksData)
     const bits = 16

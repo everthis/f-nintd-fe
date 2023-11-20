@@ -18,8 +18,10 @@ export function useQuery({
   const shouldFetchNow = shouldFetch(url, params)
   const [loading, setLoading] = useState(shouldFetchNow)
 
-  const queryData = () => {
+  const queryData = (instanceOpts = EMPTY_OBJ) => {
     setLoading(true)
+    url = instanceOpts?.url || url
+    params = instanceOpts?.params || params
     const reqUrl =
       url + `${Object.keys(params).length ? '?' + serialize(params) : ''}`
     const opts = includeCredentials ? { credentials: 'include' } : {}

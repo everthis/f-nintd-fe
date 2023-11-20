@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo, useId } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useId,
+  useCallback,
+} from 'react'
 import styled from 'styled-components'
 
 import { Pane } from './pane'
@@ -368,7 +375,7 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
@@ -379,7 +386,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
@@ -390,7 +397,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.TEXT}
               checked={type === TYPE.TEXT}
@@ -401,7 +408,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`${compId}_queryType`}
               value={TYPE.WAVEFORM}
               checked={type === TYPE.WAVEFORM}
@@ -446,7 +453,7 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type='radio'
+                          type="radio"
                           value={e.name}
                           name={`${compId}_radio`}
                           checked={chkExists(e)}
@@ -457,7 +464,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type='checkbox'
+                          type="checkbox"
                           checked={chkExists(e)}
                           disabled={chkDisabled(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
@@ -615,6 +622,8 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
     usePostData()
   const { loading: updateTagsInProgress, postData: execUpdateTag } =
     usePostData()
+  const { loading: bindTagCoverInProgress, postData: bindTagCoverFn } =
+    usePostData()
 
   useEffect(() => {
     if (ref.current == null) return
@@ -664,16 +673,35 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
       toggleDisplay()
     })
   }
+  const bindTagCover = (tagData, assetData) => {
+    const { id: tagId } = tagData
+    const { id: coverId } = assetData
+    bindTagCoverFn({
+      url: `${API_ORIGIN}/tagCoverRelation/${tagId}/${coverId}`,
+      method: 'POST',
+    })
+      .then(() => {
+        alert('ok')
+      })
+      .catch((e) => alert(e))
+  }
 
   const opts = useMemo(() => {
-    return (
-      <>
-        <span>
-          <TagCoverIcon size={'22px'} />
-        </span>
-      </>
-    )
-  }, [])
+    return (tagData) => {
+      if (type === TYPE.IMAGE) {
+        return (
+          <span>
+            <TagCoverIcon
+              size={'22px'}
+              onClick={() => bindTagCover(tagData, assetData)}
+            />
+          </span>
+        )
+      }
+
+      return null
+    }
+  }, [type, assetData])
 
   return (
     <>
@@ -706,7 +734,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           selectedTags={selectedTags}
           opts={opts}
         />
-        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>
