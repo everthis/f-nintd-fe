@@ -90,15 +90,20 @@ const BlockInput = styled.input`
 const InputWrap = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  margin: 0 0 .5rem 0;
+  margin: 0 0 0.5rem 0;
 `
 const NameOps = styled.span`
   flex-grow: 0;
   flex-shrink: 0;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
+`
+const AudioName = styled.div`
+  text-align: left;
 `
 
-const ProgressStatus = styled.div``
+const ProgressStatus = styled.div`
+  text-align: left;
+`
 function isWechat() {
   return /MicroMessenger/i.test(window.navigator.userAgent)
 }
@@ -119,6 +124,7 @@ const AudioPlayer = React.memo(function ({
   toggleOpts,
   updateCb,
   showEdit = false,
+  showWaveformBtn = true,
 }) {
   const { name, url: source, id, waveform } = data
   const ref = useRef()
@@ -309,7 +315,7 @@ const AudioPlayer = React.memo(function ({
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload='metadata' />
+      <audio ref={ref} playsInline preload="metadata" />
       {/* important, use transparent range input */}
       {/* important, range input above progress */}
       {isEditMode ? (
@@ -321,7 +327,7 @@ const AudioPlayer = React.memo(function ({
           </NameOps>
         </InputWrap>
       ) : (
-        <div>{audioName}</div>
+        <AudioName>{audioName}</AudioName>
       )}
 
       <FixedRightWidthRow>
@@ -333,9 +339,9 @@ const AudioPlayer = React.memo(function ({
               </WaveformWrap>
             ) : null}
             <ProgressContrlWrap>
-              <progress className='progress' value={val} max={100} />
+              <progress className="progress" value={val} max={100} />
               <HiddenInput
-                type='range'
+                type="range"
                 onChange={rangeChange}
                 ref={progressRef}
                 value={val}
@@ -345,12 +351,15 @@ const AudioPlayer = React.memo(function ({
           </WaveControl>
         </ProgressWrap>
         <Actions>
-          <button onClick={genPeaks} disabled={!!waveform}>
-            <WaveformIcon />
-          </button>
+          {showWaveformBtn ? (
+            <button onClick={genPeaks} disabled={!!waveform}>
+              <WaveformIcon />
+            </button>
+          ) : null}
+
           <button
-            type='button'
-            title='toggle play'
+            type="button"
+            title="toggle play"
             disabled={isWechat() ? false : !isReadyToPlay}
             onClick={togglePlay}
           >
@@ -358,12 +367,12 @@ const AudioPlayer = React.memo(function ({
           </button>
           {toggleOpts ? (
             <button>
-              <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size='20px' />
+              <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size="20px" />
             </button>
           ) : null}
           {showEdit ? (
             <button>
-              <EditIconV2 onClick={toggleEdit} size='28px' />
+              <EditIconV2 onClick={toggleEdit} size="28px" />
             </button>
           ) : null}
         </Actions>
@@ -378,7 +387,14 @@ const AudioPlayer = React.memo(function ({
   )
 })
 
-export function AudioItem({ data, toggleOpts, loading, updateCb, showEdit }) {
+export function AudioItem({
+  data,
+  toggleOpts,
+  loading,
+  updateCb,
+  showEdit,
+  showWaveformBtn,
+}) {
   if (data == null || data.type !== TYPE.AUDIO) return null
   if (loading) return <div>Loading</div>
 
@@ -395,6 +411,7 @@ export function AudioItem({ data, toggleOpts, loading, updateCb, showEdit }) {
         toggleOpts={toggleOpts}
         updateCb={updateCb}
         showEdit={showEdit}
+        showWaveformBtn={showWaveformBtn}
       />
     </StyledAudioItem>
   )
@@ -447,9 +464,9 @@ function AudioList({
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -476,9 +493,9 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -503,7 +520,7 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
             itemData={list}
             width={width}
             overscanCount={2}
-            className='ll'
+            className="ll"
           >
             {Row}
           </List>

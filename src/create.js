@@ -13,7 +13,7 @@ import { Audio } from './audio'
 import { AssetGridPane } from './AssetGridPane'
 
 import './index.scss'
-import * as Faye from 'faye'
+
 import { API_ORIGIN, TYPE } from './constant'
 import { TextPane, AddTextPane } from './text'
 
@@ -62,6 +62,8 @@ export function Create() {
     setStkVal
   )
   const [showWaveform, setShowWaveform] = useCS('waveform', false, setStkVal)
+  const [showCombine, setShowCombine] = useCS('combine', false, setStkVal)
+  const [showLink, setShowLink] = useCS('link', false, setStkVal)
 
   const [paneMap, setPaneMap] = useState(new Map())
   const [checkedSet, setCheckedSet] = useState(new Set())
@@ -105,7 +107,7 @@ export function Create() {
     const last = panes[panes.length - 1]
     const { left, top } = last
       ? last.getBoundingClientRect()
-      : { left: 50, top: 80 }
+      : { left: 50, top: 30 }
     return [left + 30, top + 30]
   }
   function setStkVal(name, shouldShow) {
@@ -135,10 +137,10 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowUpload(true)}
-            key='upload'
+            key="upload"
             left={left}
             top={top}
-            bgColor='var(--bg-color)'
+            bgColor="var(--bg-color)"
             body={<Upload />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -152,12 +154,12 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowImg(true)}
-            key='image'
+            key="image"
             left={left}
             top={top}
-            bgColor='var(--bg-color)'
-            width='80vw'
-            height='80vh'
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="80vh"
             body={
               <AssetGridPane
                 showActions={false}
@@ -179,14 +181,14 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAudio(true)}
-            key='audio'
+            key="audio"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
+            bgColor="var(--bg-color)"
             // body={<Audio />}
-            width='80vw'
-            height='80vh'
+            width="90vw"
+            height="85vh"
             body={
               <AssetGridPane
                 showActions={false}
@@ -208,17 +210,17 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowArticleList(true)}
-            key='article'
+            key="article"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
+            bgColor="var(--bg-color)"
             body={<Article />}
             onClose={(ev) => {
               ev.stopPropagation()
               setShowArticleList(false)
             }}
-            width='600px'
+            width="600px"
           />
         ),
     text:
@@ -227,13 +229,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowText(true)}
-            key='text'
+            key="text"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
-            width='80vw'
-            height='70vh'
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="70vh"
             body={
               <AssetGridPane
                 showActions={false}
@@ -255,13 +257,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowWaveform(true)}
-            key='waveform'
+            key="waveform"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
-            width='80vw'
-            height='70vh'
+            bgColor="var(--bg-color)"
+            width="80vw"
+            height="70vh"
             body={
               <AssetGridPane
                 showActions={false}
@@ -283,13 +285,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAddTag(true)}
-            key='tag'
+            key="tag"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
-            width='50vw'
-            height='30vh'
+            bgColor="var(--bg-color)"
+            width="60vw"
+            height="86vh"
             body={<AddTagPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -303,17 +305,57 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowCreateText(true)}
-            key='createText'
+            key="createText"
             left={left}
             top={top}
             show
-            bgColor='var(--bg-color)'
-            width='70vw'
-            height='70vh'
+            bgColor="var(--bg-color)"
+            width="70vw"
+            height="70vh"
             body={<AddTextPane />}
             onClose={(ev) => {
               ev.stopPropagation()
               setShowCreateText(false)
+            }}
+          />
+        ),
+    combine:
+      ({ left, top }) =>
+      () =>
+        (
+          <Pane
+            onClick={() => setShowCombine(true)}
+            key="combine"
+            left={left}
+            top={top}
+            show
+            bgColor="var(--bg-color)"
+            width="90vw"
+            height="90vh"
+            body={<></>}
+            onClose={(ev) => {
+              ev.stopPropagation()
+              setShowCombine(false)
+            }}
+          />
+        ),
+    link:
+      ({ left, top }) =>
+      () =>
+        (
+          <Pane
+            onClick={() => setShowLink(true)}
+            key="link"
+            left={left}
+            top={top}
+            show
+            bgColor="var(--bg-color)"
+            width="60vw"
+            height="60vh"
+            body={<></>}
+            onClose={(ev) => {
+              ev.stopPropagation()
+              setShowLink(false)
             }}
           />
         ),
@@ -337,6 +379,10 @@ export function Create() {
         setShowCreate={setShowCreateText}
         showWaveform={showWaveform}
         setShowWaveform={setShowWaveform}
+        showCombine={showCombine}
+        setShowCombine={setShowCombine}
+        showLink={showLink}
+        setShowLink={setShowLink}
       />
       <HorLine />
 

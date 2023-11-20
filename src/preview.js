@@ -16,6 +16,7 @@ const ArticleContent = styled.section`
   max-width: 900px;
   margin: 0 auto;
 `
+const ActiveMedia = styled.div``
 const defaultPayload = {
   title: '',
   content: {},
@@ -55,6 +56,10 @@ export function Preview({}) {
   )
 }
 
+function AudioItemWrap(props) {
+  return <AudioItem {...props} showWaveformBtn={false} />
+}
+
 function ContentItem({ data }) {
   let Comp = null
   const { type } = data
@@ -64,7 +69,7 @@ function ContentItem({ data }) {
       Comp = SingleImage
       break
     case TYPE.AUDIO:
-      Comp = AudioItem
+      Comp = AudioItemWrap
       break
     case TYPE.TEXT:
       Comp = PerText
@@ -75,8 +80,10 @@ function ContentItem({ data }) {
 }
 
 function Content({ list }) {
+  const [activeItem, setActiveItem] = useState(null)
   return (
     <>
+      <ActiveMedia>{}</ActiveMedia>
       {list.map((e, idx) => (
         <ContentItem key={idx} data={e} />
       ))}

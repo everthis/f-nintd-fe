@@ -25,6 +25,7 @@ const Wrap = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow-x: hidden;
   > ${StickyWrap} {
     flex-grow: 0;
     position: sticky;
@@ -578,7 +579,7 @@ const OptsContent = styled.div`
   height: 100%;
   width: ${({ width }) => width ?? '40%'};
   padding: 0.3rem;
-  max-width: 1000px;
+  max-width: 100%;
   background-color: var(--bg-color);
   transition: transform 0.2s cubic-bezier(0.6, 0.8, 0.99, 0.8);
   will-change: transform;
@@ -598,11 +599,20 @@ const OptsContent = styled.div`
     flex-grow: 0;
   }
 `
+const AudioContentWrap = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+`
+const AudioCoverWrap = styled.div`
+  flex: 1;
+`
 
 function Opts({ show, toggleDisplay, type, id, updateCb }) {
   const ref = useRef()
   const bgRef = useRef()
   const [selectedTags, setSelectedTags] = useState(new Set())
+  const [showSecondarySlide, setShowSecondarySlide] = useState(false)
 
   const shouldFetch = () => type != null && id != null
   const {
@@ -637,6 +647,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
       ref.current.classList.add('slide-out')
       bgRef.current.classList.remove('slide-in')
       bgRef.current.classList.add('slide-out')
+      setShowSecondarySlide(false)
     }
   }, [show])
 
@@ -703,10 +714,23 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
     }
   }, [type, assetData])
 
+  const toggleSecondarySlide = () => {
+    setShowSecondarySlide(!showSecondarySlide)
+  }
+
+  const secondaryBodyRenderHash = useMemo(
+    () => ({
+      audio: () => (
+        <AudioCoverBind showPane setShowPane={setShowSecondarySlide} />
+      ),
+    }),
+    [type, id]
+  )
+
   return (
     <>
       <OptsBg ref={bgRef} onClick={toggleDisplay}></OptsBg>
-      <OptsContent ref={ref} width={type === TYPE.AUDIO ? '70%' : '40%'}>
+      <OptsContent ref={ref} width={type === TYPE.AUDIO ? '90%' : '40%'}>
         {type === TYPE.IMAGE ? (
           <ImgFromUrlWrap data={assetData} loading={loading} />
         ) : null}
@@ -718,12 +742,17 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           />
         ) : null}
         {type === TYPE.AUDIO ? (
-          <AudioItem
-            data={assetData}
-            loading={loading}
-            showEdit
-            updateCb={updateCb}
-          />
+          <AudioContentWrap>
+            <AudioItem
+              data={assetData}
+              loading={loading}
+              showEdit
+              updateCb={updateCb}
+            />
+            <AudioCoverWrap>
+              <button onClick={toggleSecondarySlide}>change cover</button>
+            </AudioCoverWrap>
+          </AudioContentWrap>
         ) : null}
         <Tags
           tags={tags}
@@ -738,6 +767,55 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           Delete
         </Btn>
       </OptsContent>
+      <Slide
+        show={showSecondarySlide}
+        type={type}
+        toggleDisplay={toggleSecondarySlide}
+        bodyRender={secondaryBodyRenderHash[type]}
+      />
     </>
+  )
+}
+
+function Slide({ show, type, toggleDisplay, bodyRender = () => null }) {
+  const ref = useRef()
+  const bgRef = useRef()
+  useEffect(() => {
+    if (ref.current == null) return
+    if (show) {
+      ref.current.classList.remove('slide-out')
+      ref.current.classList.add('slide-in')
+      bgRef.current.classList.remove('slide-out')
+      bgRef.current.classList.add('slide-in')
+    } else {
+      ref.current.classList.remove('slide-in')
+      ref.current.classList.add('slide-out')
+      bgRef.current.classList.remove('slide-in')
+      bgRef.current.classList.add('slide-out')
+    }
+  }, [show])
+
+  return (
+    <>
+      <OptsBg ref={bgRef} onClick={toggleDisplay}></OptsBg>
+      <OptsContent ref={ref} width={type === TYPE.AUDIO ? '80%' : '40%'}>
+        {show ? bodyRender() : null}
+      </OptsContent>
+    </>
+  )
+}
+
+function AudioCoverBind({ audioId, showPane, setShowPane }) {
+  return (
+    <AssetGridPane
+      showActions
+      singleSelect
+      showPane={showPane}
+      setShowPane={setShowPane}
+      onConfirm={(res) => {
+        console.log(res)
+        setShowPane(false)
+      }}
+    />
   )
 }

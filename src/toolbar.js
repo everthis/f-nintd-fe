@@ -7,9 +7,10 @@ import { ThemeWrap } from './header'
 
 const ToolbarWrap = styled.div`
   display: flex;
-  gap: 5px;
+  gap: 8px;
   user-select: none;
   justify-content: center;
+  align-items: center;
 `
 
 import {
@@ -23,6 +24,8 @@ import {
   WriteIcon,
   QuoteIcon,
   WaveformIcon,
+  AntiDiagonalLinkIcon,
+  CombineIcon,
 } from './icon'
 import { API_ORIGIN } from './constant'
 
@@ -43,6 +46,10 @@ export function Toolbar({
   setShowCreate,
   showWaveform,
   setShowWaveform,
+  showCombine,
+  setShowCombine,
+  showLink,
+  setShowLink,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -70,6 +77,12 @@ export function Toolbar({
   function toggleWaveform() {
     setShowWaveform(!showWaveform)
   }
+  function toggleCombine() {
+    setShowCombine(!showCombine)
+  }
+  function toggleLink() {
+    setShowLink(!showLink)
+  }
   function listImagesWithoutTags() {
     fetch(`${API_ORIGIN}/images/withoutTags`, {
       method: 'GET',
@@ -86,13 +99,19 @@ export function Toolbar({
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
       <TextIcon checked={showText} onClick={toggleText} />
       <WaveformIcon checked={showWaveform} onClick={toggleWaveform} />
+      <AntiDiagonalLinkIcon
+        checked={showLink}
+        onClick={toggleLink}
+        size={'22px'}
+      />
+      <CombineIcon checked={showCombine} onClick={toggleCombine} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
       {/* <MenuIcon checked={showAddTag} onClick={toggleAddTag} /> */}
       <ThemeWrap>
         <Theme />
       </ThemeWrap>
 
-      <Link to='/homepage' style={{ marginRight: '1em' }}>
+      <Link to="/homepage" style={{ marginRight: '1em' }}>
         Homepage
       </Link>
 

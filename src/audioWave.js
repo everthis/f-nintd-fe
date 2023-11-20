@@ -7,12 +7,18 @@ import { useQuery } from './hooks'
 
 const Wrap = styled.div`
   height: 100%;
+  max-height: 128px;
+  position: relative;
   button {
     border: none;
   }
 `
 // background-color: #FFD500;
 const Wave = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   canvas {
     display: block;
@@ -118,7 +124,9 @@ export function WaveformStateLess({
   return (
     <>
       {list.map((e) => (
-        <AudioWave key={e.id} url={e.m3u8} />
+        <div key={e.id} style={{ height: '96px' }}>
+          <AudioWave url={e.m3u8} />
+        </div>
       ))}
     </>
   )

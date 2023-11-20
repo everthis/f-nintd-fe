@@ -4,7 +4,7 @@ import { API_ORIGIN, TYPE } from './constant'
 import { useQuery } from './hooks'
 
 const WaveWrap = styled.div`
-  height: 100%;
+  height: 128px;
   canvas {
     display: block;
     width: 100%;
