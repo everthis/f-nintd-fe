@@ -48,6 +48,10 @@ button[disabled] {
     }
   }
 }
+progress {
+  -webkit-appearance: none;
+   appearance: none;
+}
 
 /* Hide handler for WebKit browsers */
 
