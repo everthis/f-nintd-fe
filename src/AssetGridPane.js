@@ -721,7 +721,11 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
   const secondaryBodyRenderHash = useMemo(
     () => ({
       audio: () => (
-        <AudioCoverBind showPane setShowPane={setShowSecondarySlide} />
+        <AudioCoverBind
+          audioId={id}
+          showPane
+          setShowPane={setShowSecondarySlide}
+        />
       ),
     }),
     [type, id]
@@ -806,6 +810,14 @@ function Slide({ show, type, toggleDisplay, bodyRender = () => null }) {
 }
 
 function AudioCoverBind({ audioId, showPane, setShowPane }) {
+  const { loading, postData } = usePostData()
+  function bindAudioCover(imgArr) {
+    if (imgArr.length <= 0) return
+    const img = imgArr[0]
+    return postData({
+      url: `${API_ORIGIN}/audioCoverRelation/${audioId}/${img.id}`,
+    }).then(() => alert('ok'))
+  }
   return (
     <AssetGridPane
       showActions
@@ -813,8 +825,7 @@ function AudioCoverBind({ audioId, showPane, setShowPane }) {
       showPane={showPane}
       setShowPane={setShowPane}
       onConfirm={(res) => {
-        console.log(res)
-        setShowPane(false)
+        bindAudioCover(res).then(() => setShowPane(false))
       }}
     />
   )

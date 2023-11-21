@@ -16,6 +16,7 @@ import {
 } from './icon'
 import { useQuery, useChecked, usePostData } from './hooks'
 import { AudioWave } from './audioWave'
+import { ImgFromUrl } from './image'
 
 const HiddenInput = styled.input`
   opacity: 0;
@@ -46,7 +47,7 @@ const FixedRightWidthRow = styled.div`
   position: relative;
   flex-wrap: nowrap;
   display: flex;
-  height: 2em;
+  height: ${({ height }) => height};
 
   ${Actions} {
     flex-grow: 0;
@@ -104,6 +105,22 @@ const AudioName = styled.div`
 const ProgressStatus = styled.div`
   text-align: left;
 `
+const TwoColWrap = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+`
+const CoverInnerWrap = styled.div`
+  height: 100%;
+`
+const CoverWrap = styled.div`
+  width: 121px;
+  background: black;
+  align-self: stretch;
+`
+const RightWrap = styled.div`
+  flex: 1;
+`
 function isWechat() {
   return /MicroMessenger/i.test(window.navigator.userAgent)
 }
@@ -118,15 +135,24 @@ function secondsToHms(d) {
   const sDisplay = s > 0 ? s.toString().padStart(2, '0') : '00'
   return hDisplay + mDisplay + sDisplay
 }
+function isPlaying(el) {
+  if (!el.paused || el.currentTime) {
+    return true
+  } else {
+    return false
+  }
+}
 
-const AudioPlayer = React.memo(function ({
+function AudioPlayer({
   data,
   toggleOpts,
   updateCb,
   showEdit = false,
   showWaveformBtn = true,
+  waveformHeight = '2rem',
+  controlCollector,
 }) {
-  const { name, url: source, id, waveform } = data
+  const { name, url: source, id, waveform, cover } = data
   const ref = useRef()
   const nameInputRef = useRef()
   const progressRef = useRef()
@@ -134,7 +160,6 @@ const AudioPlayer = React.memo(function ({
   const [val, setVal] = useState(0)
   const [duration, setDuration] = useState(0)
   const [shouldShowPlayer, setShouldShowPlayer] = useState(true)
-  const [paused, setPaused] = useState(true)
   const [status, setStatus] = useState('')
   const [isEditMode, setIsEditMode] = useState(false)
   const { loading: genPeaksInProgress, postData: genPeaksFn } = usePostData()
@@ -178,12 +203,13 @@ const AudioPlayer = React.memo(function ({
   }
   function ended(ev) {
     setStatus(ev.type)
-    setPaused(true)
+    if (controlCollector) {
+      controlCollector.next()
+    }
   }
   function durationchange(ev) {
     setDuration(ev.target.duration)
   }
-
   useEffect(() => {
     const audio = ref.current
 
@@ -194,7 +220,6 @@ const AudioPlayer = React.memo(function ({
     function seeked(ev) {
       setStatus(ev.type)
       // audio.play()
-      // setPaused(false)
     }
 
     audio.addEventListener('loadstart', loadstart)
@@ -253,14 +278,16 @@ const AudioPlayer = React.memo(function ({
     }
   }, [])
 
-  function togglePlay(ev) {
+  function togglePlay() {
+    if (controlCollector) controlCollector.pause()
     const audio = ref.current
     if (audio.paused) {
       audio.play()
-      setPaused(false)
+      if (controlCollector) {
+        controlCollector.cur = id
+      }
     } else {
       audio.pause()
-      setPaused(true)
     }
   }
 
@@ -287,7 +314,6 @@ const AudioPlayer = React.memo(function ({
   function changeName() {
     const el = nameInputRef.current
     const val = el.value
-    console.log(val)
     submitNameChange({
       url: `${API_ORIGIN}/audio/${id}`,
       method: 'PATCH',
@@ -310,82 +336,107 @@ const AudioPlayer = React.memo(function ({
   //     <PauseIcon />
   //   )
 
-  const btnContent = paused ? <PlayIcon /> : <PauseIcon />
+  useEffect(() => {
+    if (controlCollector)
+      controlCollector.set(id, {
+        toggle: togglePlay,
+        play: () => ref.current.play(),
+        pause: () => ref.current.pause(),
+        isPlaying: () => isPlaying(ref.current),
+      })
+  }, [])
+
+  const btnContent = ref.current?.paused ? <PlayIcon /> : <PauseIcon />
 
   if (!shouldShowPlayer) return null
   return (
     <div>
       <audio ref={ref} playsInline preload="metadata" />
-      {/* important, use transparent range input */}
-      {/* important, range input above progress */}
-      {isEditMode ? (
-        <InputWrap>
-          <BlockInput ref={nameInputRef} defaultValue={audioName} />
-          <NameOps>
-            <CancelIcon onClick={toggleEdit} />
-            <CorrectIcon onClick={changeName} />
-          </NameOps>
-        </InputWrap>
-      ) : (
-        <AudioName>{audioName}</AudioName>
-      )}
+      <TwoColWrap>
+        <CoverWrap>
+          {cover ? (
+            <CoverInnerWrap>
+              <ImgFromUrl data={cover} />
+            </CoverInnerWrap>
+          ) : null}
+        </CoverWrap>
+        <RightWrap>
+          {/* important, use transparent range input */}
+          {/* important, range input above progress */}
+          {isEditMode ? (
+            <InputWrap>
+              <BlockInput ref={nameInputRef} defaultValue={audioName} />
+              <NameOps>
+                <CancelIcon onClick={toggleEdit} />
+                <CorrectIcon onClick={changeName} />
+              </NameOps>
+            </InputWrap>
+          ) : (
+            <AudioName>{audioName}</AudioName>
+          )}
 
-      <FixedRightWidthRow>
-        <ProgressWrap>
-          <WaveControl>
-            {waveform ? (
-              <WaveformWrap>
-                <AudioWave url={waveform} />
-              </WaveformWrap>
-            ) : null}
-            <ProgressContrlWrap>
-              <progress className="progress" value={val} max={100} />
-              <HiddenInput
-                type="range"
-                onChange={rangeChange}
-                ref={progressRef}
-                value={val}
-                max={100}
-              />
-            </ProgressContrlWrap>
-          </WaveControl>
-        </ProgressWrap>
-        <Actions>
-          {showWaveformBtn ? (
-            <button onClick={genPeaks} disabled={!!waveform}>
-              <WaveformIcon />
-            </button>
-          ) : null}
+          <FixedRightWidthRow height={waveformHeight}>
+            <ProgressWrap>
+              <WaveControl>
+                {waveform ? (
+                  <WaveformWrap>
+                    <AudioWave url={waveform} />
+                  </WaveformWrap>
+                ) : null}
+                <ProgressContrlWrap>
+                  <progress className="progress" value={val} max={100} />
+                  <HiddenInput
+                    type="range"
+                    onChange={rangeChange}
+                    ref={progressRef}
+                    value={val}
+                    max={100}
+                  />
+                </ProgressContrlWrap>
+              </WaveControl>
+            </ProgressWrap>
+            <Actions>
+              {showWaveformBtn ? (
+                <button onClick={genPeaks} disabled={!!waveform}>
+                  <WaveformIcon />
+                </button>
+              ) : null}
 
-          <button
-            type="button"
-            title="toggle play"
-            disabled={isWechat() ? false : !isReadyToPlay}
-            onClick={togglePlay}
-          >
-            {btnContent}
-          </button>
-          {toggleOpts ? (
-            <button>
-              <VdotsIcon onClick={(ev) => toggleOpts(ev, data)} size="20px" />
-            </button>
-          ) : null}
-          {showEdit ? (
-            <button>
-              <EditIconV2 onClick={toggleEdit} size="28px" />
-            </button>
-          ) : null}
-        </Actions>
-      </FixedRightWidthRow>
-      <ProgressStatus>
-        <div>
-          {secondsToHms(ref.current?.currentTime || 0)}/{secondsToHms(duration)}
-          {status ? ` (${status})` : null}
-        </div>
-      </ProgressStatus>
+              <button
+                type="button"
+                title="toggle play"
+                disabled={isWechat() ? false : !isReadyToPlay}
+                onClick={togglePlay}
+              >
+                {btnContent}
+              </button>
+              {toggleOpts ? (
+                <button>
+                  <VdotsIcon
+                    onClick={(ev) => toggleOpts(ev, data)}
+                    size="20px"
+                  />
+                </button>
+              ) : null}
+              {showEdit ? (
+                <button>
+                  <EditIconV2 onClick={toggleEdit} size="28px" />
+                </button>
+              ) : null}
+            </Actions>
+          </FixedRightWidthRow>
+          <ProgressStatus>
+            <div>
+              {secondsToHms(ref.current?.currentTime || 0)}/
+              {secondsToHms(duration)}
+              {status ? ` (${status})` : null}
+            </div>
+          </ProgressStatus>
+        </RightWrap>
+      </TwoColWrap>
     </div>
   )
-})
+}
 
 export function AudioItem({
   data,
@@ -394,6 +445,7 @@ export function AudioItem({
   updateCb,
   showEdit,
   showWaveformBtn,
+  controlCollector,
 }) {
   if (data == null || data.type !== TYPE.AUDIO) return null
   if (loading) return <div>Loading</div>
@@ -401,9 +453,9 @@ export function AudioItem({
   return (
     <StyledAudioItem
       style={{
-        marginBottom: '0.5em',
-        borderBottom: '1px solid #ddd',
-        paddingBottom: '0.5em',
+        marginBottom: '0',
+        borderBottom: '1px solid #333',
+        paddingBottom: '0',
       }}
     >
       <AudioPlayer
@@ -412,6 +464,7 @@ export function AudioItem({
         updateCb={updateCb}
         showEdit={showEdit}
         showWaveformBtn={showWaveformBtn}
+        controlCollector={controlCollector}
       />
     </StyledAudioItem>
   )

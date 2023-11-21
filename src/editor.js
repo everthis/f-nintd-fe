@@ -164,9 +164,12 @@ export function Editor() {
   const [items, setItems] = useState([])
   const [tags, setTags] = useState([])
   const [coverImg, setCoverImg] = useState(null)
+  const [audioOnly, setAudioOnly] = useState(false)
   const activeImgInArticleRef = useRef(null)
+
   const editorRef = useRef()
   const articleIdRef = useRef()
+  const audioOnlyRef = useRef()
 
   const preview = () => {}
   const save = () => {
@@ -195,6 +198,11 @@ export function Editor() {
     if (withId) {
       res.id = articleId
     }
+    if (audioOnlyRef.current) {
+      const el = audioOnlyRef.current
+      res.audioOnly = el.checked
+    }
+
     fetch(
       `${API_ORIGIN}${withId ? '/article/' + articleId : '/articles/new'}`,
       {
@@ -385,6 +393,7 @@ export function Editor() {
         setItems(d.content.body)
         setTitle(d.title)
         setCoverImg(d.content.cover)
+        setAudioOnly(d.content.audioOnly)
       })
   }
 
@@ -393,6 +402,7 @@ export function Editor() {
     setTitle('')
     setItems([])
     setCoverImg({})
+    setAudioOnly(false)
   }
 
   function reverseList() {
@@ -402,6 +412,9 @@ export function Editor() {
   }
 
   function addAudio() {}
+  function audioOnlyChange(ev) {
+    setAudioOnly(ev.target.checked)
+  }
 
   useEffect(() => {
     const cb = (ev) => {
@@ -426,7 +439,7 @@ export function Editor() {
 
       <EditorWrap>
         {items.map((e, idx) => (
-          <Section key={idx}>
+          <Section key={`${e.type},${e.id}`}>
             <PreOp>
               <OpBtn onClick={() => deleteItem(idx)}>
                 <DeleteIcon />
@@ -458,6 +471,16 @@ export function Editor() {
           </Section>
         ))}
       </EditorWrap>
+      <div>
+        <label>
+          <input
+            checked={audioOnly}
+            type="checkbox"
+            onChange={audioOnlyChange}
+          />
+          Audio only
+        </label>
+      </div>
       <Op>
         <button onClick={clearEditor}>
           <RefreshIcon />
