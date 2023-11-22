@@ -128,8 +128,15 @@ class Control {
     if (this.cur.val) {
       this.pause()
     }
-    if (this.cur.next == null) return
-    this.cur = this.cur.next
+    if (this.loop) {
+      if (this.cur.next == null) {
+        if (this.root.next == null) return
+        this.cur = this.root.next
+      }
+    } else {
+      if (this.cur.next == null) return
+      this.cur = this.cur.next
+    }
     this.cur.val.play()
   }
   prev() {
