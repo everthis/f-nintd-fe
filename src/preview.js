@@ -67,7 +67,11 @@ export function Preview({}) {
   const { title, content } = article
   return (
     <Center>
-      <ArticleTitle>{loading ? 'Loading' : title}</ArticleTitle>
+      {loading ? (
+        <ArticleTitle>{'Loading'}</ArticleTitle>
+      ) : content?.audioOnly ? null : (
+        <ArticleTitle>{title}</ArticleTitle>
+      )}
       <ArticleContent>
         {/* <Image images={content.body || []} /> */}
         {content.body ? (
