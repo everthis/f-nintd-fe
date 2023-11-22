@@ -39,6 +39,7 @@ const ProgressWrap = styled.div`
 const Actions = styled.span`
   display: flex;
   gap: 5px;
+  padding-left: 5px;
   button {
     cursor: pointer;
   }
@@ -115,7 +116,7 @@ const CoverInnerWrap = styled.div`
   height: 100%;
 `
 const CoverWrap = styled.div`
-  width: 121px;
+  width: 105px;
   background: black;
   align-self: stretch;
 `
@@ -204,9 +205,6 @@ function AudioPlayer({
   }
   function ended(ev) {
     setStatus(ev.type)
-    if (controlCollector) {
-      controlCollector.next()
-    }
   }
   function durationchange(ev) {
     setDuration(ev.target.duration)
@@ -280,15 +278,27 @@ function AudioPlayer({
   }, [])
 
   function togglePlay() {
-    if (controlCollector) controlCollector.pause()
-    const audio = ref.current
-    if (audio.paused) {
-      audio.play()
-      if (controlCollector) {
-        controlCollector.cur = id
-      }
+    const media = ref.current
+    if (media.paused) {
+      playMedia()
     } else {
-      audio.pause()
+      pauseMedia()
+    }
+  }
+  function playMedia() {
+    if (controlCollector) controlCollector.pause()
+    const media = ref.current
+    if (media) {
+      if (controlCollector) {
+        controlCollector.setCurNodeById(id)
+      }
+      media.play()
+    }
+  }
+  function pauseMedia() {
+    const media = ref.current
+    if (media) {
+      media.pause()
     }
   }
 
@@ -341,8 +351,8 @@ function AudioPlayer({
     if (controlCollector)
       controlCollector.set(id, {
         toggle: togglePlay,
-        play: () => ref.current.play(),
-        pause: () => ref.current.pause(),
+        play: playMedia,
+        pause: pauseMedia,
         isPlaying: () => isPlaying(ref.current),
       })
   }, [])
@@ -352,7 +362,7 @@ function AudioPlayer({
   if (!shouldShowPlayer) return null
   return (
     <div>
-      <audio ref={ref} playsInline preload='metadata' />
+      <audio ref={ref} playsInline preload="metadata" />
       <TwoColWrap>
         <CoverWrap>
           {cover ? (
@@ -373,7 +383,7 @@ function AudioPlayer({
               </NameOps>
             </InputWrap>
           ) : (
-            <AudioName>{audioName}</AudioName>
+            <AudioName className={'sfs pl5'}>{audioName}</AudioName>
           )}
 
           <FixedRightWidthRow height={waveformHeight}>
@@ -385,9 +395,9 @@ function AudioPlayer({
                   </WaveformWrap>
                 ) : null}
                 <ProgressContrlWrap>
-                  <progress className='progress' value={val} max={100} />
+                  <progress className="progress" value={val} max={100} />
                   <HiddenInput
-                    type='range'
+                    type="range"
                     onChange={rangeChange}
                     ref={progressRef}
                     value={val}
@@ -404,10 +414,11 @@ function AudioPlayer({
               ) : null}
 
               <button
-                type='button'
-                title='toggle play'
+                type="button"
+                title="toggle play"
                 disabled={isWechat() ? false : !isReadyToPlay}
                 onClick={togglePlay}
+                className={'ps-btn'}
               >
                 {btnContent}
               </button>
@@ -415,19 +426,19 @@ function AudioPlayer({
                 <button>
                   <VdotsIcon
                     onClick={(ev) => toggleOpts(ev, data)}
-                    size='20px'
+                    size="20px"
                   />
                 </button>
               ) : null}
               {showEdit ? (
                 <button>
-                  <EditIconV2 onClick={toggleEdit} size='28px' />
+                  <EditIconV2 onClick={toggleEdit} size="28px" />
                 </button>
               ) : null}
             </Actions>
           </FixedRightWidthRow>
           <ProgressStatus>
-            <div>
+            <div className={'sfs pl5'}>
               {secondsToHms(ref.current?.currentTime || 0)}/
               {secondsToHms(duration)}
               {status ? ` (${status})` : null}
@@ -518,9 +529,9 @@ function AudioList({
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -547,9 +558,9 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
           {onSelectChange ? (
             <SelectWrap>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={e.id}
-                name='audio'
+                name="audio"
                 checked={chkExists(e)}
                 onChange={(ev) => onSelectChange(e, ev.target.checked)}
               />
@@ -574,7 +585,7 @@ function AudioListV2({ list, onSelectChange, selectedItems = EMPTY_SET }) {
             itemData={list}
             width={width}
             overscanCount={2}
-            className='ll'
+            className="ll"
           >
             {Row}
           </List>

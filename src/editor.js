@@ -474,6 +474,7 @@ export function Editor() {
       <div>
         <label>
           <input
+            ref={audioOnlyRef}
             checked={audioOnly}
             type="checkbox"
             onChange={audioOnlyChange}

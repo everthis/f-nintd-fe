@@ -1046,3 +1046,56 @@ export function CombineIcon({ size, checked, onClick }) {
     </Wrap>
   )
 }
+
+export function LoopIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M13.2929 3.00001L11.1464 0.853561L11.8536 0.146454L14.8536 3.14645C15.0488 3.34172 15.0488 3.6583 14.8536 3.85356L11.8536 6.85356L11.1464 6.14645L13.2929 4.00001H3.5C2.11929 4.00001 1 5.1193 1 6.50001V8.00001H0V6.50001C0 4.56701 1.567 3.00001 3.5 3.00001H13.2929ZM15 7.00001V8.50001C15 10.433 13.433 12 11.5 12H1.70711L3.85355 14.1465L3.14644 14.8536L0.146447 11.8536C-0.0488153 11.6583 -0.0488153 11.3417 0.146447 11.1465L3.14645 8.14645L3.85355 8.85356L1.70711 11H11.5C12.8807 11 14 9.88072 14 8.50001V7.00001H15Z"
+          fill="#000000"
+        />
+      </svg>
+    </Wrap>
+  )
+}
+
+export function PreviousIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg
+        fill="#000000"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+        enableBackground="new 0 0 512 512"
+      >
+        <path
+          d="M274.3,262.5L512,381.4V143.6L274.3,262.5z M36.6,262.5l237.7,118.9V262.5V143.6L36.6,262.5z M0,143.6v237.7h36.6V262.5
+ V143.6H0z"
+        />
+      </svg>
+    </Wrap>
+  )
+}
+
+export function NextIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg
+        fill="#000000"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+        enableBackground="new 0 0 512 512"
+      >
+        <path
+          d="M0,381.4l237.7-118.9L0,143.6V381.4z M237.7,262.5v118.9l237.7-118.9L237.7,143.6V262.5z M475.4,143.6v118.9v118.9H512
+ V143.6H475.4z"
+        />
+      </svg>
+    </Wrap>
+  )
+}

@@ -7,6 +7,7 @@ import { AudioItem } from './audio'
 import { useQuery } from './hooks'
 import { PerText } from './text'
 import { Btn } from './btn'
+import { PauseIcon, PlayIcon, NextIcon, PreviousIcon, LoopIcon } from './icon'
 
 const Center = styled.div`
   text-align: center;
@@ -17,7 +18,20 @@ const ArticleContent = styled.section`
   max-width: 900px;
   margin: 0 auto;
 `
-const ActiveMedia = styled.div``
+const ActiveMedia = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  justify-content: center;
+  padding: 1rem 0 1rem 0;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 1;
+  button {
+    margin: 0;
+  }
+`
 const defaultPayload = {
   title: '',
   content: {},
@@ -96,36 +110,34 @@ class Control {
     this.root = new DoublyLinkedNode(null)
     this.tail = this.root
     this.cur = this.root
-    this.status = 'paused' // paused, playing
+    // this.status = 0 // 0: paused, >= 1: playing
   }
   set(id, val) {
     const node = new DoublyLinkedNode(val)
     this.idNodeMap.set(id, node)
+    if (this.cur.val == null) this.cur = node
     this.tail.next = node
     node.prev = this.tail
     this.tail = node
+  }
+  setCurNodeById(id) {
+    this.cur = this.idNodeMap.get(id)
   }
   next() {
     if (this.cur.val) {
       this.pause()
     }
     if (this.cur.next == null) return
-    const { val } = this.cur.next
-    if (val) {
-      val.play()
-      this.cur = this.cur.next
-    }
+    this.cur = this.cur.next
+    this.cur.val.play()
   }
   prev() {
     if (this.cur.val) {
       this.pause()
     }
-    if (this.cur.prev == null) return
-    const node = this.cur.prev
-    if (node.val) {
-      node.val.play()
-    }
-    this.cur = node
+    if (this.cur.prev == null || this.cur.prev === this.root) return
+    this.cur = this.cur.prev
+    this.cur.val.play()
   }
   act(name) {
     if (this.cur.val == null) return
@@ -135,22 +147,37 @@ class Control {
   toggle() {
     this.act('toggle')
   }
-  start() {
-    this.act('start')
+  play() {
+    this.act('play')
   }
   pause() {
     this.act('pause')
   }
+  isPlaying() {
+    for (const [
+      _,
+      {
+        val: { isPlaying },
+      },
+    ] of this.idNodeMap) {
+      const tmp = isPlaying()
+      if (tmp) {
+        return true
+      }
+    }
+    return false
+  }
 }
 
 function Content({ list, audioOnly }) {
-  const [activeItem, setActiveItem] = useState(null)
+  const ref = useRef()
+  const pageSize = 5
+  const [page, setPage] = useState(0)
+  const pageRef = useRef(page)
   const controlCollector = useMemo(() => new Control(), [])
-  const chk = () => {
-    console.log(controlCollector)
-  }
+
   const playAll = () => {
-    controlCollector.next()
+    controlCollector.play()
   }
   const next = () => {
     controlCollector.next()
@@ -158,23 +185,61 @@ function Content({ list, audioOnly }) {
   const prev = () => {
     controlCollector.prev()
   }
+  const toggleLoop = () => {}
+
+  useEffect(() => {
+    pageRef.current = page
+  }, [page])
+  useEffect(() => {
+    const el = ref.current
+    const observer = new IntersectionObserver((entries, oo) => {
+      // console.log('trigger', oo)
+      if (entries[0].isIntersecting) {
+        // el is visible
+        // console.log('vis')
+        const page = pageRef.current
+        if ((page + 1) * pageSize < list.length) {
+          setPage(page + 1)
+          observer.unobserve(el)
+          observer.observe(el)
+        }
+      } else {
+        // console.log('not vis')
+        // el is not visible
+      }
+    })
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  const itemsToDisplay = list.slice(0, (page + 1) * pageSize)
+  console.log(controlCollector.isPlaying())
   return (
     <>
       {audioOnly ? (
         <ActiveMedia>
-          <Btn onClick={chk}>chk</Btn>
-          <Btn onClick={playAll}>play all</Btn>
-          <Btn onClick={next}>Next</Btn>
-          <Btn onClick={prev}>Prev</Btn>
+          <Btn onClick={toggleLoop}>
+            <LoopIcon />
+          </Btn>
+          <Btn onClick={playAll}>
+            <PlayIcon />
+          </Btn>
+          <Btn onClick={prev}>
+            <PreviousIcon />
+          </Btn>
+          <Btn onClick={next}>
+            <NextIcon />
+          </Btn>
         </ActiveMedia>
       ) : null}
-      {list.map((e) => (
+      {itemsToDisplay.map((e) => (
         <ContentItem
           key={e.id}
           data={e}
           controlCollector={audioOnly ? controlCollector : undefined}
         />
       ))}
+      <div ref={ref} style={{ height: '15px' }}></div>
     </>
   )
 }
