@@ -110,6 +110,7 @@ class Control {
     this.root = new DoublyLinkedNode(null)
     this.tail = this.root
     this.cur = this.root
+    this.loop = false
     // this.status = 0 // 0: paused, >= 1: playing
   }
   set(id, val) {
@@ -167,6 +168,11 @@ class Control {
     }
     return false
   }
+  endCb() {
+    if (this.loop) {
+      this.next()
+    }
+  }
 }
 
 function Content({ list, audioOnly }) {
@@ -174,6 +180,7 @@ function Content({ list, audioOnly }) {
   const pageSize = 5
   const [page, setPage] = useState(0)
   const pageRef = useRef(page)
+  const [loop, setLoop] = useState(false)
   const controlCollector = useMemo(() => new Control(), [])
 
   const play = () => {
@@ -188,7 +195,9 @@ function Content({ list, audioOnly }) {
   const prev = () => {
     controlCollector.prev()
   }
-  const toggleLoop = () => {}
+  const toggleLoop = () => {
+    setLoop(!loop)
+  }
 
   useEffect(() => {
     pageRef.current = page
@@ -215,14 +224,16 @@ function Content({ list, audioOnly }) {
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
+  useEffect(() => {
+    controlCollector.loop = loop
+  }, [loop])
   const itemsToDisplay = list.slice(0, (page + 1) * pageSize)
-  console.log(controlCollector.isPlaying())
   return (
     <>
       {audioOnly ? (
         <ActiveMedia>
           <Btn onClick={toggleLoop}>
-            <LoopIcon />
+            <LoopIcon checked={loop} />
           </Btn>
           <Btn onClick={play}>
             <PlayIcon />

@@ -205,6 +205,9 @@ function AudioPlayer({
   }
   function ended(ev) {
     setStatus(ev.type)
+    if (controlCollector) {
+      controlCollector.endCb()
+    }
   }
   function durationchange(ev) {
     setDuration(ev.target.duration)
