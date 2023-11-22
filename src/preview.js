@@ -176,8 +176,11 @@ function Content({ list, audioOnly }) {
   const pageRef = useRef(page)
   const controlCollector = useMemo(() => new Control(), [])
 
-  const playAll = () => {
+  const play = () => {
     controlCollector.play()
+  }
+  const pause = () => {
+    controlCollector.pause()
   }
   const next = () => {
     controlCollector.next()
@@ -221,8 +224,11 @@ function Content({ list, audioOnly }) {
           <Btn onClick={toggleLoop}>
             <LoopIcon />
           </Btn>
-          <Btn onClick={playAll}>
+          <Btn onClick={play}>
             <PlayIcon />
+          </Btn>
+          <Btn onClick={pause}>
+            <PauseIcon />
           </Btn>
           <Btn onClick={prev}>
             <PreviousIcon />

@@ -138,7 +138,7 @@ function secondsToHms(d) {
   return hDisplay + mDisplay + sDisplay
 }
 function isPlaying(el) {
-  if (!el.paused || el.currentTime) {
+  if (!el.paused) {
     return true
   } else {
     return false
