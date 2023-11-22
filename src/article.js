@@ -110,6 +110,7 @@ function ListItem({
         <ImgComp {...cover} name={cover.name || cover.val} />
         <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
           {title}
+          {id}
         </Link>
       </ArticleItemContent>
       <OpWrap>

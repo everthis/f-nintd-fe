@@ -27,9 +27,14 @@ const ActiveMedia = styled.div`
   position: sticky;
   top: 0;
   background-color: #fff;
-  z-index: 1;
+  z-index: 9;
   button {
     margin: 0;
+  }
+`
+const PreviewWrap = styled.section`
+  button {
+    border: none;
   }
 `
 const defaultPayload = {
@@ -132,6 +137,8 @@ class Control {
       if (this.cur.next == null) {
         if (this.root.next == null) return
         this.cur = this.root.next
+      } else {
+        this.cur = this.cur.next
       }
     } else {
       if (this.cur.next == null) return
@@ -236,7 +243,7 @@ function Content({ list, audioOnly }) {
   }, [loop])
   const itemsToDisplay = list.slice(0, (page + 1) * pageSize)
   return (
-    <>
+    <PreviewWrap>
       {audioOnly ? (
         <ActiveMedia>
           <Btn onClick={toggleLoop}>
@@ -264,6 +271,6 @@ function Content({ list, audioOnly }) {
         />
       ))}
       <div ref={ref} style={{ height: '15px' }}></div>
-    </>
+    </PreviewWrap>
   )
 }

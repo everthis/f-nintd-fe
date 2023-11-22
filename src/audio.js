@@ -410,6 +410,7 @@ function AudioPlayer({
               </WaveControl>
             </ProgressWrap>
             <Actions>
+              <span style={{ width: '.5rem' }}></span>
               {showWaveformBtn ? (
                 <button onClick={genPeaks} disabled={!!waveform}>
                   <WaveformIcon />
