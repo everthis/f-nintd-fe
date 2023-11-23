@@ -10,14 +10,14 @@ const Wrap = styled.div`
   padding: 0.5rem;
   margin: 1rem auto;
 `
-
+const STATUS = PRODUCTION ? 1 : 0
 function HomePageComp() {
   const {
     data = [],
     err,
     loading,
   } = useQuery({
-    url: `${API_ORIGIN}/articleListWithCover?status=0`,
+    url: `${API_ORIGIN}/articleListWithCover?status=${STATUS}`,
   })
   return (
     <Wrap>
