@@ -108,16 +108,15 @@ function ListItem({
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
         <ImgComp {...cover} name={cover.name || cover.val} />
-        <Link to={`/article/${id}`} target='_blank' rel='noopener noreferrer'>
+        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
           {title}
-          {id}
         </Link>
       </ArticleItemContent>
       <OpWrap>
         <StatusWrap>
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`article_${id}_status`}
               value={ARTICLE_STATUS.WIP}
               checked={status === 0}
@@ -128,7 +127,7 @@ function ListItem({
           <br />
           <label>
             <input
-              type='radio'
+              type="radio"
               name={`article_${id}_status`}
               value={ARTICLE_STATUS.PUBLIC}
               checked={status === 1}

@@ -1,8 +1,9 @@
-// export const API_ORIGIN = 'http://127.0.0.1:8083'
-export const API_ORIGIN = 'http://192.168.2.114:8083'
+// export const API_ORIGIN = 'https://hk4.everthis.com:8083'
+export const API_ORIGIN = 'http://localhost:8083'
+// export const API_ORIGIN = 'http://192.168.2.114:8083'
 /*
 export const API_ORIGIN = PRODUCTION
-  ? 'https://be.everthis.com'
+  ? 'https://hk4.everthis.com:8083'
   : 'http://192.168.2.114:8083'
    */
 
