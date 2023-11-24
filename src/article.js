@@ -4,9 +4,9 @@ import { Link, redirect, useNavigate } from 'react-router-dom'
 
 import Image from './articleImg'
 import { API_ORIGIN } from './constant'
-import { EditIcon, DeleteIcon } from './icon'
+import { EditIcon, DeleteIcon, MigrateIcon } from './icon'
 import { ImgComp } from './image'
-import { useQuery } from './hooks'
+import { useQuery, usePostData } from './hooks'
 
 const Margin = styled.div`
   margin: 1em 0;
@@ -60,6 +60,7 @@ function ListItem({
   styles = { maxWidth: '800px' },
 }) {
   const { title, id, cover, status } = payload
+  const { loading, postData } = usePostData()
   const deleteItem = () => {
     const obj = {
       id,
@@ -81,6 +82,11 @@ function ListItem({
         detail: { id },
       })
     )
+  }
+  const migrateItem = (ev) => {
+    postData({ url: `${API_ORIGIN}/article/migrate/${id}`, method: 'PATCH' })
+      .then(() => alert('ok'))
+      .catch(() => alert('err'))
   }
   const handleStatusChange = (ev) => {
     const { checked, value } = ev.target
@@ -136,6 +142,9 @@ function ListItem({
             public
           </label>
         </StatusWrap>
+        <EditIconWrap onClick={migrateItem}>
+          <MigrateIcon />
+        </EditIconWrap>
         <EditIconWrap onClick={editItem}>
           <EditIcon />
         </EditIconWrap>
