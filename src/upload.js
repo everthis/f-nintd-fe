@@ -94,6 +94,7 @@ export function Upload({ useOriginalName = false }) {
     if (files.length) {
       const newList = [...files, ...selectedFiles]
       setSelectedFiles(newList)
+      console.log('newList', newList)
     }
   }
 
@@ -170,8 +171,8 @@ export function Upload({ useOriginalName = false }) {
       <ImageInput>
         <Inp>+</Inp>
         <input
-          className="image-input"
-          type="file"
+          className='image-input'
+          type='file'
           multiple
           onChange={onFileChange}
           value={inputVal}
@@ -213,8 +214,8 @@ function Img({ file, deleteFn }) {
   }
   return (
     <PerLocal>
-      <img src={image} alt="preview image" loading="lazy" />
-      <a href="" onClick={delFn}>
+      <img src={image} alt='preview image' loading='lazy' />
+      <a href='' onClick={delFn}>
         delete
       </a>
     </PerLocal>
