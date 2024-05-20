@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react"
-import styled from "styled-components"
-import { createBrowserRouter, RouterProvider, Link } from "react-router-dom"
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 
-import { Theme } from "./theme"
-import { ThemeWrap } from "./header"
+import { Theme } from './theme'
+import { ThemeWrap } from './header'
 
 const ToolbarWrap = styled.div`
   display: flex;
@@ -28,8 +28,8 @@ import {
   CombineIcon,
   VideoIcon,
   HomeIcon,
-} from "./icon"
-import { API_ORIGIN } from "./constant"
+} from './icon'
+import { API_ORIGIN } from './constant'
 
 export function Toolbar({
   showUpload,
@@ -52,8 +52,8 @@ export function Toolbar({
   setShowCombine,
   showLink,
   setShowLink,
-  showVideo,
-  setShowVideo,
+  showOneFrameVideo,
+  setShowOneFrameVideo,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -88,11 +88,11 @@ export function Toolbar({
     setShowLink(!showLink)
   }
   function toggleVideo() {
-    setShowVideo(!showVideo)
+    setShowOneFrameVideo(!showOneFrameVideo)
   }
   function listImagesWithoutTags() {
     fetch(`${API_ORIGIN}/images/withoutTags`, {
-      method: "GET",
+      method: 'GET',
     })
       .then((d) => d.json())
       .then((arr) => {})
@@ -104,13 +104,13 @@ export function Toolbar({
       <AddTagIcon checked={showAddTag} onClick={toggleAddTag} />
       <ImgIcon checked={showImg} onClick={toggleImg} />
       <AudioIcon checked={showAudio} onClick={toggleAudio} />
-      <VideoIcon checked={showVideo} onClick={toggleVideo} />
+      <VideoIcon checked={showOneFrameVideo} onClick={toggleVideo} />
       <TextIcon checked={showText} onClick={toggleText} />
       <WaveformIcon checked={showWaveform} onClick={toggleWaveform} />
       <AntiDiagonalLinkIcon
         checked={showLink}
         onClick={toggleLink}
-        size={"22px"}
+        size={'22px'}
       />
       <CombineIcon checked={showCombine} onClick={toggleCombine} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
@@ -120,7 +120,7 @@ export function Toolbar({
       </ThemeWrap>
 
       <HomeIcon />
-      <Link to='/homepage' style={{ marginRight: "1em" }}>
+      <Link to='/homepage' style={{ marginRight: '1em' }}>
         Homepage
       </Link>
 

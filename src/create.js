@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react"
-import styled from "styled-components"
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import styled from 'styled-components'
 
-import { AddTagPane } from "./tag"
-import { Upload } from "./upload"
+import { AddTagPane } from './tag'
+import { Upload } from './upload'
 
-import { Toolbar } from "./toolbar"
-import { Pane } from "./pane"
-import { Editor } from "./editor"
-import { Article } from "./article"
-import { RemoteImageList } from "./remoteImageList"
-import { Audio } from "./audio"
-import { AssetGridPane } from "./AssetGridPane"
+import { Toolbar } from './toolbar'
+import { Pane } from './pane'
+import { Editor } from './editor'
+import { Article } from './article'
+import { RemoteImageList } from './remoteImageList'
+import { Audio } from './audio'
+import { AssetGridPane } from './AssetGridPane'
 
-import "./index.scss"
+import './index.scss'
 
-import { API_ORIGIN, TYPE } from "./constant"
-import { TextPane, AddTextPane } from "./text"
+import { API_ORIGIN, TYPE } from './constant'
+import { TextPane, AddTextPane } from './text'
 
 const VertGap = styled.div`
-  ${({ height }) => (height ? `height: ${height};` : "")}
+  ${({ height }) => (height ? `height: ${height};` : '')}
 `
 const HorLine = styled.hr`
   margin: 0.4em 0;
@@ -47,24 +47,28 @@ export function Create() {
   const [tags, setTags] = useState([])
   const [showRemote, setShowRemote] = useState(false)
   const [showArticleList, setShowArticleList] = useCS(
-    "article",
+    'article',
     false,
     setStkVal
   )
-  const [showAudio, setShowAudio] = useCS("audio", false, setStkVal)
-  const [showVideo, setShowVideo] = useCS("video", false, setStkVal)
-  const [showText, setShowText] = useCS("text", false, setStkVal)
-  const [showUpload, setShowUpload] = useCS("upload", false, setStkVal)
-  const [showImg, setShowImg] = useCS("image", false, setStkVal)
-  const [showAddTag, setShowAddTag] = useCS("tag", false, setStkVal)
+  const [showAudio, setShowAudio] = useCS('audio', false, setStkVal)
+  const [showOneFrameVideo, setShowOneFrameVideo] = useCS(
+    'oneFrameVideo',
+    false,
+    setStkVal
+  )
+  const [showText, setShowText] = useCS('text', false, setStkVal)
+  const [showUpload, setShowUpload] = useCS('upload', false, setStkVal)
+  const [showImg, setShowImg] = useCS('image', false, setStkVal)
+  const [showAddTag, setShowAddTag] = useCS('tag', false, setStkVal)
   const [showCreateText, setShowCreateText] = useCS(
-    "createText",
+    'createText',
     false,
     setStkVal
   )
-  const [showWaveform, setShowWaveform] = useCS("waveform", false, setStkVal)
-  const [showCombine, setShowCombine] = useCS("combine", false, setStkVal)
-  const [showLink, setShowLink] = useCS("link", false, setStkVal)
+  const [showWaveform, setShowWaveform] = useCS('waveform', false, setStkVal)
+  const [showCombine, setShowCombine] = useCS('combine', false, setStkVal)
+  const [showLink, setShowLink] = useCS('link', false, setStkVal)
 
   const [paneMap, setPaneMap] = useState(new Map())
   const [checkedSet, setCheckedSet] = useState(new Set())
@@ -104,7 +108,7 @@ export function Create() {
     return last === key
   }
   function calcNewPaneInitPos() {
-    const panes = document.getElementsByClassName("pane")
+    const panes = document.getElementsByClassName('pane')
     const last = panes[panes.length - 1]
     const { left, top } = last
       ? last.getBoundingClientRect()
@@ -252,13 +256,13 @@ export function Create() {
             }}
           />
         ),
-    video:
+    oneFrameVideo:
       ({ left, top }) =>
       () =>
         (
           <Pane
-            onClick={() => setShowText(true)}
-            key='text'
+            onClick={() => setShowOneFrameVideo(true)}
+            key='oneFrameVideo'
             left={left}
             top={top}
             show
@@ -269,14 +273,14 @@ export function Create() {
               <AssetGridPane
                 showActions={false}
                 showPane
-                setShowPane={setShowText}
+                setShowPane={setShowOneFrameVideo}
                 onConfirm={() => {}}
-                defaultType={TYPE.TEXT}
+                defaultType={TYPE.ONE_FRAME_VIDEO}
               />
             }
             onClose={(ev) => {
               ev.stopPropagation()
-              setShowText(false)
+              setShowOneFrameVideo(false)
             }}
           />
         ),
@@ -398,8 +402,8 @@ export function Create() {
         setShowArticleList={setShowArticleList}
         showAudio={showAudio}
         setShowAudio={setShowAudio}
-        showVideo={showVideo}
-        setShowVideo={setShowVideo}
+        showOneFrameVideo={showOneFrameVideo}
+        setShowOneFrameVideo={setShowOneFrameVideo}
         showText={showText}
         setShowText={setShowText}
         showImg={showImg}

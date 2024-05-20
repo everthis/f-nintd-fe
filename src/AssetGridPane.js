@@ -15,6 +15,7 @@ import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import { AudioStateLess, AudioItem } from './audio'
 import { TextStateLess, SingleTextWithLoading, AddTextPane } from './text'
+import { VideoStateLess } from './video'
 import { Btn, Button } from './btn'
 import { WaveformStateLess } from './audioWave'
 import { TagCoverIcon } from './icon'
@@ -117,6 +118,9 @@ const AudioSection = styled.div`
   padding: 0 5px 0 0;
 `
 const TextSection = styled.div`
+  position: relative;
+`
+const VideoSection = styled.div`
   position: relative;
 `
 const WaveformSection = styled.div`
@@ -376,7 +380,7 @@ export function AssetGridPane({
           <b>Type:</b>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.IMG}
               checked={type === TYPE.IMG}
@@ -387,7 +391,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.AUDIO}
               checked={type === TYPE.AUDIO}
@@ -398,7 +402,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.TEXT}
               checked={type === TYPE.TEXT}
@@ -409,7 +413,7 @@ export function AssetGridPane({
           </label>
           <label>
             <input
-              type="radio"
+              type='radio'
               name={`${compId}_queryType`}
               value={TYPE.WAVEFORM}
               checked={type === TYPE.WAVEFORM}
@@ -417,6 +421,17 @@ export function AssetGridPane({
               disabled={fetching}
             />
             waveform
+          </label>
+          <label>
+            <input
+              type='radio'
+              name={`${compId}_queryType`}
+              value={TYPE.ONE_FRAME_VIDEO}
+              checked={type === TYPE.ONE_FRAME_VIDEO}
+              onChange={onTypeChange}
+              disabled={fetching}
+            />
+            oneFrameVideo
           </label>
         </TypeSelectionWrap>
       </StickyWrap>
@@ -454,7 +469,7 @@ export function AssetGridPane({
                     <Select>
                       {singleSelect ? (
                         <input
-                          type="radio"
+                          type='radio'
                           value={e.name}
                           name={`${compId}_radio`}
                           checked={chkExists(e)}
@@ -465,7 +480,7 @@ export function AssetGridPane({
                         />
                       ) : (
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={chkExists(e)}
                           disabled={chkDisabled(e)}
                           onChange={(ev) => selectCbFn(e, ev.target.checked)}
@@ -528,6 +543,23 @@ export function AssetGridPane({
               />
             )}
           </WaveformSection>
+        ) : null}
+        {type === TYPE.ONE_FRAME_VIDEO ? (
+          <VideoSection>
+            {fetching ? (
+              <Status>
+                <b>loading</b>
+              </Status>
+            ) : null}
+            {!fetching && (
+              <VideoStateLess
+                list={items}
+                onSelectChange={showActions ? selectCbFn : null}
+                chkSelected={chkExists}
+                toggleOpts={toggleOpts}
+              />
+            )}
+          </VideoSection>
         ) : null}
 
         <Opts
@@ -767,7 +799,7 @@ function Opts({ show, toggleDisplay, type, id, updateCb }) {
           selectedTags={selectedTags}
           opts={opts}
         />
-        <Btn type="block" onClick={deleteItem} style={{ padding: '.5rem' }}>
+        <Btn type='block' onClick={deleteItem} style={{ padding: '.5rem' }}>
           Delete
         </Btn>
       </OptsContent>

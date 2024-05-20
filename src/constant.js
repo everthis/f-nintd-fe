@@ -8,6 +8,8 @@ export const TYPE = {
   IMG: 'image',
   IMAGE: 'image',
   AUDIO: 'audio',
+  VIDEO: 'video',
+  ONE_FRAME_VIDEO: 'oneFrameVideo',
   TEXT: 'text',
   WAVEFORM: 'waveform',
 }
