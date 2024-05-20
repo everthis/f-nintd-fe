@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect, useRef } from "react"
+import styled from "styled-components"
 
-import { API_ORIGIN, EMPTY_ARR } from './constant'
-import { useQuery } from './hooks'
-import { formatter as tagFormatter } from './tag'
+import { API_ORIGIN, EMPTY_ARR } from "./constant"
+import { useQuery } from "./hooks"
+import { formatter as tagFormatter } from "./tag"
 
 const UploadWrap = styled.div`
   user-select: none;
@@ -51,37 +51,38 @@ export const Select = styled.select`
 
 const typeHash = {
   image: {
-    subPath: '/images/new',
-    payloadKey: 'images',
+    subPath: "/images/new",
+    payloadKey: "images",
   },
   audio: {
-    subPath: '/audio/segements',
-    payloadKey: 'audioFiles',
+    subPath: "/audio/segements",
+    payloadKey: "audioFiles",
   },
   video: {},
   common: {
-    subPath: '/assets/new',
-    payloadKey: 'assets',
+    subPath: "/assets/new",
+    payloadKey: "assets",
   },
 }
 
 const imgTypeSet = new Set([
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/apng',
-  'image/avif',
-  'image/gif',
-  'image/svg+xml',
-  'image/bmp',
-  'image/tiff',
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/apng",
+  "image/avif",
+  "image/gif",
+  "image/svg+xml",
+  "image/bmp",
+  "image/tiff",
 ])
 
 export function Upload({ useOriginalName = false }) {
   const [selectedFiles, setSelectedFiles] = useState([])
-  const [inputVal, setInputVal] = useState('')
+  const [inputVal, setInputVal] = useState("")
   const [tagOpts, setTagOpts] = useState([])
-  const [selectedTag, setSelectedTag] = useState('')
+  const [selectedTag, setSelectedTag] = useState("")
+  const [oneFrameVideo, setOneFrameVideo] = useState(false)
   const tagOptsRef = useRef(tagOpts)
   const { data: tags = EMPTY_ARR, loading } = useQuery({
     url: `${API_ORIGIN}/tags`,
@@ -94,7 +95,7 @@ export function Upload({ useOriginalName = false }) {
     if (files.length) {
       const newList = [...files, ...selectedFiles]
       setSelectedFiles(newList)
-      console.log('newList', newList)
+      console.log("newList", newList)
     }
   }
 
@@ -103,18 +104,18 @@ export function Upload({ useOriginalName = false }) {
     const formData = new FormData()
     if (selectedFiles.length === 0) return
     for (const e of selectedFiles) {
-      const nArr = e.name.split('.')
-      const tArr = e.type.split('/')
+      const nArr = e.name.split(".")
+      const tArr = e.type.split("/")
       const fn = useOriginalName
         ? e.name
         : `${nArr[0]}_${e.lastModified}.${nArr[1] || tArr[1]}`
       formData.append(typeHash.common.payloadKey, e, fn)
     }
 
-    formData.append('tags', JSON.stringify(selectedTag ? [selectedTag] : []))
+    formData.append("tags", JSON.stringify(selectedTag ? [selectedTag] : []))
 
     fetch(`${API_ORIGIN}${typeHash.common.subPath}`, {
-      method: 'POST',
+      method: "POST",
       body: formData,
     })
       .then((d) => d.text())
@@ -132,6 +133,11 @@ export function Upload({ useOriginalName = false }) {
   function onChangeFn(ev) {
     const { value } = ev.target
     setSelectedTag(value)
+  }
+
+  function OneFrameVideoChkBoxChange(ev) {
+    const { checked } = ev.target
+    setOneFrameVideo(checked)
   }
 
   useEffect(() => {
@@ -164,7 +170,7 @@ export function Upload({ useOriginalName = false }) {
     setTagOpts(opts)
   }, [tags])
 
-  const ph = ''
+  const ph = ""
 
   return (
     <UploadWrap>
@@ -180,7 +186,7 @@ export function Upload({ useOriginalName = false }) {
       </ImageInput>
       <button onClick={onFileUpload}>Upload!</button>
       <Select value={selectedTag} onChange={onChangeFn} placeholder={ph}>
-        <option key={''} value={''} disabled>
+        <option key={""} value={""} disabled>
           Select tags
         </option>
         {tagOpts.map((e) => (
@@ -189,6 +195,14 @@ export function Upload({ useOriginalName = false }) {
           </option>
         ))}
       </Select>
+      <label for='OneFrameVideoChkBox'>
+        OneFrameVideo:
+        <input
+          id='OneFrameVideoChkBox'
+          type='checkbox'
+          onChange={OneFrameVideoChkBoxChange}
+        />
+      </label>
       <Row>
         <UploadQueueSect>
           {selectedFiles.map((e, i) => {
