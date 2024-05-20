@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from "react"
 
-import * as Faye from 'faye'
-import { API_ORIGIN } from './constant'
+import * as Faye from "faye"
+import { API_ORIGIN } from "./constant"
 
 const genRand = (len) => {
   return Math.random()
@@ -11,11 +11,11 @@ const genRand = (len) => {
 
 function publish() {
   if (fayeIns) {
-    fayeIns.publish('/foo', genRand(12))
+    fayeIns.publish("/foo", genRand(12))
   }
 }
 
-export function Test() {
+export function Test1() {
   const [fayeIns, setFayeIns] = useState(null)
 
   useEffect(() => {
@@ -31,5 +31,18 @@ export function Test() {
     <p>
       <button onClick={publish}>publish</button>
     </p>
+  )
+}
+
+export function Test() {
+  useEffect(() => {
+    return () => {}
+  }, [])
+
+  const videoSrc = "http://localhost:8081/out_w1080_b.mp4"
+  return (
+    <div>
+      <video src={videoSrc} playsinline />
+    </div>
   )
 }

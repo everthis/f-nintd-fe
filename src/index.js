@@ -1,38 +1,43 @@
-import React, { useState, useEffect } from 'react'
-import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Create } from './create'
-import { HomePage } from './homepage'
-import { Preview } from './preview'
-import { Waveform } from './waveform'
-import { AudioWave } from './audioWave'
+import React, { useState, useEffect } from "react"
+import ReactDOM from "react-dom/client"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { Create } from "./create"
+import { HomePage } from "./homepage"
+import { Preview } from "./preview"
+import { Waveform } from "./waveform"
+import { AudioWave } from "./audioWave"
+import { Test } from "./test"
 
-import './index.scss'
+import "./index.scss"
 
 function Null() {
-  return 'Null'
+  return "Null"
 }
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: "/",
       element: <Null />,
     },
     {
-      path: '/homepage',
+      path: "/test",
+      element: <Test />,
+    },
+    {
+      path: "/homepage",
       element: <HomePage />,
     },
     {
-      path: '/dashboard',
+      path: "/dashboard",
       element: <Create />,
     },
     {
-      path: '/article/:id',
+      path: "/article/:id",
       element: <Preview />,
     },
     {
-      path: '/test',
+      path: "/test",
       element: <AudioWave />,
     },
   ])
@@ -40,7 +45,7 @@ function App() {
   return <RouterProvider router={router} />
 }
 
-const mountNode = document.getElementById('app')
+const mountNode = document.getElementById("app")
 ReactDOM.createRoot(mountNode).render(
   // <React.StrictMode>
   <App />

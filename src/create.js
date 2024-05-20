@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import styled from "styled-components"
 
-import { AddTagPane } from './tag'
-import { Upload } from './upload'
+import { AddTagPane } from "./tag"
+import { Upload } from "./upload"
 
-import { Toolbar } from './toolbar'
-import { Pane } from './pane'
-import { Editor } from './editor'
-import { Article } from './article'
-import { RemoteImageList } from './remoteImageList'
-import { Audio } from './audio'
-import { AssetGridPane } from './AssetGridPane'
+import { Toolbar } from "./toolbar"
+import { Pane } from "./pane"
+import { Editor } from "./editor"
+import { Article } from "./article"
+import { RemoteImageList } from "./remoteImageList"
+import { Audio } from "./audio"
+import { AssetGridPane } from "./AssetGridPane"
 
-import './index.scss'
+import "./index.scss"
 
-import { API_ORIGIN, TYPE } from './constant'
-import { TextPane, AddTextPane } from './text'
+import { API_ORIGIN, TYPE } from "./constant"
+import { TextPane, AddTextPane } from "./text"
 
 const VertGap = styled.div`
-  ${({ height }) => (height ? `height: ${height};` : '')}
+  ${({ height }) => (height ? `height: ${height};` : "")}
 `
 const HorLine = styled.hr`
   margin: 0.4em 0;
@@ -47,23 +47,24 @@ export function Create() {
   const [tags, setTags] = useState([])
   const [showRemote, setShowRemote] = useState(false)
   const [showArticleList, setShowArticleList] = useCS(
-    'article',
+    "article",
     false,
     setStkVal
   )
-  const [showAudio, setShowAudio] = useCS('audio', false, setStkVal)
-  const [showText, setShowText] = useCS('text', false, setStkVal)
-  const [showUpload, setShowUpload] = useCS('upload', false, setStkVal)
-  const [showImg, setShowImg] = useCS('image', false, setStkVal)
-  const [showAddTag, setShowAddTag] = useCS('tag', false, setStkVal)
+  const [showAudio, setShowAudio] = useCS("audio", false, setStkVal)
+  const [showVideo, setShowVideo] = useCS("video", false, setStkVal)
+  const [showText, setShowText] = useCS("text", false, setStkVal)
+  const [showUpload, setShowUpload] = useCS("upload", false, setStkVal)
+  const [showImg, setShowImg] = useCS("image", false, setStkVal)
+  const [showAddTag, setShowAddTag] = useCS("tag", false, setStkVal)
   const [showCreateText, setShowCreateText] = useCS(
-    'createText',
+    "createText",
     false,
     setStkVal
   )
-  const [showWaveform, setShowWaveform] = useCS('waveform', false, setStkVal)
-  const [showCombine, setShowCombine] = useCS('combine', false, setStkVal)
-  const [showLink, setShowLink] = useCS('link', false, setStkVal)
+  const [showWaveform, setShowWaveform] = useCS("waveform", false, setStkVal)
+  const [showCombine, setShowCombine] = useCS("combine", false, setStkVal)
+  const [showLink, setShowLink] = useCS("link", false, setStkVal)
 
   const [paneMap, setPaneMap] = useState(new Map())
   const [checkedSet, setCheckedSet] = useState(new Set())
@@ -103,7 +104,7 @@ export function Create() {
     return last === key
   }
   function calcNewPaneInitPos() {
-    const panes = document.getElementsByClassName('pane')
+    const panes = document.getElementsByClassName("pane")
     const last = panes[panes.length - 1]
     const { left, top } = last
       ? last.getBoundingClientRect()
@@ -137,10 +138,10 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowUpload(true)}
-            key="upload"
+            key='upload'
             left={left}
             top={top}
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={<Upload />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -154,12 +155,12 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowImg(true)}
-            key="image"
+            key='image'
             left={left}
             top={top}
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="80vh"
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='80vh'
             body={
               <AssetGridPane
                 showActions={false}
@@ -181,14 +182,14 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAudio(true)}
-            key="audio"
+            key='audio'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             // body={<Audio />}
-            width="90vw"
-            height="85vh"
+            width='90vw'
+            height='85vh'
             body={
               <AssetGridPane
                 showActions={false}
@@ -210,17 +211,17 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowArticleList(true)}
-            key="article"
+            key='article'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
+            bgColor='var(--bg-color)'
             body={<Article />}
             onClose={(ev) => {
               ev.stopPropagation()
               setShowArticleList(false)
             }}
-            width="600px"
+            width='600px'
           />
         ),
     text:
@@ -229,13 +230,41 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowText(true)}
-            key="text"
+            key='text'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="70vh"
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='70vh'
+            body={
+              <AssetGridPane
+                showActions={false}
+                showPane
+                setShowPane={setShowText}
+                onConfirm={() => {}}
+                defaultType={TYPE.TEXT}
+              />
+            }
+            onClose={(ev) => {
+              ev.stopPropagation()
+              setShowText(false)
+            }}
+          />
+        ),
+    video:
+      ({ left, top }) =>
+      () =>
+        (
+          <Pane
+            onClick={() => setShowText(true)}
+            key='text'
+            left={left}
+            top={top}
+            show
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='70vh'
             body={
               <AssetGridPane
                 showActions={false}
@@ -257,13 +286,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowWaveform(true)}
-            key="waveform"
+            key='waveform'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="80vw"
-            height="70vh"
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='70vh'
             body={
               <AssetGridPane
                 showActions={false}
@@ -285,13 +314,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowAddTag(true)}
-            key="tag"
+            key='tag'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="60vw"
-            height="86vh"
+            bgColor='var(--bg-color)'
+            width='60vw'
+            height='86vh'
             body={<AddTagPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -305,13 +334,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowCreateText(true)}
-            key="createText"
+            key='createText'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="70vw"
-            height="70vh"
+            bgColor='var(--bg-color)'
+            width='70vw'
+            height='70vh'
             body={<AddTextPane />}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -325,13 +354,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowCombine(true)}
-            key="combine"
+            key='combine'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="90vw"
-            height="90vh"
+            bgColor='var(--bg-color)'
+            width='90vw'
+            height='90vh'
             body={<></>}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -345,13 +374,13 @@ export function Create() {
         (
           <Pane
             onClick={() => setShowLink(true)}
-            key="link"
+            key='link'
             left={left}
             top={top}
             show
-            bgColor="var(--bg-color)"
-            width="60vw"
-            height="60vh"
+            bgColor='var(--bg-color)'
+            width='60vw'
+            height='60vh'
             body={<></>}
             onClose={(ev) => {
               ev.stopPropagation()
@@ -369,6 +398,8 @@ export function Create() {
         setShowArticleList={setShowArticleList}
         showAudio={showAudio}
         setShowAudio={setShowAudio}
+        showVideo={showVideo}
+        setShowVideo={setShowVideo}
         showText={showText}
         setShowText={setShowText}
         showImg={showImg}
