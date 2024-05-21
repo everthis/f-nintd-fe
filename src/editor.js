@@ -23,6 +23,7 @@ import { AssetGridPane } from './AssetGridPane'
 import { ImgComp } from './image'
 import { AudioItem } from './audio'
 import { PerText } from './text'
+import { PureVideo } from './video'
 
 const Wrap = styled.div`
   position: relative;
@@ -433,7 +434,7 @@ export function Editor() {
       <TitleRow>
         <label>
           Title:
-          <input type="text" value={title} onChange={titleChange} />
+          <input type='text' value={title} onChange={titleChange} />
         </label>
       </TitleRow>
 
@@ -452,6 +453,9 @@ export function Editor() {
               {e.type === TYPE.AUDIO ? <AudioItem data={e} /> : null}
               {e.type === TYPE.TEXT ? (
                 <PerText data={e} showOpts={false} />
+              ) : null}
+              {e.type === TYPE.ONE_FRAME_VIDEO ? (
+                <PureVideo data={e} showOpts={false} />
               ) : null}
             </SectionContent>
             <SectionOp>
@@ -476,7 +480,7 @@ export function Editor() {
           <input
             ref={audioOnlyRef}
             checked={audioOnly}
-            type="checkbox"
+            type='checkbox'
             onChange={audioOnlyChange}
           />
           Audio only
@@ -504,7 +508,7 @@ export function Editor() {
           <SaveIcon /> Save
         </button>
       </Op>
-      <VertGap height="50px" />
+      <VertGap height='50px' />
       <CoverWrap>
         {coverImg?.name ? (
           <>
@@ -516,10 +520,10 @@ export function Editor() {
       {showCoverPane ? (
         <Pane
           show={showCoverPane}
-          bgColor="var(--bg-color)"
+          bgColor='var(--bg-color)'
           body={coverSelectionBody}
-          width="80vw"
-          height="80vh"
+          width='80vw'
+          height='80vh'
           left={100}
           top={100}
           onClose={() => setShowCoverPane(false)}
@@ -530,10 +534,10 @@ export function Editor() {
           left={100}
           top={100}
           show={showPane}
-          bgColor="var(--bg-color)"
+          bgColor='var(--bg-color)'
           body={imageGridBody}
-          width="80vw"
-          height="80vh"
+          width='80vw'
+          height='80vh'
           onClose={() => setShowPane(false)}
         />
       ) : null}
