@@ -1,20 +1,21 @@
-import React, { useCallback, useState, useEffect } from "react"
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 
-import * as Faye from "faye"
-import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from "./constant"
-import { useQuery, useChecked, usePostData, useCombineSets } from "./hooks"
-import styled from "styled-components"
+import * as Faye from 'faye'
+import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
+import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
+import styled from 'styled-components'
 
 const Center = styled.div`
   margin: 0 auto;
   max-width: 900px;
+  position: relative;
 `
 
 const VideoWrap = styled.div`
   background-color: gray;
   position: relative;
   video {
-    display: block;
+    display: inline-block;
     width: 100%;
     position: relative;
     z-index: 0;
@@ -37,7 +38,7 @@ const genRand = (len) => {
 
 function publish() {
   if (fayeIns) {
-    fayeIns.publish("/foo", genRand(12))
+    fayeIns.publish('/foo', genRand(12))
   }
 }
 
@@ -60,8 +61,40 @@ export function Test1() {
   )
 }
 
+function Video({ item }) {
+  const e = item
+  const ref = useRef()
+  useEffect(() => {
+    const v = ref.current
+    // const timer = setInterval(() => ref.current.play(), 1)
+    v.addEventListener('pause', function (e) {
+      v.play()
+    })
+    v.addEventListener('ended', function (e) {
+      v.play()
+    })
+    return () => {
+      // clearInterval(timer)
+    }
+  }, [])
+  return (
+    <VideoWrap>
+      <video
+        ref={ref}
+        key={e.id}
+        muted
+        loop
+        playsinline
+        autoplay='autoplay'
+        webkit-playsinline
+      >
+        <source src={e.src} />
+      </video>
+      <Mask />
+    </VideoWrap>
+  )
+}
 export function Test() {
-  /*
   const {
     data: items = EMPTY_ARR,
     loading: fetching,
@@ -69,49 +102,38 @@ export function Test() {
   } = useQuery({
     url: `${API_ORIGIN}/oneFrameVideo/byTags`,
   })
-  */
-  const fetching = false
-  const items = [
-    {
-      id: 1,
-      src: "http://127.0.0.1:8088/u1.mp4",
-    },
-    {
-      id: 2,
-      src: "http://127.0.0.1:8088/u2.mp4",
-    },
-    {
-      id: 3,
-      src: "http://127.0.0.1:8088/u3.mp4",
-    },
-    {
-      id: 4,
-      src: "http://127.0.0.1:8088/u4.mp4",
-    },
-    {
-      id: 5,
-      src: "http://127.0.0.1:8088/u5.mp4",
-    },
-  ]
+
+  // const fetching = false
+  // const items = [
+  //   {
+  //     id: 1,
+  //     src: "http://127.0.0.1:8088/u1.mp4",
+  //   },
+  //   {
+  //     id: 2,
+  //     src: "http://127.0.0.1:8088/u2.mp4",
+  //   },
+  //   {
+  //     id: 3,
+  //     src: "http://127.0.0.1:8088/u3.mp4",
+  //   },
+  //   {
+  //     id: 4,
+  //     src: "http://127.0.0.1:8088/u4.mp4",
+  //   },
+  //   {
+  //     id: 5,
+  //     src: "http://127.0.0.1:8088/u5.mp4",
+  //   },
+  // ]
 
   if (fetching) return null
   return (
     <Center>
       {items.map((e) => (
-        <VideoWrap>
-          <video
-            key={e.id}
-            src={e.src}
-            muted
-            loop
-            playsinline
-            autoplay='autoplay'
-            webkit-playsinline
-            type='video/mp4'
-          />
-          <Mask />
-        </VideoWrap>
+        <Video item={e} key={e.id} />
       ))}
+      <Mask />
     </Center>
   )
 }
