@@ -1,13 +1,13 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from "react"
 
-import * as Faye from 'faye'
-import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
-import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
-import styled from 'styled-components'
+import * as Faye from "faye"
+import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from "./constant"
+import { useQuery, useChecked, usePostData, useCombineSets } from "./hooks"
+import styled from "styled-components"
 
 const Center = styled.div`
   margin: 0 auto;
-  max-width: 100%;
+  max-width: 900px;
 `
 
 const VideoWrap = styled.div`
@@ -17,9 +17,8 @@ const VideoWrap = styled.div`
     display: block;
     width: 100%;
     position: relative;
-    z-index:0;
+    z-index: 0;
   }
-
 `
 
 const Mask = styled.div`
@@ -38,7 +37,7 @@ const genRand = (len) => {
 
 function publish() {
   if (fayeIns) {
-    fayeIns.publish('/foo', genRand(12))
+    fayeIns.publish("/foo", genRand(12))
   }
 }
 
@@ -62,19 +61,38 @@ export function Test1() {
 }
 
 export function Test() {
-  // const [items, setItems] = useCallback([])
+  /*
   const {
     data: items = EMPTY_ARR,
     loading: fetching,
     queryData: queryByTags,
   } = useQuery({
     url: `${API_ORIGIN}/oneFrameVideo/byTags`,
-    // formatter,
-    // shouldFetch: (_, params) => params.tags.length > 0,
   })
-  useEffect(() => {
-    return () => {}
-  }, [])
+  */
+  const fetching = false
+  const items = [
+    {
+      id: 1,
+      src: "http://127.0.0.1:8088/u1.mp4",
+    },
+    {
+      id: 2,
+      src: "http://127.0.0.1:8088/u2.mp4",
+    },
+    {
+      id: 3,
+      src: "http://127.0.0.1:8088/u3.mp4",
+    },
+    {
+      id: 4,
+      src: "http://127.0.0.1:8088/u4.mp4",
+    },
+    {
+      id: 5,
+      src: "http://127.0.0.1:8088/u5.mp4",
+    },
+  ]
 
   if (fetching) return null
   return (
@@ -88,6 +106,8 @@ export function Test() {
             loop
             playsinline
             autoplay='autoplay'
+            webkit-playsinline
+            type='video/mp4'
           />
           <Mask />
         </VideoWrap>
