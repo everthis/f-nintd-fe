@@ -6,6 +6,7 @@ import Image, { SingleImage } from './articleImg'
 import { AudioItem } from './audio'
 import { useQuery } from './hooks'
 import { PerText } from './text'
+import { PureVideo } from './video'
 import { Btn } from './btn'
 import { PauseIcon, PlayIcon, NextIcon, PreviousIcon, LoopIcon } from './icon'
 
@@ -99,6 +100,9 @@ function ContentItem({ data, controlCollector }) {
       break
     case TYPE.TEXT:
       Comp = PerText
+      break
+    case TYPE.ONE_FRAME_VIDEO:
+      Comp = PureVideo
       break
     default:
   }

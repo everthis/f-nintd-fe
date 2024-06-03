@@ -13,7 +13,11 @@ const ListWrap = styled.div`
   gap: .3rem;
   flex-wrap: wrap;
 `
-
+const VideoInnerWrap = styled.div`
+  video {
+    width: 100%;
+  }
+`
 const VideoWrap = styled.div`
   position: relative;
   width: 33%;
@@ -85,18 +89,18 @@ export function PureVideo({ data }) {
     return () => {}
   }, [])
   return (
-    <>
+    <VideoInnerWrap>
       <video
         ref={ref}
         src={src}
         muted
         loop
-        playsinline
-        autoplay='autoplay'
+        playsInline
+        autoPlay='autoplay'
         webkit-playsinline
       />
       <Mask />
-    </>
+    </VideoInnerWrap>
   )
 }
 
