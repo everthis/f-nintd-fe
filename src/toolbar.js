@@ -28,6 +28,7 @@ import {
   CombineIcon,
   VideoIcon,
   HomeIcon,
+  LegoIcon,
 } from './icon'
 import { API_ORIGIN } from './constant'
 
@@ -107,6 +108,7 @@ export function Toolbar({
       <VideoIcon checked={showOneFrameVideo} onClick={toggleVideo} />
       <TextIcon checked={showText} onClick={toggleText} />
       <WaveformIcon checked={showWaveform} onClick={toggleWaveform} />
+      <LegoIcon checked={showText} onClick={toggleText} />
       <AntiDiagonalLinkIcon
         checked={showLink}
         onClick={toggleLink}

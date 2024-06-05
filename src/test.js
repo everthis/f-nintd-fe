@@ -4,6 +4,7 @@ import * as Faye from 'faye'
 import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import styled from 'styled-components'
+import {WideGamut} from './comp/WideGamut'
 
 const Center = styled.div`
   margin: 0 auto;
@@ -95,6 +96,7 @@ function Video({ item }) {
   )
 }
 export function Test() {
+  return <WideGamut />
   const {
     data: items = EMPTY_ARR,
     loading: fetching,
