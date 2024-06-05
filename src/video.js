@@ -86,7 +86,11 @@ export function PureVideo({ data }) {
     v.addEventListener('ended', function (e) {
       v.play()
     })
-    return () => {}
+    return () => {
+      v.pause()
+      v.removeAttribute('src') // empty source
+      v.load()
+    }
   }, [])
   return (
     <VideoInnerWrap>
