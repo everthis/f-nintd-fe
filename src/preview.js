@@ -281,6 +281,11 @@ function Content({ list, audioOnly }) {
         />
       ))}
       <div ref={ref} style={{ height: '15px' }}></div>
+      {itemsToDisplay.length < list.length ? (
+        <p>Loading</p>
+      ) : (
+        <p>End of line.</p>
+      )}
     </PreviewWrap>
   )
 }

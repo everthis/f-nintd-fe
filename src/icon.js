@@ -1,21 +1,21 @@
-import React from "react"
-import styled from "styled-components"
+import React from 'react'
+import styled from 'styled-components'
 const Wrap = styled.span`
   display: inline-block;
-  width: ${({ size }) => (size ? size : "28px")};
-  height: ${({ size }) => (size ? size : "28px")};
+  width: ${({ size }) => (size ? size : '28px')};
+  height: ${({ size }) => (size ? size : '28px')};
   cursor: pointer;
   user-select: none;
   svg {
     width: 100%;
   }
   line {
-    stroke: ${({ checked }) => (checked ? "#fff" : "#333")};
+    stroke: ${({ checked }) => (checked ? '#fff' : '#333')};
   }
   path {
-    fill: ${({ checked }) => (checked ? "#fff" : "#333")};
+    fill: ${({ checked }) => (checked ? '#fff' : '#333')};
   }
-  background-color: ${({ checked }) => (checked ? "#000" : "var(--bg-color)")};
+  background-color: ${({ checked }) => (checked ? '#000' : 'var(--bg-color)')};
   button[disabled] & {
     background-color: transparent;
   }
@@ -236,7 +236,7 @@ export function AddTagIcon({ size, checked, onClick }) {
       <svg
         viewBox='0 0 24 24'
         fill='none'
-        stroke={checked ? "#fff" : "#000"}
+        stroke={checked ? '#fff' : '#000'}
         strokeWidth='1'
         strokeLinecap='round'
         strokeLinejoin='miter'
@@ -753,11 +753,11 @@ export function WriteIcon({ size, checked, onClick }) {
         <path
           d='M384,224V408a40,40,0,0,1-40,40H104a40,40,0,0,1-40-40V168a40,40,0,0,1,40-40H271.48'
           style={{
-            fill: "none",
-            stroke: checked ? "#fff" : "#333",
-            strokeLinecap: "round",
-            strokeLinejoin: "round",
-            strokeWidth: "32px",
+            fill: 'none',
+            stroke: checked ? '#fff' : '#333',
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: '32px',
           }}
         />
         <path d='M459.94,53.25a16.06,16.06,0,0,0-23.22-.56L424.35,65a8,8,0,0,0,0,11.31l11.34,11.32a8,8,0,0,0,11.34,0l12.06-12C465.19,69.54,465.76,59.62,459.94,53.25Z' />
@@ -829,10 +829,10 @@ export function ThemeIcon({ size, checked, onClick }) {
 
 export function ManageIcon({ size, checked, onClick }) {
   const styles = {
-    fill: "none",
-    stroke: "#000000",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
+    fill: 'none',
+    stroke: '#000000',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
   }
 
   return (
@@ -940,11 +940,11 @@ export function CorrectIcon({ size, checked, onClick }) {
 
 export function CancelIcon({ size, checked, onClick }) {
   const styles = {
-    fill: "none",
-    stroke: "#1d1d1b",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-    strokeWidth: "2px",
+    fill: 'none',
+    stroke: '#1d1d1b',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    strokeWidth: '2px',
   }
   return (
     <Wrap checked={checked} size={size} onClick={onClick}>
@@ -1166,14 +1166,18 @@ export function HomeIcon({ size, checked, onClick }) {
   )
 }
 
-export function LegoIcon({size, checked, onClick}) {
+export function LegoIcon({ size, checked, onClick }) {
   return (
     <Wrap checked={checked} size={size} onClick={onClick}>
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg"  
-	 viewBox="0 0 512 512"  >
-
-<g>
-	<path class="darkFillPath" d="M280.211,129.456c-7.121-3.287-15.39-5.124-24.216-5.168h-0.265c-11.732,0.026-22.492,3.154-30.868,8.8
+      <svg
+        version='1.1'
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 512 512'
+      >
+        <g>
+          <path
+            className='darkFillPath'
+            d='M280.211,129.456c-7.121-3.287-15.39-5.124-24.216-5.168h-0.265c-11.732,0.026-22.492,3.154-30.868,8.8
 		c-4.178,2.844-7.774,6.342-10.415,10.548c-2.633,4.188-4.25,9.152-4.258,14.373l-0.159,39.19v0.106
 		c-0.009,5.221,1.59,10.204,4.214,14.409c3.948,6.342,10.001,11.104,17.103,14.408c7.12,3.296,15.39,5.124,24.216,5.168h0.035h0.221
 		c11.732-0.017,22.501-3.154,30.876-8.798c4.178-2.836,7.774-6.344,10.407-10.548c2.633-4.188,4.249-9.153,4.267-14.374
@@ -1185,9 +1189,15 @@ export function LegoIcon({size, checked, onClick}) {
 		c-2.183,2.597-5.398,5.035-9.462,6.9c-5.072,2.332-11.388,3.764-18.235,3.754c-9.126,0.018-17.307-2.553-22.863-6.352
 		c-2.13-1.449-3.861-3.057-5.177-4.718l0.035-8.463c0.018-1.661,0.468-3.242,1.555-5.001c1.608-2.614,4.842-5.468,9.436-7.553
 		c4.576-2.103,10.398-3.437,16.75-3.428h0.159h0.026c8.508,0.008,16.061,2.473,20.947,5.848c2.456,1.679,4.231,3.542,5.318,5.301
-		c1.087,1.767,1.537,3.365,1.546,5.026V158.309z"/>
-	<path class="darkFillPath" d="M101.627,75.618c0.017-0.017,0.044-0.017,0.061-0.035l0.406-0.282L101.627,75.618z"/>
-	<path class="darkFillPath" d="M421.345,101.539c-0.703-4.832-2.381-9.365-4.837-13.304l-0.239-0.38l0.234,0.38
+		c1.087,1.767,1.537,3.365,1.546,5.026V158.309z'
+          />
+          <path
+            className='darkFillPath'
+            d='M101.627,75.618c0.017-0.017,0.044-0.017,0.061-0.035l0.406-0.282L101.627,75.618z'
+          />
+          <path
+            className='darkFillPath'
+            d='M421.345,101.539c-0.703-4.832-2.381-9.365-4.837-13.304l-0.239-0.38l0.234,0.38
 		c-4.832-7.704-12.028-13.226-20.058-16.936l-0.013-0.009c-8.093-3.702-17.325-5.68-27.078-5.689h-0.004
 		c-6.427,0-12.531,0.998-18.274,2.632l-42.542-20.178c-0.212-6.183-2.103-11.961-5.102-16.82
 		c-4.766-7.678-11.86-13.234-19.812-17.016l-0.371-0.176l0.354,0.176c-8.009-3.763-17.166-5.848-26.874-5.98l-0.014,1.007
@@ -1227,9 +1237,10 @@ export function LegoIcon({size, checked, onClick}) {
 		c2.632-4.126,4.275-9.011,4.347-14.161l0.202-14.365l29.94,14.196c-1.379,1.493-2.651,3.075-3.737,4.797
 		c-2.632,4.188-4.249,9.152-4.258,14.373l-0.159,39.19v0.106c-0.017,5.221,1.59,10.204,4.214,14.409
 		c3.95,6.334,10.001,11.104,17.095,14.408c7.12,3.286,15.39,5.125,24.224,5.168h0.036h0.22c11.732-0.026,22.502-3.154,30.877-8.808
-		c4.178-2.827,7.774-6.343,10.407-10.548c2.633-4.188,4.249-9.152,4.267-14.365l0.08-19.259l55.366,26.248L255.995,256.053z"/>
-</g>
-</svg>
-      </Wrap>
+		c4.178-2.827,7.774-6.343,10.407-10.548c2.633-4.188,4.249-9.152,4.267-14.365l0.08-19.259l55.366,26.248L255.995,256.053z'
+          />
+        </g>
+      </svg>
+    </Wrap>
   )
 }

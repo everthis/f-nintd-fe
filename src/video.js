@@ -25,18 +25,13 @@ const VideoInnerWrap = styled.div`
     display: block;
     width: 100%;
     height: 100%;
+    z-index: 0;
   }
 `
 const VideoWrap = styled.div`
   position: relative;
   width: 33%;
   ${({ checked }) => (checked ? ' background-color: blue;' : '')}
-  video {
-    display: block;
-    width: 100%;
-    position: relative;
-    z-index: 0;
-  }
 `
 const Mask = styled.div`
   position: absolute;
@@ -132,7 +127,7 @@ export function PureVideo({ data }) {
         // el is not visible
         // v.removeEventListener('pause', play)
         // v.removeEventListener('ended', play)
-        stop()
+        // stop()
       }
     })
 

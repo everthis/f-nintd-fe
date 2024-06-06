@@ -12,6 +12,7 @@ export const TYPE = {
   ONE_FRAME_VIDEO: 'oneFrameVideo',
   TEXT: 'text',
   WAVEFORM: 'waveform',
+  COMPONENT: 'component',
 }
 
 export const EMPTY_OBJ = {}

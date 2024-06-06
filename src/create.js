@@ -57,6 +57,7 @@ export function Create() {
     false,
     setStkVal
   )
+  const [showComponent, setShowComponent] = useCS('component', false, setStkVal)
   const [showText, setShowText] = useCS('text', false, setStkVal)
   const [showUpload, setShowUpload] = useCS('upload', false, setStkVal)
   const [showImg, setShowImg] = useCS('image', false, setStkVal)
@@ -284,6 +285,34 @@ export function Create() {
             }}
           />
         ),
+    component:
+      ({ left, top }) =>
+      () =>
+        (
+          <Pane
+            onClick={() => setShowComponent(true)}
+            key='component'
+            left={left}
+            top={top}
+            show
+            bgColor='var(--bg-color)'
+            width='80vw'
+            height='70vh'
+            body={
+              <AssetGridPane
+                showActions={false}
+                showPane
+                setShowPane={setShowComponent}
+                onConfirm={() => {}}
+                defaultType={TYPE.COMPONENT}
+              />
+            }
+            onClose={(ev) => {
+              ev.stopPropagation()
+              setShowComponent(false)
+            }}
+          />
+        ),
     waveform:
       ({ left, top }) =>
       () =>
@@ -418,6 +447,8 @@ export function Create() {
         setShowCombine={setShowCombine}
         showLink={showLink}
         setShowLink={setShowLink}
+        showComponent={showComponent}
+        setShowComponent={setShowComponent}
       />
       <HorLine />
 

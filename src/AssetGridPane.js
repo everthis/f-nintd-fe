@@ -15,6 +15,7 @@ import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import { AudioStateLess, AudioItem } from './audio'
 import { TextStateLess, SingleTextWithLoading, AddTextPane } from './text'
+import { ComponentStateLess } from './component'
 import { VideoStateLess } from './video'
 import { Btn, Button } from './btn'
 import { WaveformStateLess } from './audioWave'
@@ -121,6 +122,9 @@ const TextSection = styled.div`
   position: relative;
 `
 const VideoSection = styled.div`
+  position: relative;
+`
+const ComponentSection = styled.div`
   position: relative;
 `
 const WaveformSection = styled.div`
@@ -433,6 +437,17 @@ export function AssetGridPane({
             />
             oneFrameVideo
           </label>
+          <label>
+            <input
+              type='radio'
+              name={`${compId}_queryType`}
+              value={TYPE.COMPONENT}
+              checked={type === TYPE.COMPONENT}
+              onChange={onTypeChange}
+              disabled={fetching}
+            />
+            component
+          </label>
         </TypeSelectionWrap>
       </StickyWrap>
       <ContentWrap>
@@ -560,6 +575,23 @@ export function AssetGridPane({
               />
             )}
           </VideoSection>
+        ) : null}
+        {type === TYPE.COMPONENT ? (
+          <ComponentSection>
+            {fetching ? (
+              <Status>
+                <b>loading</b>
+              </Status>
+            ) : null}
+            {!fetching && (
+              <ComponentStateLess
+                list={items}
+                onSelectChange={showActions ? selectCbFn : null}
+                chkSelected={chkExists}
+                toggleOpts={toggleOpts}
+              />
+            )}
+          </ComponentSection>
         ) : null}
 
         <Opts

@@ -55,6 +55,8 @@ export function Toolbar({
   setShowLink,
   showOneFrameVideo,
   setShowOneFrameVideo,
+  showComponent,
+  setShowComponent,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -71,6 +73,9 @@ export function Toolbar({
   }
   function toggleText() {
     setShowText(!showText)
+  }
+  function toggleComponent() {
+    setShowComponent(!showComponent)
   }
 
   function toggleAddTag() {
@@ -108,7 +113,7 @@ export function Toolbar({
       <VideoIcon checked={showOneFrameVideo} onClick={toggleVideo} />
       <TextIcon checked={showText} onClick={toggleText} />
       <WaveformIcon checked={showWaveform} onClick={toggleWaveform} />
-      <LegoIcon checked={showText} onClick={toggleText} />
+      <LegoIcon checked={showComponent} onClick={toggleComponent} />
       <AntiDiagonalLinkIcon
         checked={showLink}
         onClick={toggleLink}
