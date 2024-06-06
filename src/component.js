@@ -20,7 +20,8 @@ export function ComponentStateLess({ list }) {
   )
 }
 function Single({ data }) {
-  const { name } = data
+  const { name, type } = data
+  if (type !== 'component') return null
   const Comp = Com[name]
   return (
     <>
