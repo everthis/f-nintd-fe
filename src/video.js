@@ -14,8 +14,17 @@ const ListWrap = styled.div`
   flex-wrap: wrap;
 `
 const VideoInnerWrap = styled.div`
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: ${({ ratio }) => ratio * 100}%;
   video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
     width: 100%;
+    height: 100%;
   }
 `
 const VideoWrap = styled.div`
@@ -73,10 +82,14 @@ const VideoContainer = styled.div`
 ${({ checked }) =>
   checked ? 'transform: translateZ(0px) scale3d(0.95,0.91,1);' : ''}
 `
-
+function calcRatio(dimension) {
+  const arr = dimension.split(',').map((e) => +e)
+  return arr[1] / arr[0]
+}
 export function PureVideo({ data }) {
-  const { src } = data
+  const { src, dimension } = data
   const ref = useRef()
+  const ratio = calcRatio(dimension)
 
   useEffect(() => {
     const v = ref.current
@@ -102,22 +115,23 @@ export function PureVideo({ data }) {
       v.removeAttribute('src') // empty source
       v.load()
     }
-    const start = () => {
+    const addSrcAttr = () => {
       v.setAttribute('src', src)
     }
     const observer = new IntersectionObserver((entries, oo) => {
       // console.log('trigger', oo)
       if (entries[0].isIntersecting) {
         // el is visible
-        // console.log('vis')
-        v.addEventListener('pause', play)
-        v.addEventListener('ended', play)
-        start()
+        console.log('vis')
+        if (!v.hasAttribute('src')) addSrcAttr()
+        v.pause()
+        // v.addEventListener('pause', play)
+        // v.addEventListener('ended', play)
       } else {
-        // console.log('not vis')
+        console.log('not vis')
         // el is not visible
-        v.removeEventListener('pause', play)
-        v.removeEventListener('ended', play)
+        // v.removeEventListener('pause', play)
+        // v.removeEventListener('ended', play)
         stop()
       }
     })
@@ -130,16 +144,8 @@ export function PureVideo({ data }) {
   }, [])
 
   return (
-    <VideoInnerWrap>
-      <video
-        ref={ref}
-        src={src}
-        muted
-        loop
-        playsInline
-        autoPlay='autoplay'
-        webkit-playsinline
-      />
+    <VideoInnerWrap ratio={ratio}>
+      <video ref={ref} src={src} muted loop playsInline autoPlay='autoplay' />
       <Mask />
     </VideoInnerWrap>
   )
