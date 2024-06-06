@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 import { API_ORIGIN, TYPE } from './constant'
 import Image, { SingleImage } from './articleImg'
 import { AudioItem } from './audio'

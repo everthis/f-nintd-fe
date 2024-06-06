@@ -86,12 +86,49 @@ export function PureVideo({ data }) {
     v.addEventListener('ended', function (e) {
       v.play()
     })
+
     return () => {
       v.pause()
       v.removeAttribute('src') // empty source
       v.load()
     }
   }, [])
+
+  useEffect(() => {
+    const v = ref.current
+    const play = () => v.play()
+    const stop = () => {
+      v.pause()
+      v.removeAttribute('src') // empty source
+      v.load()
+    }
+    const start = () => {
+      v.setAttribute('src', src)
+    }
+    const observer = new IntersectionObserver((entries, oo) => {
+      // console.log('trigger', oo)
+      if (entries[0].isIntersecting) {
+        // el is visible
+        // console.log('vis')
+        v.addEventListener('pause', play)
+        v.addEventListener('ended', play)
+        start()
+      } else {
+        // console.log('not vis')
+        // el is not visible
+        v.removeEventListener('pause', play)
+        v.removeEventListener('ended', play)
+        stop()
+      }
+    })
+
+    observer.observe(v)
+    return () => {
+      stop()
+      observer.disconnect()
+    }
+  }, [])
+
   return (
     <VideoInnerWrap>
       <video
