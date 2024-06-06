@@ -26,6 +26,8 @@ export const CSWrap = styled.div`
   display: flex;
   align-items: center;
   svg {
+    width: 100%;
+    height: 100%;
     ${({ active, size }) =>
       active
         ? size === 'small'
