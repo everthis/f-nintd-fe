@@ -11,6 +11,7 @@ import { PerText } from './text'
 import { PureVideo } from './video'
 import { Btn } from './btn'
 import { PauseIcon, PlayIcon, NextIcon, PreviousIcon, LoopIcon } from './icon'
+import { Com } from './com/index'
 
 const Center = styled.div`
   text-align: center;
@@ -91,7 +92,7 @@ function AudioItemWrap(props) {
 
 function ContentItem({ data, controlCollector }) {
   let Comp = null
-  const { type } = data
+  const { type, name } = data
   switch (type) {
     case TYPE.IMG:
     case 'img':
@@ -105,6 +106,9 @@ function ContentItem({ data, controlCollector }) {
       break
     case TYPE.ONE_FRAME_VIDEO:
       Comp = PureVideo
+      break
+    case TYPE.COMPONENT:
+      Comp = Com[name]
       break
     default:
   }
