@@ -24,6 +24,7 @@ import { ImgComp } from './image'
 import { AudioItem } from './audio'
 import { PerText } from './text'
 import { PureVideo } from './video'
+import { PureComp } from './component'
 
 const Wrap = styled.div`
   position: relative;
@@ -456,6 +457,9 @@ export function Editor() {
               ) : null}
               {e.type === TYPE.ONE_FRAME_VIDEO ? (
                 <PureVideo data={e} showOpts={false} />
+              ) : null}
+              {e.type === TYPE.COMPONENT ? (
+                <PureComp data={e} showOpts={false} />
               ) : null}
             </SectionContent>
             <SectionOp>

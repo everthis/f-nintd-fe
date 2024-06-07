@@ -5,6 +5,8 @@ import { API_ORIGIN, TYPE } from './constant'
 import { useQuery, usePostData } from './hooks'
 import { VdotsIcon } from './icon'
 import { Tags } from './tag'
+import { isWechat } from './audio'
+import { OpenInBrowser } from './com/OpenInBrowser'
 
 const ListWrap = styled.div`
   padding: 1rem;
@@ -73,6 +75,19 @@ const SelectWrap = styled.span`
     width: 16px;
   }
 `
+const L = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index:0;
+  background-color: #ddd;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 const VideoContainer = styled.div`
 ${({ checked }) =>
   checked ? 'transform: translateZ(0px) scale3d(0.95,0.91,1);' : ''}
@@ -81,11 +96,18 @@ function calcRatio(dimension) {
   const arr = dimension.split(',').map((e) => +e)
   return arr[1] / arr[0]
 }
+function LoadingPH({ text }) {
+  return <L>{text}</L>
+}
 export function PureVideo({ data }) {
   const { src, dimension } = data
   const ref = useRef()
   const ratio = calcRatio(dimension)
+  const [loadingText] = useState(() =>
+    isWechat() ? <OpenInBrowser /> : 'Loading'
+  )
 
+  /*
   useEffect(() => {
     const v = ref.current
     v.addEventListener('pause', function (e) {
@@ -101,7 +123,8 @@ export function PureVideo({ data }) {
       v.load()
     }
   }, [])
-
+*/
+  /*
   useEffect(() => {
     const v = ref.current
     const play = () => v.play()
@@ -137,10 +160,37 @@ export function PureVideo({ data }) {
       observer.disconnect()
     }
   }, [])
+  */
+  useEffect(() => {
+    const v = ref.current
+    const play = () => v.play()
+    const pause = () => {
+      console.log('pause')
+      v.pause()
+    }
+    const stop = () => {
+      v.pause()
+      v.removeAttribute('src') // empty source
+      v.load()
+    }
+    v.addEventListener('play', pause)
+    return () => {
+      stop()
+    }
+  }, [])
 
   return (
     <VideoInnerWrap ratio={ratio}>
-      <video ref={ref} src={src} muted loop playsInline autoPlay='autoplay' />
+      <LoadingPH text={loadingText} />
+      <video
+        ref={ref}
+        src={src}
+        muted
+        loop
+        playsInline
+        autoPlay='autoplay'
+        preload='auto'
+      />
       <Mask />
     </VideoInnerWrap>
   )

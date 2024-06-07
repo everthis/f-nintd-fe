@@ -201,7 +201,7 @@ class Control {
 
 function Content({ list, audioOnly }) {
   const ref = useRef()
-  const pageSize = 5
+  const pageSize = 3
   const [page, setPage] = useState(0)
   const pageRef = useRef(page)
   const [loop, setLoop] = useState(false)

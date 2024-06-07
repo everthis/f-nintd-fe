@@ -123,7 +123,7 @@ const CoverWrap = styled.div`
 const RightWrap = styled.div`
   flex: 1;
 `
-function isWechat() {
+export function isWechat() {
   return /MicroMessenger/i.test(window.navigator.userAgent)
 }
 function secondsToHms(d) {
