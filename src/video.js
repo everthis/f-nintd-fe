@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useId } from 'react'
+import React, { useRef, useEffect, useState, useId, useMemo } from 'react'
 import styled from 'styled-components'
 import { postData } from './utils'
 import { API_ORIGIN, TYPE } from './constant'
@@ -103,8 +103,10 @@ export function PureVideo({ data }) {
   const { src, dimension } = data
   const ref = useRef()
   const ratio = calcRatio(dimension)
-  const [loadingText] = useState(() =>
-    isWechat() ? <OpenInBrowser /> : 'Loading'
+  const inWechat = isWechat()
+  const loadingText = useMemo(
+    () => (inWechat ? <OpenInBrowser /> : 'Loading'),
+    [inWechat]
   )
 
   /*
@@ -163,6 +165,7 @@ export function PureVideo({ data }) {
   */
   useEffect(() => {
     const v = ref.current
+    if (v == null) return
     const play = () => v.play()
     const pause = () => {
       console.log('pause')
@@ -173,24 +176,44 @@ export function PureVideo({ data }) {
       v.removeAttribute('src') // empty source
       v.load()
     }
+    const addSrcAttr = () => {
+      v.setAttribute('src', src)
+    }
+
     v.addEventListener('play', pause)
+    const observer = new IntersectionObserver((entries, oo) => {
+      if (entries[0].isIntersecting) {
+        console.log('vis')
+        if (!v.hasAttribute('src')) addSrcAttr()
+      } else {
+        console.log('not vis')
+        // el is not visible
+        // v.removeEventListener('pause', play)
+        // v.removeEventListener('ended', play)
+        stop()
+      }
+    })
+    observer.observe(v)
     return () => {
       stop()
+      observer.disconnect()
     }
   }, [])
 
   return (
     <VideoInnerWrap ratio={ratio}>
       <LoadingPH text={loadingText} />
-      <video
-        ref={ref}
-        src={src}
-        muted
-        loop
-        playsInline
-        autoPlay='autoplay'
-        preload='auto'
-      />
+      {inWechat ? null : (
+        <video
+          ref={ref}
+          src={src}
+          muted
+          loop
+          playsInline
+          autoPlay='autoplay'
+          preload='auto'
+        />
+      )}
       <Mask />
     </VideoInnerWrap>
   )
