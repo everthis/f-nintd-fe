@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react"
-import ReactDOM from "react-dom/client"
+// import ReactDOM from "react-dom/client"
+import { render } from 'preact';
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Create } from "./create"
 import { HomePage } from "./homepage"
@@ -46,8 +48,5 @@ function App() {
 }
 
 const mountNode = document.getElementById("app")
-ReactDOM.createRoot(mountNode).render(
-  // <React.StrictMode>
-  <App />
-  // </React.StrictMode>
-)
+render(<App />, mountNode)
+

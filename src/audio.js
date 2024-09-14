@@ -239,7 +239,7 @@ function AudioPlayer({
     audio.addEventListener('ended', ended)
     audio.addEventListener('durationchange', durationchange)
 
-    if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+    if (audio.canPlayType('application/vnd.apple.mpegurl') || audio.canPlayType('application/x-mpegURL')) {
       // audio.addEventListener('canplay', canplay)
       audio.src = source
       audio.load()
