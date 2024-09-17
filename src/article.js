@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { Link, redirect, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'wouter-preact'
 
 import Image from './articleImg'
 import { API_ORIGIN } from './constant'
@@ -158,7 +158,7 @@ function ListItem({
 export function Article(props) {
   const [list, setList] = useState([])
   const [content, setContent] = useState({})
-  const navigate = useNavigate()
+  const [_, navigate] = useLocation()
   const {
     data = [],
     loading,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
 import { ToggleIcon } from './icon'

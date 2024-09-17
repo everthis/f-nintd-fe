@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { API_ORIGIN } from './constant'
 import { Card } from './card'

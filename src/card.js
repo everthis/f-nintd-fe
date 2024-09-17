@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
+/*
 import {
   createBrowserRouter,
   RouterProvider,
   Link,
   useNavigate,
 } from 'react-router-dom'
+ */
+import { useLocation } from 'wouter-preact'
 import styled from 'styled-components'
 import { Nav } from './nav'
 import { API_ORIGIN } from './constant'
@@ -138,7 +141,7 @@ const bsic =
 const bsit = 'BioShock Infinite'
 
 export function Card({ cover = {}, title = '', id }) {
-  const navigate = useNavigate()
+  const [_, navigate] = useLocation()
   const clickCb = () => navigate(`/article/${id}`)
   return (
     <Wrap onClick={clickCb}>

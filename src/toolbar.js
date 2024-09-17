@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
+// import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom'
+import { Link } from 'wouter-preact'
 
 import { Theme } from './theme'
 import { ThemeWrap } from './header'
@@ -127,7 +128,7 @@ export function Toolbar({
       </ThemeWrap>
 
       <HomeIcon />
-      <Link to='/homepage' style={{ marginRight: '1em' }}>
+      <Link path='/homepage' style={{ marginRight: '1em' }}>
         Homepage
       </Link>
 
