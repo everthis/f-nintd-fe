@@ -7,7 +7,7 @@ const prefetchedTracks = new Map(); // use a map for insertion order, so we can 
 const MAX_PREFETCH_KEEP = 10;
 // maximum allowed number of entries in a playlist to prevent OOM attacks against the browser with self-referencing playlists
 const MAX_PLAYLIST_LENGTH = 1000;
-const PLAYLIST_MIME_TYPES = ["audio/x-mpegurl", "audio/mpegurl", "application/vnd.apple.mpegurl","application/mpegurl","application/x-mpegurl"];
+const PLAYLIST_MIME_TYPES = ["audio/x-mpegurl", "audio/mpegurl", "application/vnd.apple.mpegurl","application/mpegurl","application/x-mpegurl", "application/x-mpegurl5"];
 function stripUrlParameters(link) {
   const url = new URL(link, window.location);
   url.search = "";
@@ -139,10 +139,23 @@ function showStaticOverlay(mediaTag, canvas) {
   }
   canvas.hidden = false;
 }
-
+function isValidUrl(str) {
+  return str.startsWith("http://") || str.startsWith("https://");
+}
 function updateSrc(mediaTag, callback) {
   const playlistUrl = mediaTag.getAttribute("playlist");
   const trackIndex =  mediaTag.getAttribute("track-index");
+  let urlPrefix = ''
+  try {
+    const urlIns = new URL(playlistUrl)
+    const { pathname } = urlIns
+    const tmp = pathname.split('/')
+    const arr = tmp.slice(0, tmp.length - 1)
+    const p = arr.join('/')
+    urlPrefix = urlIns.origin + p
+  } catch (e) {
+    console.error(e)
+  }
   // deepcopy playlists to avoid shared mutation
   let playlist = [...playlists[playlistUrl]];
   let trackUrl = playlist[trackIndex];
@@ -183,7 +196,7 @@ function updateSrc(mediaTag, callback) {
     mediaTag.style.height = mediaTag.getBoundingClientRect().height.toString() + 'px';
     mediaTag.style.width = mediaTag.getBoundingClientRect().width.toString() + 'px';
     // swich to the next segment
-    mediaTag.setAttribute("src", url);
+    mediaTag.setAttribute("src", isValidUrl(url) ? url : urlPrefix + '/' + url);
     mediaTag.oncanplaythrough = () => {
       if (!isNaN(mediaTag.duration)) { // already loaded a valid file
         // unset element styles to allow recomputation if sizes changed
@@ -199,7 +212,7 @@ function updateSrc(mediaTag, callback) {
     // is more reliable in the media tag;
     // the normal URL caused jumping prematurely to the next track.
     if (url == trackUrl) {
-      prefetchTrack(trackUrl, () => {
+      prefetchTrack(isValidUrl(trackUrl) ? trackUrl : urlPrefix + '/' + trackUrl, () => {
         if (mediaTag.paused) {
           if (url == mediaTag.getAttribute("src")) {
             if (mediaTag.currentTime === 0) {
@@ -220,7 +233,9 @@ function updateSrc(mediaTag, callback) {
     // start prefetching the next three tracks.
     for (const i of [1, 2, 3]) {
       if (playlist.length > Number(trackIndex) + i) {
-        prefetchTrack(playlist[Number(trackIndex) + i]);
+        const e = playlist[Number(trackIndex) + i];
+        // prefetchTrack(playlist[Number(trackIndex) + i]);
+        prefetchTrack(isValidUrl(e) ? e : urlPrefix + '/' + e);
       }
     }
     callback();
@@ -295,7 +310,7 @@ function initPlayer(mediaTag) {
   });
   mediaTag.resizeObserver.observe(mediaTag);
 }
-function processTag(mediaTag) {
+export function processTag(mediaTag) {
   const canPlayClaim = mediaTag.canPlayType('audio/x-mpegurl');
   let supportsPlaylists = !!canPlayClaim;
   if (canPlayClaim == 'maybe') { // yes, seriously: specced as you only know when you try
@@ -307,9 +322,11 @@ function processTag(mediaTag) {
     }
   }
 }
+/*
 document.addEventListener('DOMContentLoaded', () => {
   const nodes = document.querySelectorAll("audio,video");
   nodes.forEach(processTag);
 });
+*/
 // @license-end
 // The script:1 ends here

@@ -5,6 +5,7 @@ import { API_ORIGIN, EMPTY_ARR, TYPE, EMPTY_SET, EMPTY_MAP } from './constant'
 import { useQuery, useChecked, usePostData, useCombineSets } from './hooks'
 import styled from 'styled-components'
 import { WideGamut } from './com/WideGamut'
+import { M3u8PlayerTest } from './m3u8PlayerTest'
 
 const Center = styled.div`
   margin: 0 auto;
@@ -96,6 +97,7 @@ function Video({ item }) {
   )
 }
 export function Test() {
+  return <M3u8PlayerTest />
   return <WideGamut />
   const {
     data: items = EMPTY_ARR,
