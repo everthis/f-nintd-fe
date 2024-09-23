@@ -12,6 +12,7 @@ import {
   EditIconV2,
   CorrectIcon,
   CancelIcon,
+  Mp4Icon,
 } from './icon'
 import { useQuery, useChecked, usePostData } from './hooks'
 import { AudioWave } from './audioWave'
@@ -164,6 +165,7 @@ function AudioPlayer({
   const [status, setStatus] = useState('')
   const [isEditMode, setIsEditMode] = useState(false)
   const { loading: genPeaksInProgress, postData: genPeaksFn } = usePostData()
+  const { loading: genMp4InProgress, postData: genMp4Fn } = usePostData()
   const [audioName, setAudioName] = useState(name)
   const { loading: nameChangeInProgress, postData: submitNameChange } =
     usePostData()
@@ -321,6 +323,16 @@ function AudioPlayer({
       },
     }).then(updateCb)
   }
+  function genMp4() {
+    genMp4Fn({
+      url: `${API_ORIGIN}/audio/mp4FromM3U8`,
+      payload: {
+        audio_id: id,
+        m3u8: source,
+      },
+    })
+    // .then(updateCb)
+  }
   function toggleEdit() {
     setIsEditMode(!isEditMode)
   }
@@ -422,6 +434,9 @@ function AudioPlayer({
                   <WaveformIcon />
                 </button>
               ) : null}
+              <button onClick={genMp4}>
+                  <Mp4Icon />
+                </button>
 
               <button
                 type='button'
