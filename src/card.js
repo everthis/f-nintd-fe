@@ -139,7 +139,7 @@ const bsit = 'BioShock Infinite'
 
 export function Card({ cover = {}, title = '', id }) {
   const navigate = useNavigate()
-  const clickCb = () => navigate(`/article/${id}`)
+  const clickCb = () => navigate(`/article/${encodeURIComponent(title)}`)
   return (
     <Wrap onClick={clickCb}>
       <ImgWrap>

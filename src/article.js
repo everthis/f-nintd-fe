@@ -149,7 +149,7 @@ function ListItem({
     <ArticleItem style={styles}>
       <ArticleItemContent onClick={onClick}>
         <ImgComp {...cover} name={cover.name || cover.val} />
-        <Link to={`/article/${id}`} target="_blank" rel="noopener noreferrer">
+        <Link to={`/article/${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer">
           {title}
         </Link>
       </ArticleItemContent>

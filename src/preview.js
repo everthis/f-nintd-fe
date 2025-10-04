@@ -48,12 +48,14 @@ const defaultPayload = {
 export function Preview({}) {
   const { id } = useParams()
 
+  const queryByTitle = isNaN(id)
+console.log(id, queryByTitle)
   // const [article, setArticle] = useState({
   //   title: '',
   //   content: [],
   // })
   const { data: article = defaultPayload, loading } = useQuery({
-    url: `${API_ORIGIN}/article/${id}`,
+    url: queryByTitle ? `${API_ORIGIN}/articleByTitle/${id}` : `${API_ORIGIN}/article/${id}`,
   })
 
   // const getArticle = (id) => {
