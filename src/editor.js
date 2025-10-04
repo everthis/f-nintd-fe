@@ -428,7 +428,7 @@ export function Editor() {
 
     return () => window.removeEventListener('editArticle', cb)
   }, [])
-
+  console.log('items', items)
   return (
     <Wrap ref={editorRef}>
       <input ref={articleIdRef} hidden />

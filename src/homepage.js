@@ -11,13 +11,26 @@ const Wrap = styled.div`
   margin: 1rem auto;
 `
 const STATUS = PRODUCTION ? 1 : 0
+function objectToQueryString(obj) {
+  const keyValuePairs = []
+  for (const key in obj) {
+    keyValuePairs.push(
+      encodeURIComponent(key) + '=' + encodeURIComponent(obj[key])
+    )
+  }
+  return keyValuePairs.join('&')
+}
 function HomePageComp() {
+  const qsObj = {
+    status: STATUS,
+    visibility: 1,
+  }
   const {
     data = [],
     err,
     loading,
   } = useQuery({
-    url: `${API_ORIGIN}/articleListWithCover?status=${STATUS}`,
+    url: `${API_ORIGIN}/articleListWithCover?${objectToQueryString(qsObj)}`,
   })
   return (
     <Wrap>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 import { Link, redirect, useNavigate } from 'react-router-dom'
 
 import Image from './articleImg'
@@ -49,7 +49,21 @@ const EditIconWrap = styled.span`
   border: 1px solid #000;
 `
 
-const StatusWrap = styled.div``
+const VerticalLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+`
+const secStyle = css`
+  padding: 0.5em;
+  border: 1px solid #ddd;
+`
+const StatusWrap = styled.div`
+  ${secStyle}
+`
+const VisibilityWrap = styled.div`
+  ${secStyle}
+`
 
 function ListItem({
   payload,
@@ -59,7 +73,7 @@ function ListItem({
   idx,
   styles = { maxWidth: '800px' },
 }) {
-  const { title, id, cover, status } = payload
+  const { title, id, cover, status, visibility } = payload
   const { loading, postData } = usePostData()
   const deleteItem = () => {
     const obj = {
@@ -105,9 +119,30 @@ function ListItem({
         onUpdate(clone)
       })
   }
+  const handleVisibilityChange = (ev) => {
+    const { checked, value } = ev.target
+    const obj = { visibility: +value }
+    fetch(`${API_ORIGIN}/article/${id}/visibility`, {
+      method: 'PATCH',
+      body: JSON.stringify(obj),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((d) => d.text())
+      .then((d) => {
+        const clone = { ...payload }
+        clone.visibility = obj.visibility
+        onUpdate(clone)
+      })
+  }
   const ARTICLE_STATUS = {
     WIP: 0,
     PUBLIC: 1,
+  }
+  const ARTICLE_VISIBILITY = {
+    HIDDEN: 0,
+    VISIBLE: 1,
   }
 
   return (
@@ -119,29 +154,54 @@ function ListItem({
         </Link>
       </ArticleItemContent>
       <OpWrap>
-        <StatusWrap>
-          <label>
-            <input
-              type="radio"
-              name={`article_${id}_status`}
-              value={ARTICLE_STATUS.WIP}
-              checked={status === 0}
-              onChange={handleStatusChange}
-            />{' '}
-            work in progress
-          </label>
-          <br />
-          <label>
-            <input
-              type="radio"
-              name={`article_${id}_status`}
-              value={ARTICLE_STATUS.PUBLIC}
-              checked={status === 1}
-              onChange={handleStatusChange}
-            />{' '}
-            public
-          </label>
-        </StatusWrap>
+        <VerticalLayout>
+          <StatusWrap>
+            <label>
+              <input
+                type="radio"
+                name={`article_${id}_status`}
+                value={ARTICLE_STATUS.WIP}
+                checked={status === 0}
+                onChange={handleStatusChange}
+              />{' '}
+              work in progress
+            </label>
+            <br />
+            <label>
+              <input
+                type="radio"
+                name={`article_${id}_status`}
+                value={ARTICLE_STATUS.PUBLIC}
+                checked={status === 1}
+                onChange={handleStatusChange}
+              />{' '}
+              public
+            </label>
+          </StatusWrap>
+          <VisibilityWrap>
+            <label>
+              <input
+                type="radio"
+                name={`article_${id}_visibility`}
+                value={ARTICLE_VISIBILITY.HIDDEN}
+                checked={visibility === 0}
+                onChange={handleVisibilityChange}
+              />{' '}
+              Hidden from list
+            </label>
+            <br />
+            <label>
+              <input
+                type="radio"
+                name={`article_${id}_visibility`}
+                value={ARTICLE_VISIBILITY.VISIBLE}
+                checked={visibility === 1}
+                onChange={handleVisibilityChange}
+              />{' '}
+              Visible from list
+            </label>
+          </VisibilityWrap>
+        </VerticalLayout>
         <EditIconWrap onClick={migrateItem}>
           <MigrateIcon />
         </EditIconWrap>

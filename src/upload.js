@@ -45,6 +45,8 @@ const PerLocal = styled.div`
   }
 `
 
+const Box = styled.div``
+
 export const Select = styled.select`
   background-color: var(--bg-color);
 `
@@ -83,6 +85,7 @@ export function Upload({ useOriginalName = false }) {
   const [tagOpts, setTagOpts] = useState([])
   const [selectedTag, setSelectedTag] = useState('')
   const [oneFrameVideo, setOneFrameVideo] = useState(false)
+  const [highRes, setHighRes] = useState(false)
   const tagOptsRef = useRef(tagOpts)
   const { data: tags = EMPTY_ARR, loading } = useQuery({
     url: `${API_ORIGIN}/tags`,
@@ -114,6 +117,7 @@ export function Upload({ useOriginalName = false }) {
 
     formData.append('tags', JSON.stringify(selectedTag ? [selectedTag] : []))
     formData.append('oneFrameVideo', oneFrameVideo)
+    formData.append('highRes', highRes)
 
     fetch(`${API_ORIGIN}${typeHash.common.subPath}`, {
       method: 'POST',
@@ -139,6 +143,11 @@ export function Upload({ useOriginalName = false }) {
   function OneFrameVideoChkBoxChange(ev) {
     const { checked } = ev.target
     setOneFrameVideo(checked)
+  }
+
+  function HighResChkBoxChange(ev) {
+    const { checked } = ev.target
+    setHighRes(checked)
   }
 
   useEffect(() => {
@@ -196,14 +205,26 @@ export function Upload({ useOriginalName = false }) {
           </option>
         ))}
       </Select>
-      <label for='OneFrameVideoChkBox'>
-        OneFrameVideo:
-        <input
-          id='OneFrameVideoChkBox'
-          type='checkbox'
-          onChange={OneFrameVideoChkBoxChange}
-        />
-      </label>
+      <Box>
+        <label for='OneFrameVideoChkBox'>
+          OneFrameVideo:
+          <input
+            id='OneFrameVideoChkBox'
+            type='checkbox'
+            onChange={OneFrameVideoChkBoxChange}
+          />
+        </label>
+      </Box>
+      <Box>
+        <label for='HighResChkBox'>
+          High Resolution:
+          <input
+            id='HighResChkBox'
+            type='checkbox'
+            onChange={HighResChkBoxChange}
+          />
+        </label>
+      </Box>
       <Row>
         <UploadQueueSect>
           {selectedFiles.map((e, i) => {
