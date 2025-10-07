@@ -14,6 +14,10 @@ const Wrap = styled.span`
   }
   path {
     fill: ${({ checked }) => (checked ? '#fff' : '#333')};
+    stroke: ${({ checked }) => (checked ? '#fff' : '#333')};
+  }
+  polyline {
+    stroke: ${({ checked }) => (checked ? '#fff' : '#333')};
   }
   background-color: ${({ checked }) => (checked ? '#000' : 'var(--bg-color)')};
   button[disabled] & {
@@ -1240,6 +1244,36 @@ export function LegoIcon({ size, checked, onClick }) {
 		c4.178-2.827,7.774-6.343,10.407-10.548c2.633-4.188,4.249-9.152,4.267-14.365l0.08-19.259l55.366,26.248L255.995,256.053z'
           />
         </g>
+      </svg>
+    </Wrap>
+  )
+}
+
+export function DownloadIcon({ size, checked, onClick }) {
+  return (
+    <Wrap checked={checked} size={size} onClick={onClick}>
+      <svg
+        viewBox='0 0 24 24'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <polyline
+          points='15 14 12 17 9 14'
+          style={{
+            fill: 'none',
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: '1.5',
+           }}
+        ></polyline>
+        <path
+          d='M12,17V3m4,7h3a1,1,0,0,1,1,1v9a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V11a1,1,0,0,1,1-1H8'
+          style={{
+            fill: 'none',
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: '1.5',
+          }}
+        ></path>
       </svg>
     </Wrap>
   )

@@ -4,7 +4,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { ArticlePage } from './article'
 import { HomePage } from './homepage'
-
+import {Downloader, DownloaderPage} from '../downloader'
+ 
 import '../index.scss'
 
 function App() {
@@ -16,6 +17,10 @@ function App() {
     {
       path: '/article/:id',
       element: <ArticlePage />,
+    },
+    {
+      path: '/downloader',
+      element: <DownloaderPage />,
     },
   ])
 

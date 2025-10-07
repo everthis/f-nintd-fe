@@ -11,6 +11,7 @@ import { Article } from './article'
 import { RemoteImageList } from './remoteImageList'
 import { Audio } from './audio'
 import { AssetGridPane } from './AssetGridPane'
+import { DownloaderPage } from './downloader'
 
 import './index.scss'
 
@@ -48,6 +49,11 @@ export function Create() {
   const [showRemote, setShowRemote] = useState(false)
   const [showArticleList, setShowArticleList] = useCS(
     'article',
+    false,
+    setStkVal
+  )
+  const [showDownload, setShowDownload] = useCS(
+    'download',
     false,
     setStkVal
   )
@@ -421,6 +427,25 @@ export function Create() {
             }}
           />
         ),
+    download:
+      ({ left, top }) =>
+      () => (
+        <Pane
+          onClick={() => setShowDownload(true)}
+          key='download'
+          left={left}
+          top={top}
+          show
+          bgColor='var(--bg-color)'
+          width='60vw'
+          height='60vh'
+          body={<DownloaderPage />}
+          onClose={(ev) => {
+            ev.stopPropagation()
+            setShowDownload(false)
+          }}
+        />
+      )
   }
   return (
     <>
@@ -449,6 +474,10 @@ export function Create() {
         setShowLink={setShowLink}
         showComponent={showComponent}
         setShowComponent={setShowComponent}
+        showDownload={showDownload}
+        setShowDownload={setShowDownload}
+      />
+      <VertGap height="0.4em"
       />
       <HorLine />
 

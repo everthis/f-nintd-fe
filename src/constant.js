@@ -2,7 +2,7 @@
 // export const LOCAL = 'http://localhost:8083'
 export const LOCAL = 'http://192.168.2.114:8083'
 
-export const API_ORIGIN = PRODUCTION ? 'https://hk4.everthis.com:8083' : LOCAL
+export const API_ORIGIN = PRODUCTION ? 'https://webservice.everthis.com' : LOCAL
 
 export const TYPE = {
   IMG: 'image',

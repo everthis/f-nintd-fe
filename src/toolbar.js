@@ -29,6 +29,7 @@ import {
   VideoIcon,
   HomeIcon,
   LegoIcon,
+  DownloadIcon,
 } from './icon'
 import { API_ORIGIN } from './constant'
 
@@ -57,6 +58,8 @@ export function Toolbar({
   setShowOneFrameVideo,
   showComponent,
   setShowComponent,
+  showDownload,
+  setShowDownload,
 }) {
   function toggleUpload() {
     setShowUpload(!showUpload)
@@ -66,6 +69,9 @@ export function Toolbar({
   }
   function toggleList() {
     setShowArticleList(!showArticleList)
+  }
+  function toggleDownload() {
+    setShowDownload(!showDownload)
   }
 
   function toggleAudio() {
@@ -121,6 +127,7 @@ export function Toolbar({
       />
       <CombineIcon checked={showCombine} onClick={toggleCombine} />
       <ListIcon checked={showArticleList} onClick={toggleList} />
+      <DownloadIcon checked={showDownload} onClick={toggleDownload} />
       {/* <MenuIcon checked={showAddTag} onClick={toggleAddTag} /> */}
       <ThemeWrap>
         <Theme />

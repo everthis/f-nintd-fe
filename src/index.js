@@ -7,6 +7,7 @@ import { Preview } from "./preview"
 import { Waveform } from "./waveform"
 import { AudioWave } from "./audioWave"
 import { Test } from "./test"
+import { DownloaderPage } from './downloader'
 
 import "./index.scss"
 
@@ -39,6 +40,10 @@ function App() {
     {
       path: "/test",
       element: <AudioWave />,
+    },
+    {
+      path: "/downloader",
+      element: <DownloaderPage />,
     },
   ])
 
