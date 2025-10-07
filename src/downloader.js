@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { usePostData } from './hooks'
 import { API_ORIGIN, EMPTY_ARR, EMPTY_SET, TYPE } from './constant'
+import { WebviewChk } from './com/WebviewChk'
 
 const Wrap = styled.div`
   padding: 1em 0.5em;
@@ -151,6 +152,7 @@ function DouyinHowTo() {
 export function DownloaderPage(props) {
   return (
     <div>
+      <WebviewChk />
       <Downloader />
       <DouyinHowTo />
     </div>
