@@ -75,19 +75,23 @@ const SelectWrap = styled.span`
     width: 16px;
   }
 `
-const L = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index:0;
-  background-color: #ddd;
-  font-size: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const PHWrap = styled.div`
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index:0;
+background-color: #ddd;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
 `
+const L = styled.div`
+font-size: 32px;
+`
+const S =styled.div``
 const VideoContainer = styled.div`
 ${({ checked }) =>
   checked ? 'transform: translateZ(0px) scale3d(0.95,0.91,1);' : ''}
@@ -96,8 +100,8 @@ function calcRatio(dimension) {
   const arr = dimension.split(',').map((e) => +e)
   return arr[1] / arr[0]
 }
-function LoadingPH({ text }) {
-  return <L>{text}</L>
+function LoadingPH({ text, subText }) {
+  return <PHWrap><L>{text}</L><S>{subText}</S></PHWrap>
 }
 export function PureVideo({ data }) {
   const { src, dimension } = data
@@ -199,10 +203,10 @@ export function PureVideo({ data }) {
       observer.disconnect()
     }
   }, [])
-
+  const subText = 'It may not work if your device or system does not support HDR.'
   return (
     <VideoInnerWrap ratio={ratio}>
-      <LoadingPH text={loadingText} />
+      <LoadingPH text={loadingText} subText={subText} />
       {inWechat ? null : (
         <video
           ref={ref}

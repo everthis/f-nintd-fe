@@ -10,6 +10,17 @@ const Wrap = styled.div`
   padding: 0.5rem;
   margin: 1rem auto;
 `
+const Menu = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  a {
+    color: var(--text-color);
+  }
+`
+
+const PRODUCTION = process.env.NODE_ENV === 'production'
 const STATUS = PRODUCTION ? 1 : 0
 function objectToQueryString(obj) {
   const keyValuePairs = []
@@ -34,6 +45,9 @@ function HomePageComp() {
   })
   return (
     <Wrap>
+      <Menu>
+        <Link to="/downloader">Douyin Video Downloader</Link>
+      </Menu>
       <h1>Games gallery</h1>
       {loading ? <h1>Loading</h1> : null}
       {data.map((e, i) => (

@@ -30,7 +30,11 @@ const ImgWrap = styled.div`
 const A = styled.a`
   word-break: break-all;
 `
+const ExecBtn = styled.button`
+  padding: 0.5em 1em;
+`
 const ClearBtn = styled.button`
+  padding: 0.5em 1em;
   margin-left: 1em;
 `
 const H3 = styled.h3`
@@ -70,9 +74,9 @@ export function Downloader(props) {
       <H3>Douyin Video Downloader</H3>
       <TA rows={3} ref={textareaRef} />
       <BtnWrap>
-        <button onClick={download} disabled={loading}>
+        <ExecBtn onClick={download} disabled={loading}>
           {loading ? 'Processing...' : 'Download'}
-        </button>
+        </ExecBtn>
         <ClearBtn
           onClick={() => {
             setListData(EMPTY_ARR)
